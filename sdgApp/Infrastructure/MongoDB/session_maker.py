@@ -25,3 +25,10 @@ def mongo_session() -> Tuple[MongoClient, Database]:
     db = client[db_name]
     return client, db
 
+async def get_db():
+    try:
+        client, db = mongo_session()
+        yield db
+    finally:
+        client.close()
+

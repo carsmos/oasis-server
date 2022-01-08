@@ -14,13 +14,53 @@ class CarRepoImpl(CarsRepo):
         self.cars_collection = self.db_session['cars']
 
     def create(self, car: CarsAggregate):
-        car_DO = DataMapper_to_DO(car)
+
+
+        car_DO = {"id": car.id,
+                  "name": car.name,
+                  "desc": car.desc,
+                  "autosys": car.autosys,
+                  "model": car.model,
+                  "physics": car.physics,
+                  "wheels": car.wheels,
+                  "sensors": car.sensors}
+
         self.cars_collection.insert_one(car_DO)
 
-    # def find_by_id(self, id: str):
-    #     query = {"id": id}
-    #     car_DO = self.cars_collection.find(query, {"_id": 0})
+    def delete(self, car_id: str):
+        filter = {'id': car_id}
+        self.cars_collection.delete_one(filter)
 
+    def update(self, update_car: CarsAggregate):
+        update_car_DO = {"name": update_car.name,
+                  "desc": update_car.desc,
+                  "autosys": update_car.autosys,
+                  "model": update_car.model,
+                  "physics": update_car.physics,
+                  "wheels": update_car.wheels,
+                  "sensors": update_car.sensors}
+
+        filter = {
+                'id': update_car.id
+            }
+        self.cars_collection.update_one(filter
+            , {'$set': update_car_DO})
+
+    def get(self, car_id: str):
+        filter = {'id': car_id}
+        result_DO = self.cars_collection.find_one(filter, {'_id':0})
+        car = CarsAggregate(id=result_DO["id"])
+        car.save_DO_shortcut(result_DO)
+        return car
+
+    def list(self):
+        car_aggregate_lst = []
+        results_DO = self.cars_collection.find({}, {'_id':0})
+        for one_result in results_DO:
+            one_car = CarsAggregate(id=one_result["id"])
+            one_car.save_DO_shortcut(one_result)
+            car_aggregate_lst.append(one_car)
+        return car_aggregate_lst
 
 
 

@@ -89,15 +89,12 @@ class CarSensor(BaseModel):
 
 class CarCreateDTO(BaseModel):
     name: str = Field(..., example="car_1")
-    desc: str = None
-    autosys: str = Field(..., example="autoware")
-    model: CarModel
-    physics: CarPhysicsControl
-    wheels: CarWheel
+    desc: Optional[str]
+    autosys: Optional[str]
+    model: Optional[CarModel]
+    physics: Optional[CarPhysicsControl]
+    wheels: Optional[CarWheel]
     sensors: Optional[List[CarSensor]]
 
 class CarUpdateDTO(CarCreateDTO):
     ...
-
-class CarDeleteDTO(BaseModel):
-    id: str

@@ -5,24 +5,23 @@ from pydantic.typing import Optional, List
 
 
 class CarsAggregate(object):
-    def __init__(self,
-                 id:str,
-                 name:str,
-                 autosys:str,
-                 model_dict:dict,
-                 physics_dict:dict,
-                 wheels_dict:dict,
-                 sensors_list:List,
-                 desc=None
-                 ):
-        self.id = id
+    def __init__(self, id,
+                 name=None,
+                 desc=None,
+                 autosys=None,
+                 model=None,
+                 physics=None,
+                 wheels=None,
+                 sensors=None):
         self.name = name
-        self.autosys = autosys
-        self.model_dict = model_dict
-        self.physics_dict = physics_dict
-        self.wheels_dict = wheels_dict
-        self.sensors_list = sensors_list
+        self.id = id
         self.desc = desc
+        self.autosys = autosys
+        self.model = model
+        self.physics = physics
+        self.wheels = wheels
+        self.sensors = sensors
 
-    def save_DO_shortcut(self, dto_dict:dict):
-        self.shortcut_DO = dto_dict
+    def save_DO_shortcut(self, DO:dict):
+        self.shortcut_DO = DO
+
