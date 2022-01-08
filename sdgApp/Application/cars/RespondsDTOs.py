@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from sdgApp.Application.cars.CommandDTOs import CarCreateDTO
 
-class CarReadDTO(BaseModel):
-    ...
+class CarGetDTO(CarCreateDTO):
+    id: str
+
