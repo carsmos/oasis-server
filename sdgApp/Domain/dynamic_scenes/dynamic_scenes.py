@@ -4,13 +4,13 @@ from typing import Optional, Union, List
 
 class ScenariosAggregate(object):
     def __init__(self,
-                 dynamic_scene_id: Optional[str],
-                 script: str,
-                 scenario_name: str,
-                 desc: Optional[str],
-                 tags: Optional[List[str]],
-                 create_time: Union[datetime, str],
-                 language: Optional[str],
+                 dynamic_scene_id=None,
+                 script=None,
+                 scenario_name=None,
+                 desc=None,
+                 tags=None,
+                 create_time=None,
+                 language=None,
                  ):
         self.dynamic_scene_id = dynamic_scene_id
         self.script = script

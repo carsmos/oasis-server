@@ -1,5 +1,6 @@
-from sdgApp.Domain.dynamic_scenes.scenarios_repo import ScenariosRepo
-from sdgApp.Domain.dynamic_scenes.scenarios import ScenariosAggregate
+from sdgApp.Domain.dynamic_scenes.dynamic_scenes_repo import ScenariosRepo
+from sdgApp.Domain.dynamic_scenes.dynamic_scenes import ScenariosAggregate
+from fastapi import HTTPException
 
 
 def DataMapper_to_DO(aggregate):
@@ -33,17 +34,22 @@ class ScenarioRepoImpl(ScenariosRepo):
                 'dynamic_scene_id': dynamic_scene_id,
             }, {'$set': scenario_DO})
         if result.matched_count == 1 and result.modified_count == 1:
-            return self.scenarios_collection.find_one({"dynamic_scene_id": dynamic_scene_id})
+            return True
         else:
-            return {"status_code": 400, "Detail": "update data failed"}
+            raise HTTPException(status_code=400, detail="data update failed")
 
     def find_all_scenario(self):
-        scenario_list = []
-        result = self.scenarios_collection.find()
-        for scenario in result:
-            scenario_list.append(scenario)
-        return scenario_list
+        scnenario_aggregate_list = []
+        results_DO = self.scenarios_collection.find({}, {'_id': 0})
+        for one_result in results_DO:
+            one_scene = ScenariosAggregate()
+            one_scene.save_DO_shortcut(one_result)
+            scnenario_aggregate_list.append(one_scene)
+        return scnenario_aggregate_list
 
     def find_specified_scenario(self, dynamic_scene_id: str):
-        result = self.scenarios_collection.find_one({"dynamic_scene_id": dynamic_scene_id})
-        return result
+        result_DO = self.scenarios_collection.find_one({"dynamic_scene_id": dynamic_scene_id},
+                                                       {'_id': 0})
+        scenario = ScenariosAggregate()
+        scenario.save_DO_shortcut(result_DO)
+        return scenario

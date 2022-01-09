@@ -1,23 +1,21 @@
-from datetime import datetime
-from typing import Optional, Union
 
 
 class EnvsAggregate(object):
     def __init__(self,
-                 env_id: Optional[str],
-                 env_name: str,
-                 desc: Optional[str],
-                 create_time: Union[datetime, str],
-                 wetness: float,
-                 cloudiness: float,
-                 fog_density: float,
-                 fog_falloff: float,
-                 fog_distance: float,
-                 precipitation: float,
-                 wind_intensity: float,
-                 sun_azimuth_angle: float,
-                 sun_altitude_angle: float,
-                 precipitation_deposits: float,
+                 env_id=None,
+                 env_name=None,
+                 desc=None,
+                 create_time=None,
+                 wetness=None,
+                 cloudiness=None,
+                 fog_density=None,
+                 fog_falloff=None,
+                 fog_distance=None,
+                 precipitation=None,
+                 wind_intensity=None,
+                 sun_azimuth_angle=None,
+                 sun_altitude_angle=None,
+                 precipitation_deposits=None,
                  ):
         self.env_id = env_id
         self.env_name = env_name

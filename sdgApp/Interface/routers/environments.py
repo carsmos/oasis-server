@@ -2,7 +2,8 @@ from sdgApp.Application.envs.RespondsDTOs import EnvReadDTO
 from sdgApp.Application.envs.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
 from sdgApp.Application.envs.usercase import EnvCommandUsercase, \
     EnvDeleteUsercase, EnvUpdateUsercase, EnvQueryUsercase
-from fastapi import APIRouter, status
+from sdgApp.Infrastructure.MongoDB.session_maker import get_db
+from fastapi import APIRouter, status, Depends
 from typing import List
 
 router = APIRouter()
@@ -14,29 +15,32 @@ router = APIRouter()
     response_model=EnvReadDTO,
     tags=["Envs"]
 )
-async def creat_env(env_create_model: EnvCreateDTO):
+async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db)):
     try:
-        return EnvCommandUsercase().create_env(env_create_model)
+        return EnvCommandUsercase(db_session=db).create_env(env_create_model)
     except:
         raise
 
 
 @router.delete("/envs/{env_id}", tags=["Envs"])
-async def delete_env(env_id: str):
+async def delete_env(env_id: str, db=Depends(get_db)):
     try:
-        return EnvDeleteUsercase().delete_env(env_id)
+        return EnvDeleteUsercase(db_session=db).delete_env(env_id)
     except:
         raise
 
 
 @router.put(
     "/envs/{env_id}",
+    status_code=status.HTTP_202_ACCEPTED,
     response_model=EnvReadDTO,
     tags=["Envs"]
 )
-async def update_env(env_id: str, env_update_model: EnvUpdateDTO):
+async def update_env(env_id: str, env_update_model: EnvUpdateDTO, db=Depends(get_db)):
     try:
-        return EnvUpdateUsercase().update_env(env_id, env_update_model)
+        result = EnvUpdateUsercase(db_session=db).update_env(env_id, env_update_model)
+        if result:
+            return await find_specified_env(env_id, db)
     except:
         raise
 
@@ -47,11 +51,12 @@ async def update_env(env_id: str, env_update_model: EnvUpdateDTO):
     response_model=List[EnvReadDTO],
     tags=["Envs"]
 )
-async def find_all_envs():
+async def find_all_envs(db=Depends(get_db)):
     try:
-        return EnvQueryUsercase().find_all_envs()
+        return EnvQueryUsercase(db_session=db).find_all_envs()
     except:
         raise
+
 
 @router.get(
     "/envs/{env_id}",
@@ -59,8 +64,8 @@ async def find_all_envs():
     response_model=EnvReadDTO,
     tags=["Envs"]
 )
-async def find_specified_env(env_id: str):
+async def find_specified_env(env_id: str, db=Depends(get_db)):
     try:
-        return EnvQueryUsercase().find_specified_env(env_id)
+        return EnvQueryUsercase(db_session=db).find_specified_env(env_id)
     except:
         raise

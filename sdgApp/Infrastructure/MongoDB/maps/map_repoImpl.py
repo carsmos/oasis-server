@@ -17,13 +17,22 @@ class MapRepoImpl(MapsRepo):
         self.maps_collection = self.db_session['maps']
 
     def find_all_maps(self):
-        map_list = []
-        for map in self.maps_collection.find():
-            map_list.append(map)
-        return map_list
+        map_aggregate_list = []
+        maps_DO = self.maps_collection.find({}, {'_id': 0})
+        for map in maps_DO:
+            one_map = MapsAggregate()
+            one_map.save_DO_shortcut(map)
+            map_aggregate_list.append(one_map)
+        return map_aggregate_list
 
     def find_map_by_id(self, map_id: int):
-        return self.maps_collection.find_one({"map_id": map_id})
+        map_DO = self.maps_collection.find_one({"map_id": map_id})
+        map = MapsAggregate()
+        map.save_DO_shortcut(map_DO)
+        return map
 
     def find_map_by_name(self, name: str):
-        return self.maps_collection.find_one({"map_name": name})
+        map_DO = self.maps_collection.find_one({"map_name": name})
+        map = MapsAggregate()
+        map.save_DO_shortcut(map_DO)
+        return map

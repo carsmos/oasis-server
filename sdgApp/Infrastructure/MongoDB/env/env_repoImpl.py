@@ -1,6 +1,6 @@
 from sdgApp.Domain.envs.envs_repo import EnvsRepo
 from sdgApp.Domain.envs.envs import EnvsAggregate
-
+from fastapi import HTTPException
 
 def DataMapper_to_DO(aggregate):
     return aggregate.shortcut_DO
@@ -33,17 +33,24 @@ class EnvRepoImpl(EnvsRepo):
                 'env_id': env_id,
             }, {'$set': env_DO})
         if result.matched_count == 1 and result.modified_count == 1:
-            return self.envs_collection.find_one({"env_id": env_id})
+            return True
         else:
-            return {"status_code": 400, "Detail": "update data failed"}
+            raise HTTPException(status_code=400, detail="update data failed")
 
     def find_all_envs(self):
-        env_list = []
-        result = self.envs_collection.find()
-        for env in result:
-            env_list.append(env)
-        return env_list
+        env_aggregate_list = []
+        results_DO = self.envs_collection.find({}, {'_id': 0})
+        for one_result in results_DO:
+            one_env = EnvsAggregate()
+            one_env.save_DO_shortcut(one_result)
+            env_aggregate_list.append(one_env)
+        return env_aggregate_list
 
     def find_specified_env(self, env_id: str):
-        result = self.envs_collection.find_one({"env_id": env_id})
-        return result
+        result_DO = self.envs_collection.find_one({"env_id": env_id}, {'_id': 0})
+        if not result_DO:
+            raise HTTPException(status_code=400, detail="data is not exist")
+        env = EnvsAggregate()
+        env.save_DO_shortcut(result_DO)
+        return env
+

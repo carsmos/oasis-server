@@ -1,7 +1,7 @@
 from sdgApp.Application.maps.RespondsDTOs import MapReadDTO
-from sdgApp.Application.maps.QueryDTOs import MapFindDTO
+from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Application.maps.usercase import MapQueryUsercase
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 from typing import List, Union
 
 router = APIRouter()
@@ -13,9 +13,9 @@ router = APIRouter()
     response_model=List[MapReadDTO],
     tags=["Maps"]
 )
-async def find_all_maps():
+async def find_all_maps(db=Depends(get_db)):
     try:
-        return MapQueryUsercase().find_all_maps()
+        return MapQueryUsercase(db_session=db).find_all_maps()
     except:
         raise
 
@@ -26,8 +26,8 @@ async def find_all_maps():
     response_model=MapReadDTO,
     tags=["Maps"]
 )
-async def find_specified_map(query_args: Union[int, str]):
+async def find_specified_map(query_args: Union[int, str], db=Depends(get_db)):
     try:
-        return MapQueryUsercase().find_specified_map(query_args)
+        return MapQueryUsercase(db_session=db).find_specified_map(query_args)
     except:
         raise

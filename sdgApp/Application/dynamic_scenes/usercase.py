@@ -1,16 +1,19 @@
 from sdgApp.Application.dynamic_scenes.RespondsDTOs import ScenarioReadDTO
 from sdgApp.Application.dynamic_scenes.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
-from sdgApp.Domain.dynamic_scenes.scenarios import ScenariosAggregate
-from sdgApp.Infrastructure.MongoDB.dynamic_scene.scenario_repoImpl import ScenarioRepoImpl
+from sdgApp.Domain.dynamic_scenes.dynamic_scenes import ScenariosAggregate
+from sdgApp.Infrastructure.MongoDB.dynamic_scene.dynamic_scene_repoImpl import ScenarioRepoImpl
 from sdgApp.Infrastructure.MongoDB.session_maker import mongo_session
+
+
+def DTO_assembler(scenario: ScenariosAggregate):
+    return scenario.shortcut_DO
 
 
 class ScenarioCommandUsercase(object):
 
-    def __init__(self, repo=ScenarioRepoImpl, db_session=mongo_session):
+    def __init__(self, db_session, repo=ScenarioRepoImpl):
         self.repo = repo
-        _, db = db_session()
-        self.repo = self.repo(db)
+        self.repo = self.repo(db_session)
 
     def create_scenario(self, dto: ScenarioCreateDTO):
         try:
@@ -31,10 +34,9 @@ class ScenarioCommandUsercase(object):
 
 class ScenarioDeleteUsercase(object):
 
-    def __init__(self, repo=ScenarioRepoImpl, db_session=mongo_session):
+    def __init__(self, db_session, repo=ScenarioRepoImpl):
         self.repo = repo
-        _, db = db_session()
-        self.repo = self.repo(db)
+        self.repo = self.repo(db_session)
 
     def delete_scenario(self, dynamic_scene_id: str):
         try:
@@ -45,10 +47,9 @@ class ScenarioDeleteUsercase(object):
 
 class ScenarioUpdateUsercase(object):
 
-    def __init__(self, repo=ScenarioRepoImpl, db_session=mongo_session):
+    def __init__(self, db_session, repo=ScenarioRepoImpl):
         self.repo = repo
-        _, db = db_session()
-        self.repo = self.repo(db)
+        self.repo = self.repo(db_session)
 
     def update_scenario(self, dynamic_scene_id: str, dto: ScenarioUpdateDTO):
         try:
@@ -70,19 +71,25 @@ class ScenarioUpdateUsercase(object):
 
 class ScenarioQueryUsercase(object):
 
-    def __init__(self, repo=ScenarioRepoImpl, db_session=mongo_session):
+    def __init__(self, db_session, repo=ScenarioRepoImpl):
         self.repo = repo
-        _, db = db_session()
-        self.repo = self.repo(db)
+        self.repo = self.repo(db_session)
 
     def find_all_scenarios(self):
         try:
-            return self.repo.find_all_scenario()
+            response_dto_list = []
+            scenario_list = self.repo.find_all_scenario()
+            for scenario in scenario_list:
+                response_dto = DTO_assembler(scenario)
+                response_dto_list.append(response_dto)
+            return response_dto_list
         except:
             raise
 
     def find_specified_scenario(self, dynamic_scene_id: str):
         try:
-            return self.repo.find_specified_scenario(dynamic_scene_id)
+            scenario = self.repo.find_specified_scenario(dynamic_scene_id)
+            response_dto = DTO_assembler(scenario)
+            return response_dto
         except:
             raise

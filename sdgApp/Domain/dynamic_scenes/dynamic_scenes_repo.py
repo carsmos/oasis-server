@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from sdgApp.Domain.dynamic_scenes.scenarios import ScenariosAggregate
+from sdgApp.Domain.dynamic_scenes.dynamic_scenes import ScenariosAggregate
 
 
 class ScenariosRepo(ABC):
