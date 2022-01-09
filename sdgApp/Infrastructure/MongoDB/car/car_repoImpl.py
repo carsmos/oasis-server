@@ -19,11 +19,7 @@ class CarRepoImpl(CarsRepo):
         car_DO = {"id": car.id,
                   "name": car.name,
                   "desc": car.desc,
-                  "autosys": car.autosys,
-                  "model": car.model,
-                  "physics": car.physics,
-                  "wheels": car.wheels,
-                  "sensors": car.sensors}
+                  "param": car.param}
 
         self.cars_collection.insert_one(car_DO)
 
@@ -34,11 +30,7 @@ class CarRepoImpl(CarsRepo):
     def update(self, update_car: CarsAggregate):
         update_car_DO = {"name": update_car.name,
                   "desc": update_car.desc,
-                  "autosys": update_car.autosys,
-                  "model": update_car.model,
-                  "physics": update_car.physics,
-                  "wheels": update_car.wheels,
-                  "sensors": update_car.sensors}
+                  "param": update_car.param}
 
         filter = {
                 'id': update_car.id

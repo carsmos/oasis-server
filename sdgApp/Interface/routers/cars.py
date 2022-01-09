@@ -7,8 +7,10 @@ from pydantic.typing import Optional, List
 
 router = APIRouter()
 
-##TODO: 参考fastapi-user 添加权限系统
+##TODO: facade  外部Interface接口 内部service接口
+##TODO: 参考 fastapi-user 添加权限系统
 ##TODO: 整理 try except
+##TODO：插入时间
 
 
 @router.post(
@@ -59,6 +61,7 @@ async def get_car(car_id:str, db = Depends(get_db)):
         return car_dto
     except:
         raise
+
 
 @router.get(
     "/cars",

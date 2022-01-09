@@ -21,11 +21,7 @@ class CarCommandUsercase(object):
             car = CarsAggregate(uuid,
                                 name=car_dict["name"],
                                 desc=car_dict["desc"],
-                                autosys=car_dict["autosys"],
-                                model=car_dict["model"],
-                                physics=car_dict["physics"],
-                                wheels=car_dict["wheels"],
-                                sensors=car_dict["sensors"])
+                                param=car_dict["param"])
             self.repo.create(car)
         except:
             raise
@@ -42,11 +38,7 @@ class CarCommandUsercase(object):
             update_car = CarsAggregate(car_id,
                                        name=car_update_dict["name"],
                                        desc=car_update_dict["desc"],
-                                       autosys=car_update_dict["autosys"],
-                                       model=car_update_dict["model"],
-                                       physics=car_update_dict["physics"],
-                                       wheels=car_update_dict["wheels"],
-                                       sensors=car_update_dict["sensors"])
+                                       param=car_update_dict["param"])
             self.repo.update(update_car)
         except:
             raise
