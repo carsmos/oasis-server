@@ -1,10 +1,4 @@
-from pydantic import BaseModel, Field
-from pydantic.typing import Optional, List
-
-
-
-
-class CarsAggregate(object):
+class CarAggregate(object):
     def __init__(self, id,
                  name=None,
                  desc=None,
