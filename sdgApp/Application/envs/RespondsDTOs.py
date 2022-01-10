@@ -1,5 +1,6 @@
-from sdgApp.Application.envs.CommandDTOs import EnvBaseModel
+from sdgApp.Application.envs.CommandDTOs import EnvCreateDTO
 
 
-class EnvReadDTO(EnvBaseModel):
-    pass
+class EnvReadDTO(EnvCreateDTO):
+    id: str
+

@@ -1,8 +1,8 @@
-from sdgApp.Application.envs.RespondsDTOs import EnvReadDTO
+import shortuuid
+
 from sdgApp.Application.envs.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
 from sdgApp.Domain.envs.envs import EnvsAggregate
 from sdgApp.Infrastructure.MongoDB.env.env_repoImpl import EnvRepoImpl
-from sdgApp.Infrastructure.MongoDB.session_maker import mongo_session
 
 
 def DTO_assembler(env: EnvsAggregate):
@@ -17,47 +17,30 @@ class EnvCommandUsercase(object):
 
     def create_env(self, dto: EnvCreateDTO):
         try:
+            uuid = shortuuid.uuid()
             env_dict = dto.dict()
-            env = EnvsAggregate(env_id=env_dict["env_id"],
-                                env_name=env_dict["env_name"],
+            env = EnvsAggregate(uuid,
+                                name=env_dict["name"],
                                 desc=env_dict["desc"],
-                                create_time=env_dict["create_time"],
                                 param=env_dict["param"])
-            env.save_DO_shortcut(env_dict)
-            return self.repo.create(env)
+            return self.repo.create_env(env)
         except:
             raise
-
-
-class EnvDeleteUsercase(object):
-
-    def __init__(self, db_session, repo=EnvRepoImpl):
-        self.repo = repo
-        self.repo = self.repo(db_session)
 
     def delete_env(self, env_id: str):
         try:
-            return self.repo.delete(env_id)
+            return self.repo.delete_env(env_id)
         except:
             raise
-
-
-class EnvUpdateUsercase(object):
-
-    def __init__(self, db_session, repo=EnvRepoImpl):
-        self.repo = repo
-        self.repo = self.repo(db_session)
 
     def update_env(self, env_id: str, dto: EnvUpdateDTO):
         try:
             env_dict = dto.dict()
-            env = EnvsAggregate(env_id=env_dict["env_id"],
-                                env_name=env_dict["env_name"],
+            env = EnvsAggregate(env_id,
+                                name=env_dict["name"],
                                 desc=env_dict["desc"],
-                                create_time=env_dict["create_time"],
                                 param=env_dict["param"])
-            env.save_DO_shortcut(env_dict)
-            return self.repo.update(env_id, env)
+            return self.repo.update_env(env_id, env)
         except:
             raise
 

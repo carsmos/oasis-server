@@ -1,5 +1,5 @@
-from sdgApp.Application.dynamic_scenes.CommandDTOs import ScenarioBaseModel
+from sdgApp.Application.dynamic_scenes.CommandDTOs import ScenarioCreateDTO
 
 
-class ScenarioReadDTO(ScenarioBaseModel):
-    pass
+class ScenarioReadDTO(ScenarioCreateDTO):
+    id: str

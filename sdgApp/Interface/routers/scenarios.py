@@ -1,7 +1,6 @@
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
-from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase, \
-    ScenarioDeleteUsercase, ScenarioUpdateUsercase, ScenarioQueryUsercase
+from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase, ScenarioQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from fastapi import APIRouter, status, Depends
 from typing import List
@@ -17,7 +16,9 @@ router = APIRouter()
 )
 async def create_scenario(scenario_create_model: ScenarioCreateDTO, db=Depends(get_db)):
     try:
-        return ScenarioCommandUsercase(db_session=db).create_scenario(scenario_create_model)
+        result = ScenarioCommandUsercase(db_session=db).create_scenario(scenario_create_model)
+        if result:
+            return await find_specified_scenario(result, db)
     except:
         raise
 
@@ -25,7 +26,7 @@ async def create_scenario(scenario_create_model: ScenarioCreateDTO, db=Depends(g
 @router.delete("/scenarios/{scenario_id}", tags=["Scenarios"])
 async def delete_scenario(scenario_id: str, db=Depends(get_db)):
     try:
-        return ScenarioDeleteUsercase(db_session=db).delete_scenario(scenario_id)
+        return ScenarioCommandUsercase(db_session=db).delete_scenario(scenario_id)
     except:
         raise
 
@@ -40,7 +41,7 @@ async def update_scenario(scenario_id: str,
                           scenario_update_model: ScenarioUpdateDTO,
                           db=Depends(get_db)):
     try:
-        result = ScenarioUpdateUsercase(db_session=db).update_scenario(scenario_id,
+        result = ScenarioCommandUsercase(db_session=db).update_scenario(scenario_id,
                                                                      scenario_update_model)
         if result:
             return await find_specified_scenario(scenario_id, db)

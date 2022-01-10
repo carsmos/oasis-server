@@ -1,8 +1,8 @@
 import shortuuid
 
-from sdgApp.Application.dynamic_scenes.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
-from sdgApp.Domain.dynamic_scenes.dynamic_scenes import ScenariosAggregate
-from sdgApp.Infrastructure.MongoDB.dynamic_scene.dynamic_scene_repoImpl import ScenarioRepoImpl
+from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
+from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
+from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
 
 
 def DTO_assembler(scenario: ScenariosAggregate):
@@ -19,31 +19,31 @@ class ScenarioCommandUsercase(object):
         try:
             uuid = shortuuid.uuid()
             scenario_dict = dto.dict()
-            scenario = ScenariosAggregate(
-                uuid,
-                name=scenario_dict["name"],
-                desc=scenario_dict["desc"],
-                param=scenario_dict["param"])
+            scenario = ScenariosAggregate(uuid,
+                                          name=scenario_dict["name"],
+                                          desc=scenario_dict["desc"],
+                                          param=scenario_dict["param"]
+                                          )
             return self.repo.create_scenario(scenario)
         except:
             raise
 
-    def delete_scenario(self, dynamic_scene_id: str):
+    def delete_scenario(self, scenario_id: str):
         try:
-            return self.repo.delete_scenario_by_id(dynamic_scene_id)
+            return self.repo.delete_scenario_by_id(scenario_id)
         except:
             raise
 
-    def update_scenario(self, dynamic_scene_id: str, dto: ScenarioUpdateDTO):
+    def update_scenario(self, scenario_id: str, dto: ScenarioUpdateDTO):
         try:
             scenario_dict = dto.dict()
             scenario = ScenariosAggregate(
-                dynamic_scene_id,
+                scenario_id,
                 name=scenario_dict["name"],
                 desc=scenario_dict["desc"],
                 param=scenario_dict["param"]
             )
-            return self.repo.update_scenario(dynamic_scene_id, scenario)
+            return self.repo.update_scenario(scenario_id, scenario)
         except:
             raise
 
@@ -65,10 +65,10 @@ class ScenarioQueryUsercase(object):
         except:
             raise
 
-    def find_specified_scenario(self, dynamic_scene_id: str):
+    def find_specified_scenario(self, scenario_id: str):
         try:
-            scenario = self.repo.find_specified_scenario(dynamic_scene_id)
-            response_dto = DTO_assembler(scenario)
+            result = self.repo.find_specified_scenario(scenario_id)
+            response_dto = DTO_assembler(result)
             return response_dto
         except:
             raise

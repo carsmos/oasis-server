@@ -26,7 +26,7 @@ class MapRepoImpl(MapsRepo):
         return map_aggregate_list
 
     def find_map_by_id(self, map_id: int):
-        map_DO = self.maps_collection.find_one({"map_id": map_id})
+        map_DO = self.maps_collection.find_one({"id": map_id})
         map = MapsAggregate()
         map.save_DO_shortcut(map_DO)
         return map

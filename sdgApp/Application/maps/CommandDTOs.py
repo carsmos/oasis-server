@@ -1,10 +1,8 @@
-from pydantic.typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class MapModel(BaseModel):
-    map_id: int = Field(..., example=1)
-    map_name: str = Field(..., example="Town01")
+    pass
 
 
 class MapCreateDTO(BaseModel):

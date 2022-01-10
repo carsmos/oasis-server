@@ -1,7 +1,6 @@
 from sdgApp.Application.envs.RespondsDTOs import EnvReadDTO
 from sdgApp.Application.envs.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
-from sdgApp.Application.envs.usercase import EnvCommandUsercase, \
-    EnvDeleteUsercase, EnvUpdateUsercase, EnvQueryUsercase
+from sdgApp.Application.envs.usercase import EnvCommandUsercase, EnvQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from fastapi import APIRouter, status, Depends
 from typing import List
@@ -17,7 +16,8 @@ router = APIRouter()
 )
 async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db)):
     try:
-        return EnvCommandUsercase(db_session=db).create_env(env_create_model)
+        result = EnvCommandUsercase(db_session=db).create_env(env_create_model)
+        return await find_specified_env(result, db)
     except:
         raise
 
@@ -25,7 +25,7 @@ async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db)):
 @router.delete("/envs/{env_id}", tags=["Envs"])
 async def delete_env(env_id: str, db=Depends(get_db)):
     try:
-        return EnvDeleteUsercase(db_session=db).delete_env(env_id)
+        return EnvCommandUsercase(db_session=db).delete_env(env_id)
     except:
         raise
 
@@ -38,7 +38,7 @@ async def delete_env(env_id: str, db=Depends(get_db)):
 )
 async def update_env(env_id: str, env_update_model: EnvUpdateDTO, db=Depends(get_db)):
     try:
-        result = EnvUpdateUsercase(db_session=db).update_env(env_id, env_update_model)
+        result = EnvCommandUsercase(db_session=db).update_env(env_id, env_update_model)
         if result:
             return await find_specified_env(env_id, db)
     except:

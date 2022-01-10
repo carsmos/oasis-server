@@ -5,7 +5,7 @@ class ScenariosAggregate(object):
                  id,
                  name=None,
                  desc=None,
-                 param=None,
+                 param=None
                  ):
         self.id = id
         self.name = name
