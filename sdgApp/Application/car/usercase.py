@@ -1,11 +1,11 @@
-from sdgApp.Application.cars.CommandDTOs import CarCreateDTO, CarUpdateDTO
-from sdgApp.Domain.cars.cars import CarsAggregate
-from sdgApp.Infrastructure.MongoDB.car.car_repoImpl import CarRepoImpl
 import shortuuid
-from fastapi import Depends
-from collections import OrderedDict
 
-def DTO_assembler(car: CarsAggregate):
+from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
+from sdgApp.Domain.car.car import CarAggregate
+from sdgApp.Infrastructure.MongoDB.car.car_repoImpl import CarRepoImpl
+
+
+def DTO_assembler(car: CarAggregate):
     return car.shortcut_DO
 
 class CarCommandUsercase(object):
@@ -18,10 +18,10 @@ class CarCommandUsercase(object):
         try:
             uuid = shortuuid.uuid()
             car_dict = dto.dict()
-            car = CarsAggregate(uuid,
-                                name=car_dict["name"],
-                                desc=car_dict["desc"],
-                                param=car_dict["param"])
+            car = CarAggregate(uuid,
+                               name=car_dict["name"],
+                               desc=car_dict["desc"],
+                               param=car_dict["param"])
             self.repo.create(car)
         except:
             raise
@@ -35,10 +35,10 @@ class CarCommandUsercase(object):
     def update_car(self, car_id:str, dto: CarUpdateDTO):
         try:
             car_update_dict = dto.dict()
-            update_car = CarsAggregate(car_id,
-                                       name=car_update_dict["name"],
-                                       desc=car_update_dict["desc"],
-                                       param=car_update_dict["param"])
+            update_car = CarAggregate(car_id,
+                                      name=car_update_dict["name"],
+                                      desc=car_update_dict["desc"],
+                                      param=car_update_dict["param"])
             self.repo.update(update_car)
         except:
             raise

@@ -1,9 +1,10 @@
-from sdgApp.Application.cars.CommandDTOs import CarCreateDTO, CarUpdateDTO
-from sdgApp.Application.cars.RespondsDTOs import CarGetDTO
-from sdgApp.Application.cars.usercase import CarCommandUsercase, CarQueryUsercase
 from fastapi import APIRouter, status, Depends
+from pydantic.typing import List
+
+from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
+from sdgApp.Application.car.RespondsDTOs import CarGetDTO
+from sdgApp.Application.car.usercase import CarCommandUsercase, CarQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
-from pydantic.typing import Optional, List
 
 router = APIRouter()
 
