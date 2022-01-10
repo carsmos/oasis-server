@@ -21,11 +21,9 @@ class ScenarioCommandUsercase(object):
             scenario = ScenariosAggregate(
                 dynamic_scene_id=scenario_dict["dynamic_scene_id"],
                 script=scenario_dict["script"],
-                scenario_name=scenario_dict["scenario_name"],
+                dynamic_scene_name=scenario_dict["dynamic_scene_name"],
                 desc=scenario_dict["desc"],
-                tags=["tags"],
-                create_time=scenario_dict["create_time"],
-                language=scenario_dict["language"])
+                create_time=scenario_dict["create_time"],)
             scenario.save_DO_shortcut(scenario_dict)
             return self.repo.create_scenario(scenario)
         except:
@@ -57,11 +55,9 @@ class ScenarioUpdateUsercase(object):
             scenario = ScenariosAggregate(
                 dynamic_scene_id=scenario_dict["dynamic_scene_id"],
                 script=scenario_dict["script"],
-                scenario_name=scenario_dict["scenario_name"],
+                dynamic_scene_name=scenario_dict["dynamic_scene_name"],
                 desc=scenario_dict["desc"],
-                tags=["tags"],
                 create_time=scenario_dict["create_time"],
-                language=scenario_dict["language"]
             )
             scenario.save_DO_shortcut(scenario_dict)
             return self.repo.update_scenario(dynamic_scene_id, scenario)

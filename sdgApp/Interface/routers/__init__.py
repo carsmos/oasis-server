@@ -1,1 +1,1 @@
-__all__ = ["cars", "maps", "environments", "dynamic_scene", "scenarios"]
+__all__ = ["car", "maps", "environments", "dynamic_scene", "scenarios", "sensor"]

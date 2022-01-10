@@ -22,16 +22,7 @@ class EnvCommandUsercase(object):
                                 env_name=env_dict["env_name"],
                                 desc=env_dict["desc"],
                                 create_time=env_dict["create_time"],
-                                wetness=env_dict["wetness"],
-                                cloudiness=env_dict["cloudiness"],
-                                fog_density=env_dict["fog_density"],
-                                fog_falloff=env_dict["fog_falloff"],
-                                fog_distance=env_dict["fog_distance"],
-                                precipitation=env_dict["precipitation"],
-                                wind_intensity=env_dict["wind_intensity"],
-                                sun_azimuth_angle=env_dict["sun_azimuth_angle"],
-                                sun_altitude_angle=env_dict["sun_altitude_angle"],
-                                precipitation_deposits=env_dict["precipitation_deposits"])
+                                param=env_dict["param"])
             env.save_DO_shortcut(env_dict)
             return self.repo.create(env)
         except:
@@ -64,16 +55,7 @@ class EnvUpdateUsercase(object):
                                 env_name=env_dict["env_name"],
                                 desc=env_dict["desc"],
                                 create_time=env_dict["create_time"],
-                                wetness=env_dict["wetness"],
-                                cloudiness=env_dict["cloudiness"],
-                                fog_density=env_dict["fog_density"],
-                                fog_falloff=env_dict["fog_falloff"],
-                                fog_distance=env_dict["fog_distance"],
-                                precipitation=env_dict["precipitation"],
-                                wind_intensity=env_dict["wind_intensity"],
-                                sun_azimuth_angle=env_dict["sun_azimuth_angle"],
-                                sun_altitude_angle=env_dict["sun_altitude_angle"],
-                                precipitation_deposits=env_dict["precipitation_deposits"])
+                                param=env_dict["param"])
             env.save_DO_shortcut(env_dict)
             return self.repo.update(env_id, env)
         except:
