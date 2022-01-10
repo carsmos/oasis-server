@@ -6,7 +6,7 @@ from fastapi_users.authentication import JWTAuthentication
 from fastapi_users.db import MongoDBUserDatabase
 
 from sdgApp.Infrastructure.MongoDB.session_maker import async_mongo_session
-from .users_DO import User, UserCreate, UserDB, UserUpdate
+from .users_model import User, UserCreate, UserDB, UserUpdate
 
 SECRET = "7165bf1355c0bddf29d0b6326af2ac9b6e876ee8514c93ae887796c540e33ddf"
 
