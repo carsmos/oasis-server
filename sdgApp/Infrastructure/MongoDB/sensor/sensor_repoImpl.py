@@ -14,7 +14,7 @@ class SensorRepoImpl(SensorRepo):
 
     def __init__(self, db_session):
         self.db_session = db_session
-        self.sensors_collection = self.db_session['sensors']
+        self.sensor_collection = self.db_session['sensors']
 
     def create(self, sensor: SensorAggregate):
         sensor_DO = {"id": sensor.id,
@@ -24,11 +24,11 @@ class SensorRepoImpl(SensorRepo):
                      "desc": sensor.desc,
                      "param": sensor.param}
 
-        self.sensors_collection.insert_one(sensor_DO)
+        self.sensor_collection.insert_one(sensor_DO)
 
     def delete(self, sensor_id: str):
         filter = {'id': sensor_id}
-        self.sensors_collection.delete_one(filter)
+        self.sensor_collection.delete_one(filter)
 
     def update(self, update_sensor: SensorAggregate):
         update_sensor_DO = {"name": update_sensor.name,
@@ -40,19 +40,19 @@ class SensorRepoImpl(SensorRepo):
         filter = {
             'id': update_sensor.id
         }
-        self.sensors_collection.update_one(filter
+        self.sensor_collection.update_one(filter
                                            , {'$set': update_sensor_DO})
 
     def get(self, sensor_id: str):
         filter = {'id': sensor_id}
-        result_DO = self.sensors_collection.find_one(filter, {'_id': 0})
+        result_DO = self.sensor_collection.find_one(filter, {'_id': 0})
         sensor = SensorAggregate(id=result_DO["id"])
         sensor.save_DO_shortcut(result_DO)
         return sensor
 
     def list(self):
         sensor_aggregate_lst = []
-        results_DO = self.sensors_collection.find({}, {'_id': 0})
+        results_DO = self.sensor_collection.find({}, {'_id': 0})
         for one_result in results_DO:
             one_sensor = SensorAggregate(id=one_result["id"])
             one_sensor.save_DO_shortcut(one_result)

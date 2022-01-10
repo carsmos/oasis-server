@@ -73,6 +73,3 @@ async def list_sensor(db = Depends(get_db)):
     except:
         raise
 
-
-
-
