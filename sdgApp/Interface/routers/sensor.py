@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from pydantic.typing import List
+from pydantic.typing import List, Optional
 
 from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO, SensorUpdateDTO
 from sdgApp.Application.sensor.RespondsDTOs import SensorGetDTO
@@ -72,10 +72,16 @@ async def get_sensor(sensor_id:str, db = Depends(get_db),
     # response_model= List[SensorGetDTO],
     tags=["Sensors"]
 )
-async def list_sensor(db = Depends(get_db),
+async def list_sensor(car_id: Optional[str] = None,
+                      sensor_type: Optional[str] = None,
+                      db = Depends(get_db),
                       user: UserDB = Depends(current_active_user)):
     try:
-        sensor_dto_lst = SensorQueryUsercase(db_session=db, user=user).list_sensor()
+        query_param = {}
+        if car_id: query_param.update({"car_id": car_id})
+        if sensor_type: query_param.update({"type": sensor_type})
+
+        sensor_dto_lst = SensorQueryUsercase(db_session=db, user=user).list_sensor(query_param=query_param)
         return sensor_dto_lst
     except:
         raise

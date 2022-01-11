@@ -63,10 +63,10 @@ class DynamicsQueryUsercase(object):
         except:
             raise
 
-    def list_dynamics(self):
+    def list_dynamics(self, query_param: dict):
         try:
             response_dto_lst = []
-            dynamics_lst = self.repo.list()
+            dynamics_lst = self.repo.list(query_param=query_param)
             if dynamics_lst:
                 for dynamics in dynamics_lst:
                     response_dto = DTO_assembler(dynamics)

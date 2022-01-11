@@ -20,6 +20,7 @@ class WheelCommandUsercase(object):
             wheel_dict = dto.dict()
             wheel = WheelAggregate(id=uuid,
                                 name=wheel_dict["name"],
+                                position=wheel_dict["position"],
                                 car_name=wheel_dict["car_name"],
                                 car_id=wheel_dict["car_id"],
                                 desc=wheel_dict["desc"],
@@ -63,10 +64,10 @@ class WheelQueryUsercase(object):
         except:
             raise
 
-    def list_wheel(self):
+    def list_wheel(self, query_param: dict):
         try:
             response_dto_lst = []
-            wheel_lst = self.repo.list()
+            wheel_lst = self.repo.list(query_param=query_param)
             if wheel_lst:
                 for wheel in wheel_lst:
                     response_dto = DTO_assembler(wheel)

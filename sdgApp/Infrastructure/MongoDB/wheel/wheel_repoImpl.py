@@ -22,6 +22,7 @@ class WheelRepoImpl(WheelRepo):
     def create(self, wheel: WheelAggregate):
         wheel_DO = {"id": wheel.id,
                      "name": wheel.name,
+                     "position": wheel.position,
                      "car_id": wheel.car_id,
                      "car_name": wheel.car_name,
                      "desc": wheel.desc,
@@ -40,6 +41,7 @@ class WheelRepoImpl(WheelRepo):
 
     def update(self, update_wheel: WheelAggregate):
         update_wheel_DO = {"name": update_wheel.name,
+                            "position": update_wheel.position,
                             "car_id": update_wheel.car_id,
                             "car_name": update_wheel.car_name,
                             "desc": update_wheel.desc,
@@ -63,8 +65,10 @@ class WheelRepoImpl(WheelRepo):
             wheel.save_DO_shortcut(result_DO)
             return wheel
 
-    def list(self):
+    def list(self, query_param: dict):
         filter = {"usr_id": self.user.id}
+        filter.update({query_param})
+
         wheel_aggregate_lst = []
         results_DO = self.wheel_collection.find(filter, {'_id': 0, 'usr_id': 0})
         if results_DO:

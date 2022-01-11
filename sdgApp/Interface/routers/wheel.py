@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from pydantic.typing import List
+from pydantic.typing import List, Optional
 
 from sdgApp.Application.wheel.CommandDTOs import WheelCreateDTO, WheelUpdateDTO
 from sdgApp.Application.wheel.RespondsDTOs import WheelGetDTO
@@ -72,10 +72,16 @@ async def get_wheel(wheel_id:str, db = Depends(get_db),
     # response_model= List[WheelGetDTO],
     tags=["Wheels"]
 )
-async def list_wheel(db = Depends(get_db),
+async def list_wheel(car_id: Optional[str] = None,
+                     position: Optional[str] = None,
+                     db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        wheel_dto_lst = WheelQueryUsercase(db_session=db, user=user).list_wheel()
+        query_param = {}
+        if car_id: query_param.update({"car_id": car_id})
+        if position: query_param.update({"position": position})
+
+        wheel_dto_lst = WheelQueryUsercase(db_session=db, user=user).list_wheel(query_param=query_param)
         return wheel_dto_lst
     except:
         raise

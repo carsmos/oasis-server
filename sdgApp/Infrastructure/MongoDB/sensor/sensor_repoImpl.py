@@ -66,8 +66,10 @@ class SensorRepoImpl(SensorRepo):
             sensor.save_DO_shortcut(result_DO)
             return sensor
 
-    def list(self):
+    def list(self, query_param: dict):
         filter = {"usr_id": self.user.id}
+        filter.update(query_param)
+
         sensor_aggregate_lst = []
         results_DO = self.sensor_collection.find(filter, {'_id': 0, 'usr_id': 0})
         if results_DO:

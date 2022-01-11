@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-from pydantic.typing import List
+from pydantic.typing import List, Optional
 
 from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO, DynamicsUpdateDTO
 from sdgApp.Application.dynamics.RespondsDTOs import DynamicsGetDTO
@@ -72,10 +72,14 @@ async def get_dynamics(dynamics_id:str, db = Depends(get_db),
     # response_model= List[DynamicsGetDTO],
     tags=["Dynamics"]
 )
-async def list_dynamics(db = Depends(get_db),
+async def list_dynamics(car_id: Optional[str] = None,
+                        db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db, user=user).list_dynamics()
+        query_param = {}
+        if car_id: query_param.update({"car_id": car_id})
+
+        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(query_param=query_param)
         return dynamics_dto_lst
     except:
         raise

@@ -63,8 +63,10 @@ class DynamicsRepoImpl(DynamicsRepo):
             dynamics.save_DO_shortcut(result_DO)
             return dynamics
 
-    def list(self):
+    def list(self, query_param: dict):
         filter = {"usr_id": self.user.id}
+        filter.update(query_param)
+
         dynamics_aggregate_lst = []
         results_DO = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id': 0})
         if results_DO:

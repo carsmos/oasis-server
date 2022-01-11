@@ -65,10 +65,10 @@ class SensorQueryUsercase(object):
         except:
             raise
 
-    def list_sensor(self):
+    def list_sensor(self, query_param: dict):
         try:
             response_dto_lst = []
-            sensor_lst = self.repo.list()
+            sensor_lst = self.repo.list(query_param=query_param)
             if sensor_lst:
                 for sensor in sensor_lst:
                     response_dto = DTO_assembler(sensor)

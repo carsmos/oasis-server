@@ -20,5 +20,5 @@ class WheelRepo(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def list(self):
+    def list(self, query_param: dict):
         raise NotImplementedError
