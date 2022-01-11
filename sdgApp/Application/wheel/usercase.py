@@ -10,9 +10,9 @@ def DTO_assembler(wheel: WheelAggregate):
 
 class WheelCommandUsercase(object):
 
-    def __init__(self, db_session, repo=WheelRepoImpl):
+    def __init__(self, db_session, user, repo=WheelRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def create_wheel(self, dto: WheelCreateDTO):
         try:
@@ -20,6 +20,7 @@ class WheelCommandUsercase(object):
             wheel_dict = dto.dict()
             wheel = WheelAggregate(id=uuid,
                                 name=wheel_dict["name"],
+                                position=wheel_dict["position"],
                                 car_name=wheel_dict["car_name"],
                                 car_id=wheel_dict["car_id"],
                                 desc=wheel_dict["desc"],
@@ -50,26 +51,28 @@ class WheelCommandUsercase(object):
 
 class WheelQueryUsercase(object):
 
-    def __init__(self, db_session, repo=WheelRepoImpl):
+    def __init__(self, db_session, user, repo=WheelRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def get_wheel(self, wheel_id:str):
         try:
             wheel = self.repo.get(wheel_id)
-            response_dto = DTO_assembler(wheel)
-            return response_dto
+            if wheel:
+                response_dto = DTO_assembler(wheel)
+                return response_dto
         except:
             raise
 
-    def list_wheel(self):
+    def list_wheel(self, query_param: dict):
         try:
             response_dto_lst = []
-            wheel_lst = self.repo.list()
-            for wheel in wheel_lst:
-                response_dto = DTO_assembler(wheel)
-                response_dto_lst.append(response_dto)
-            return response_dto_lst
+            wheel_lst = self.repo.list(query_param=query_param)
+            if wheel_lst:
+                for wheel in wheel_lst:
+                    response_dto = DTO_assembler(wheel)
+                    response_dto_lst.append(response_dto)
+                return response_dto_lst
         except:
             raise
 
