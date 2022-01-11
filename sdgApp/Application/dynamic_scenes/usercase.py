@@ -1,25 +1,25 @@
 import shortuuid
 
-from sdgApp.Application.dynamic_scenes.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
-from sdgApp.Domain.dynamic_scenes.dynamic_scenes import ScenariosAggregate
-from sdgApp.Infrastructure.MongoDB.dynamic_scene.dynamic_scene_repoImpl import ScenarioRepoImpl
+from sdgApp.Application.dynamic_scenes.CommandDTOs import DynamicSceneCreateDTO, DynamicSceneUpdateDTO
+from sdgApp.Domain.dynamic_scenes.dynamic_scenes import DynamicScenesAggregate
+from sdgApp.Infrastructure.MongoDB.dynamic_scene.dynamic_scene_repoImpl import DynamicSceneRepoImpl
 
 
-def DTO_assembler(scenario: ScenariosAggregate):
+def DTO_assembler(scenario: DynamicScenesAggregate):
     return scenario.shortcut_DO
 
 
-class ScenarioCommandUsercase(object):
+class DynamicSceneCommandUsercase(object):
 
-    def __init__(self, db_session, repo=ScenarioRepoImpl):
+    def __init__(self, db_session, repo=DynamicSceneRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session)
 
-    def create_scenario(self, dto: ScenarioCreateDTO):
+    def create_scenario(self, dto: DynamicSceneCreateDTO):
         try:
             uuid = shortuuid.uuid()
             scenario_dict = dto.dict()
-            scenario = ScenariosAggregate(
+            scenario = DynamicScenesAggregate(
                 uuid,
                 name=scenario_dict["name"],
                 desc=scenario_dict["desc"],
@@ -34,10 +34,10 @@ class ScenarioCommandUsercase(object):
         except:
             raise
 
-    def update_scenario(self, dynamic_scene_id: str, dto: ScenarioUpdateDTO):
+    def update_scenario(self, dynamic_scene_id: str, dto: DynamicSceneUpdateDTO):
         try:
             scenario_dict = dto.dict()
-            scenario = ScenariosAggregate(
+            scenario = DynamicScenesAggregate(
                 dynamic_scene_id,
                 name=scenario_dict["name"],
                 desc=scenario_dict["desc"],
@@ -48,9 +48,9 @@ class ScenarioCommandUsercase(object):
             raise
 
 
-class ScenarioQueryUsercase(object):
+class DynamicSceneQueryUsercase(object):
 
-    def __init__(self, db_session, repo=ScenarioRepoImpl):
+    def __init__(self, db_session, repo=DynamicSceneRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session)
 

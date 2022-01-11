@@ -53,15 +53,17 @@ class EnvRepoImpl(EnvsRepo):
     def find_all_envs(self):
         env_aggregate_list = []
         results_DO = self.envs_collection.find({}, {'_id': 0})
-        for one_result in results_DO:
-            one_env = EnvsAggregate(one_result["id"])
-            one_env.save_DO_shortcut(one_result)
-            env_aggregate_list.append(one_env)
-        return env_aggregate_list
+        if results_DO:
+            for one_result in results_DO:
+                one_env = EnvsAggregate(one_result["id"])
+                one_env.save_DO_shortcut(one_result)
+                env_aggregate_list.append(one_env)
+            return env_aggregate_list
 
     def find_specified_env(self, env_id: str):
         result_DO = self.envs_collection.find_one({"id": env_id}, {'_id': 0})
-        env = EnvsAggregate(result_DO["id"])
-        env.save_DO_shortcut(result_DO)
-        return env
+        if result_DO:
+            env = EnvsAggregate(result_DO["id"])
+            env.save_DO_shortcut(result_DO)
+            return env
 

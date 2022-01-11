@@ -1,6 +1,6 @@
 
 
-class ScenariosAggregate(object):
+class DynamicScenesAggregate(object):
     def __init__(self,
                  id,
                  name=None,

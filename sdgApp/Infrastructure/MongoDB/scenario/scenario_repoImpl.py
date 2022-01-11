@@ -52,14 +52,16 @@ class ScenarioRepoImpl(ScenariosRepo):
     def find_all_scenario(self):
         scenario_aggregate_list = []
         results_DO = self.scenarios_collection.find({}, {'_id': 0})
-        for one_result in results_DO:
-            one_scenario = ScenariosAggregate(id=one_result["id"])
-            one_scenario.save_DO_shortcut(one_result)
-            scenario_aggregate_list.append(one_scenario)
-        return scenario_aggregate_list
+        if results_DO:
+            for one_result in results_DO:
+                one_scenario = ScenariosAggregate(id=one_result["id"])
+                one_scenario.save_DO_shortcut(one_result)
+                scenario_aggregate_list.append(one_scenario)
+            return scenario_aggregate_list
 
     def find_specified_scenario(self, scenario_id: str):
-        result_DO = self.scenarios_collection.find_one({"id": scenario_id})
-        scenario = ScenariosAggregate(result_DO["id"])
-        scenario.save_DO_shortcut(result_DO)
-        return scenario
+        result_DO = self.scenarios_collection.find_one({"id": scenario_id}, {'_id': 0})
+        if result_DO:
+            scenario = ScenariosAggregate(result_DO["id"])
+            scenario.save_DO_shortcut(result_DO)
+            return scenario

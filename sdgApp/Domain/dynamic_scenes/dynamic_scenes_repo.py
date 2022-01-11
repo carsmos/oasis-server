@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from sdgApp.Domain.dynamic_scenes.dynamic_scenes import ScenariosAggregate
+from sdgApp.Domain.dynamic_scenes.dynamic_scenes import DynamicScenesAggregate
 
 
-class ScenariosRepo(ABC):
+class DynamicScenesRepo(ABC):
 
     @abstractmethod
-    def create_scenario(self, scenario: ScenariosAggregate):
+    def create_scenario(self, scenario: DynamicScenesAggregate):
         raise NotImplementedError
 
     @abstractmethod
@@ -17,7 +17,7 @@ class ScenariosRepo(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def update_scenario(self, scenario_id: str, scenario: ScenariosAggregate):
+    def update_scenario(self, scenario_id: str, scenario: DynamicScenesAggregate):
         raise NotImplementedError
 
     @abstractmethod
