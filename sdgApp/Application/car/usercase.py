@@ -10,9 +10,9 @@ def DTO_assembler(car: CarAggregate):
 
 class CarCommandUsercase(object):
 
-    def __init__(self, db_session, repo=CarRepoImpl):
+    def __init__(self, db_session, user, repo=CarRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def create_car(self, dto: CarCreateDTO):
         try:
@@ -46,15 +46,16 @@ class CarCommandUsercase(object):
 
 class CarQueryUsercase(object):
 
-    def __init__(self, db_session, repo=CarRepoImpl):
+    def __init__(self, db_session, user, repo=CarRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def get_car(self, car_id:str):
         try:
             car = self.repo.get(car_id)
-            response_dto = DTO_assembler(car)
-            return response_dto
+            if car:
+                response_dto = DTO_assembler(car)
+                return response_dto
         except:
             raise
 
@@ -62,10 +63,11 @@ class CarQueryUsercase(object):
         try:
             response_dto_lst = []
             car_lst = self.repo.list()
-            for car in car_lst:
-                response_dto = DTO_assembler(car)
-                response_dto_lst.append(response_dto)
-            return response_dto_lst
+            if car_lst:
+                for car in car_lst:
+                    response_dto = DTO_assembler(car)
+                    response_dto_lst.append(response_dto)
+                return response_dto_lst
         except:
             raise
 
