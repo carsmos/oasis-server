@@ -1,6 +1,6 @@
-from sdgApp.Application.envs.RespondsDTOs import EnvReadDTO
-from sdgApp.Application.envs.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
-from sdgApp.Application.envs.usercase import EnvCommandUsercase, EnvQueryUsercase
+from sdgApp.Application.environments.RespondsDTOs import EnvReadDTO
+from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
+from sdgApp.Application.environments.usercase import EnvCommandUsercase, EnvQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from fastapi import APIRouter, status, Depends
 from typing import List
@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/envs",
+    "/environments",
     status_code=status.HTTP_201_CREATED,
     response_model=EnvReadDTO,
     tags=["Envs"]
@@ -22,7 +22,7 @@ async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db)):
         raise
 
 
-@router.delete("/envs/{env_id}", tags=["Envs"])
+@router.delete("/environments/{env_id}", tags=["Envs"])
 async def delete_env(env_id: str, db=Depends(get_db)):
     try:
         return EnvCommandUsercase(db_session=db).delete_env(env_id)
@@ -31,7 +31,7 @@ async def delete_env(env_id: str, db=Depends(get_db)):
 
 
 @router.put(
-    "/envs/{env_id}",
+    "/environments/{env_id}",
     status_code=status.HTTP_202_ACCEPTED,
     response_model=EnvReadDTO,
     tags=["Envs"]
@@ -46,7 +46,7 @@ async def update_env(env_id: str, env_update_model: EnvUpdateDTO, db=Depends(get
 
 
 @router.get(
-    "/envs",
+    "/environments",
     status_code=status.HTTP_200_OK,
     response_model=List[EnvReadDTO],
     tags=["Envs"]
@@ -59,7 +59,7 @@ async def find_all_envs(db=Depends(get_db)):
 
 
 @router.get(
-    "/envs/{env_id}",
+    "/environments/{env_id}",
     status_code=status.HTTP_200_OK,
     response_model=EnvReadDTO,
     tags=["Envs"]

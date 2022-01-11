@@ -1,8 +1,8 @@
 import shortuuid
 
-from sdgApp.Application.envs.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
-from sdgApp.Domain.envs.envs import EnvsAggregate
-from sdgApp.Infrastructure.MongoDB.env.env_repoImpl import EnvRepoImpl
+from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
+from sdgApp.Domain.environments.envs import EnvsAggregate
+from sdgApp.Infrastructure.MongoDB.environment.env_repoImpl import EnvRepoImpl
 
 
 def DTO_assembler(env: EnvsAggregate):

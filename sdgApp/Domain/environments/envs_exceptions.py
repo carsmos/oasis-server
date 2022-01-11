@@ -1,5 +1,5 @@
 class EnvCreateError(Exception):
-    message = "env create error"
+    message = "environment create error"
 
     def __str__(self):
         return EnvCreateError.message

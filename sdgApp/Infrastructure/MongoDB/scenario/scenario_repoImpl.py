@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sdgApp.Domain.scenarios.scenarios_repo import ScenariosRepo
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from fastapi import HTTPException
@@ -22,6 +24,8 @@ class ScenarioRepoImpl(ScenariosRepo):
                        "name": scenario.name,
                        "desc": scenario.desc,
                        "param": scenario.param}
+        scenario_DO.update({"create_time": datetime.now(),
+                            "last_modified": None})
         result = self.scenarios_collection.insert_one(scenario_DO)
         if result:
             return scenario.id
@@ -35,6 +39,7 @@ class ScenarioRepoImpl(ScenariosRepo):
         scenario_DO = {"name": scenario.name,
                        "desc": scenario.desc,
                        "param": scenario.param}
+        scenario_DO.update({"last_modified": datetime.now()})
         result = self.scenarios_collection.update_one(
             {
                 'id': scenario_id,

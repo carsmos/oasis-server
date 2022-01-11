@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from sdgApp.Domain.envs.envs import EnvsAggregate
+from sdgApp.Domain.environments.envs import EnvsAggregate
 
 
 class EnvsRepo(ABC):

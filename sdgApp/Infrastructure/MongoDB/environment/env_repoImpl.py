@@ -1,5 +1,7 @@
-from sdgApp.Domain.envs.envs_repo import EnvsRepo
-from sdgApp.Domain.envs.envs import EnvsAggregate
+from datetime import datetime
+
+from sdgApp.Domain.environments.envs_repo import EnvsRepo
+from sdgApp.Domain.environments.envs import EnvsAggregate
 from fastapi import HTTPException
 
 def DataMapper_to_DO(aggregate):
@@ -22,6 +24,8 @@ class EnvRepoImpl(EnvsRepo):
                   "desc": env.desc,
                   "param": env.param,
                   }
+        env_DO.update({"create_time": datetime.now(),
+                      "last_modified": None})
         result = self.envs_collection.insert_one(env_DO)
         if result:
             return env.id
@@ -36,6 +40,7 @@ class EnvRepoImpl(EnvsRepo):
                   "name": env.name,
                   "desc": env.desc,
                   "param": env.param}
+        env_DO.update({"last_modified": datetime.now()})
         result = self.envs_collection.update_one(
             {
                 'id': env_id,
