@@ -18,8 +18,7 @@ async def create_dynamic_scene(dynamic_scene_create_model: ScenarioCreateDTO,
                                db=Depends(get_db)):
     try:
         result = ScenarioCommandUsercase(db_session=db).create_scenario(dynamic_scene_create_model)
-        if result:
-            return await find_specified_scenario(result, db)
+        return await find_specified_scenario(result, db)
     except:
         raise
 
