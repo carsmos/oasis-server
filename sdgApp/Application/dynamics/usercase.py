@@ -10,9 +10,9 @@ def DTO_assembler(dynamics: DynamicsAggregate):
 
 class DynamicsCommandUsercase(object):
 
-    def __init__(self, db_session, repo=DynamicsRepoImpl):
+    def __init__(self, db_session, user, repo=DynamicsRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def create_dynamics(self, dto: DynamicsCreateDTO):
         try:
@@ -50,15 +50,16 @@ class DynamicsCommandUsercase(object):
 
 class DynamicsQueryUsercase(object):
 
-    def __init__(self, db_session, repo=DynamicsRepoImpl):
+    def __init__(self, db_session, user, repo=DynamicsRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def get_dynamics(self, dynamics_id:str):
         try:
             dynamics = self.repo.get(dynamics_id)
-            response_dto = DTO_assembler(dynamics)
-            return response_dto
+            if dynamics:
+                response_dto = DTO_assembler(dynamics)
+                return response_dto
         except:
             raise
 
@@ -66,10 +67,11 @@ class DynamicsQueryUsercase(object):
         try:
             response_dto_lst = []
             dynamics_lst = self.repo.list()
-            for dynamics in dynamics_lst:
-                response_dto = DTO_assembler(dynamics)
-                response_dto_lst.append(response_dto)
-            return response_dto_lst
+            if dynamics_lst:
+                for dynamics in dynamics_lst:
+                    response_dto = DTO_assembler(dynamics)
+                    response_dto_lst.append(response_dto)
+                return response_dto_lst
         except:
             raise
 

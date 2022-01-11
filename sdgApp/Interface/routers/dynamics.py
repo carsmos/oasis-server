@@ -5,6 +5,8 @@ from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO, DynamicsU
 from sdgApp.Application.dynamics.RespondsDTOs import DynamicsGetDTO
 from sdgApp.Application.dynamics.usercase import DynamicsCommandUsercase, DynamicsQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
+from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
+from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
 
 router = APIRouter()
 
@@ -15,9 +17,10 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     tags=["Dynamics"]
 )
-async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends(get_db)):
+async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends(get_db),
+                          user: UserDB = Depends(current_active_user)):
     try:
-        DynamicsCommandUsercase(db_session=db).create_dynamics(dynamics_create_model)
+        DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_model)
     except:
         raise
 
@@ -27,9 +30,10 @@ async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Dynamics"]
 )
-async def delete_dynamics(dynamics_id:str, db = Depends(get_db)):
+async def delete_dynamics(dynamics_id:str, db = Depends(get_db),
+                          user: UserDB = Depends(current_active_user)):
     try:
-        DynamicsCommandUsercase(db_session=db).delete_dynamics(dynamics_id)
+        DynamicsCommandUsercase(db_session=db, user=user).delete_dynamics(dynamics_id)
     except:
         raise
 
@@ -39,9 +43,10 @@ async def delete_dynamics(dynamics_id:str, db = Depends(get_db)):
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Dynamics"]
 )
-async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO, db = Depends(get_db)):
+async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO, db = Depends(get_db),
+                          user: UserDB = Depends(current_active_user)):
     try:
-        DynamicsCommandUsercase(db_session=db).update_dynamics(dynamics_id, dynamics_update_model)
+        DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_model)
     except:
         raise
 
@@ -49,12 +54,13 @@ async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdate
 @router.get(
     "/dynamics/{dynamics_id}",
     status_code=status.HTTP_200_OK,
-    response_model= DynamicsGetDTO,
+    # response_model= DynamicsGetDTO,
     tags=["Dynamics"]
 )
-async def get_dynamics(dynamics_id:str, db = Depends(get_db)):
+async def get_dynamics(dynamics_id:str, db = Depends(get_db),
+                       user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_dto = DynamicsQueryUsercase(db_session=db).get_dynamics(dynamics_id)
+        dynamics_dto = DynamicsQueryUsercase(db_session=db, user=user).get_dynamics(dynamics_id)
         return dynamics_dto
     except:
         raise
@@ -63,12 +69,13 @@ async def get_dynamics(dynamics_id:str, db = Depends(get_db)):
 @router.get(
     "/dynamics",
     status_code=status.HTTP_200_OK,
-    response_model= List[DynamicsGetDTO],
+    # response_model= List[DynamicsGetDTO],
     tags=["Dynamics"]
 )
-async def list_dynamics(db = Depends(get_db)):
+async def list_dynamics(db = Depends(get_db),
+                        user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db).list_dynamics()
+        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db, user=user).list_dynamics()
         return dynamics_dto_lst
     except:
         raise
