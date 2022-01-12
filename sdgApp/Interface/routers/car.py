@@ -4,6 +4,8 @@ from pydantic.typing import List
 from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
 from sdgApp.Application.car.RespondsDTOs import CarGetDTO
 from sdgApp.Application.car.usercase import CarCommandUsercase, CarQueryUsercase
+from sdgApp.Application.CarFacadeService.CommandDTOs import AssembleCreateDTO
+from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarService
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
 from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
@@ -86,4 +88,15 @@ async def list_car(db = Depends(get_db),
     except:
         raise
 
-
+@router.put(
+    "/cars/assemble-car",
+    status_code=status.HTTP_201_CREATED,
+    tags=["Cars"]
+)
+async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(get_db),
+                     user: UserDB = Depends(current_active_user)):
+    try:
+        assemble_create_dto = assemble_create_model.dict()
+        AssembleCarService(assemble_create_dto, db_session=db, user=user)
+    except:
+        raise
