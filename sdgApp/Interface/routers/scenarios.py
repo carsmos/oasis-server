@@ -1,6 +1,8 @@
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
 from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase, ScenarioQueryUsercase
+from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
+from sdgApp.Application.ScenariosFacadeService.AssembleService import AssembleScenarioService
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from fastapi import APIRouter, status, Depends
 from typing import List
@@ -14,10 +16,10 @@ router = APIRouter()
     response_model=ScenariosReadDTO,
     tags=["Scenarios"]
 )
-async def create_scenario(scenario_create_model: ScenarioCreateDTO, db=Depends(get_db)):
+async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO, db=Depends(get_db)):
     try:
         scenario_create_dto = scenario_create_model.dict()
-        result = ScenarioCommandUsercase(db_session=db).create_scenario(scenario_create_dto)
+        result = AssembleScenarioService(scenario_create_dto, db)
         if result:
             return await find_specified_scenario(result, db)
     except:
