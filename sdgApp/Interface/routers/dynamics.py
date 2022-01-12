@@ -20,7 +20,8 @@ router = APIRouter()
 async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_model)
+        dynamics_create_dto = dynamics_create_model.dict()
+        DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_dto)
     except:
         raise
 
@@ -46,7 +47,8 @@ async def delete_dynamics(dynamics_id:str, db = Depends(get_db),
 async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_model)
+        dynamics_update_dto = dynamics_update_model.dict()
+        DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_dto)
     except:
         raise
 

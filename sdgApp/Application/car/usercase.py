@@ -5,7 +5,7 @@ from sdgApp.Domain.car.car import CarAggregate
 from sdgApp.Infrastructure.MongoDB.car.car_repoImpl import CarRepoImpl
 
 
-def DTO_assembler(car: CarAggregate):
+def dto_assembler(car: CarAggregate):
     return car.shortcut_DO
 
 class CarCommandUsercase(object):
@@ -14,10 +14,10 @@ class CarCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_car(self, dto: CarCreateDTO):
+    def create_car(self, dto: dict):
         try:
             uuid = shortuuid.uuid()
-            car_dict = dto.dict()
+            car_dict = dto
             car = CarAggregate(uuid,
                                name=car_dict["name"],
                                desc=car_dict["desc"],
@@ -32,9 +32,9 @@ class CarCommandUsercase(object):
         except:
             raise
 
-    def update_car(self, car_id:str, dto: CarUpdateDTO):
+    def update_car(self, car_id:str, dto: dict):
         try:
-            car_update_dict = dto.dict()
+            car_update_dict = dto
             update_car = CarAggregate(car_id,
                                       name=car_update_dict["name"],
                                       desc=car_update_dict["desc"],
@@ -54,7 +54,7 @@ class CarQueryUsercase(object):
         try:
             car = self.repo.get(car_id)
             if car:
-                response_dto = DTO_assembler(car)
+                response_dto = dto_assembler(car)
                 return response_dto
         except:
             raise
@@ -65,7 +65,7 @@ class CarQueryUsercase(object):
             car_lst = self.repo.list()
             if car_lst:
                 for car in car_lst:
-                    response_dto = DTO_assembler(car)
+                    response_dto = dto_assembler(car)
                     response_dto_lst.append(response_dto)
                 return response_dto_lst
         except:

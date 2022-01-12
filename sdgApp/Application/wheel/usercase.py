@@ -5,7 +5,7 @@ from sdgApp.Domain.wheel.wheel import WheelAggregate
 from sdgApp.Infrastructure.MongoDB.wheel.wheel_repoImpl import WheelRepoImpl
 
 
-def DTO_assembler(wheel: WheelAggregate):
+def dto_assembler(wheel: WheelAggregate):
     return wheel.shortcut_DO
 
 class WheelCommandUsercase(object):
@@ -14,10 +14,10 @@ class WheelCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_wheel(self, dto: WheelCreateDTO):
+    def create_wheel(self, dto: dict):
         try:
             uuid = shortuuid.uuid()
-            wheel_dict = dto.dict()
+            wheel_dict = dto
             wheel = WheelAggregate(id=uuid,
                                 name=wheel_dict["name"],
                                 position=wheel_dict["position"],
@@ -35,9 +35,9 @@ class WheelCommandUsercase(object):
         except:
             raise
 
-    def update_wheel(self, wheel_id:str, dto: WheelUpdateDTO):
+    def update_wheel(self, wheel_id:str, dto: dict):
         try:
-            wheel_update_dict = dto.dict()
+            wheel_update_dict = dto
             update_wheel = WheelAggregate(wheel_id,
                                             name=wheel_update_dict["name"],
                                             car_name=wheel_update_dict["car_name"],
@@ -59,7 +59,7 @@ class WheelQueryUsercase(object):
         try:
             wheel = self.repo.get(wheel_id)
             if wheel:
-                response_dto = DTO_assembler(wheel)
+                response_dto = dto_assembler(wheel)
                 return response_dto
         except:
             raise
@@ -70,7 +70,7 @@ class WheelQueryUsercase(object):
             wheel_lst = self.repo.list(query_param=query_param)
             if wheel_lst:
                 for wheel in wheel_lst:
-                    response_dto = DTO_assembler(wheel)
+                    response_dto = dto_assembler(wheel)
                     response_dto_lst.append(response_dto)
                 return response_dto_lst
         except:

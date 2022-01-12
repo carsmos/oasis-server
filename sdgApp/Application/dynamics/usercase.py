@@ -5,7 +5,7 @@ from sdgApp.Domain.dynamics.dynamics import DynamicsAggregate
 from sdgApp.Infrastructure.MongoDB.dynamics.dynamics_repoImpl import DynamicsRepoImpl
 
 
-def DTO_assembler(dynamics: DynamicsAggregate):
+def dto_assembler(dynamics: DynamicsAggregate):
     return dynamics.shortcut_DO
 
 class DynamicsCommandUsercase(object):
@@ -14,10 +14,10 @@ class DynamicsCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_dynamics(self, dto: DynamicsCreateDTO):
+    def create_dynamics(self, dto: dict):
         try:
             uuid = shortuuid.uuid()
-            dynamics_dict = dto.dict()
+            dynamics_dict = dto
             dynamics = DynamicsAggregate(id=uuid,
                                 name=dynamics_dict["name"],
                                 car_name=dynamics_dict["car_name"],
@@ -34,9 +34,9 @@ class DynamicsCommandUsercase(object):
         except:
             raise
 
-    def update_dynamics(self, dynamics_id:str, dto: DynamicsUpdateDTO):
+    def update_dynamics(self, dynamics_id:str, dto: dict):
         try:
-            dynamics_update_dict = dto.dict()
+            dynamics_update_dict = dto
             update_dynamics = DynamicsAggregate(dynamics_id,
                                             name=dynamics_update_dict["name"],
                                             car_name=dynamics_update_dict["car_name"],
@@ -58,7 +58,7 @@ class DynamicsQueryUsercase(object):
         try:
             dynamics = self.repo.get(dynamics_id)
             if dynamics:
-                response_dto = DTO_assembler(dynamics)
+                response_dto = dto_assembler(dynamics)
                 return response_dto
         except:
             raise
@@ -69,7 +69,7 @@ class DynamicsQueryUsercase(object):
             dynamics_lst = self.repo.list(query_param=query_param)
             if dynamics_lst:
                 for dynamics in dynamics_lst:
-                    response_dto = DTO_assembler(dynamics)
+                    response_dto = dto_assembler(dynamics)
                     response_dto_lst.append(response_dto)
                 return response_dto_lst
         except:

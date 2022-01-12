@@ -20,7 +20,8 @@ router = APIRouter()
 async def create_sensor(sensor_create_model: SensorCreateDTO, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        SensorCommandUsercase(db_session=db, user=user).create_sensor(sensor_create_model)
+        sensor_create_dto = sensor_create_model.dict()
+        SensorCommandUsercase(db_session=db, user=user).create_sensor(sensor_create_dto)
     except:
         raise
 
@@ -46,7 +47,8 @@ async def delete_sensor(sensor_id:str, db = Depends(get_db),
 async def update_sensor(sensor_id:str, sensor_update_model: SensorUpdateDTO, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        SensorCommandUsercase(db_session=db, user=user).update_sensor(sensor_id, sensor_update_model)
+        sensor_update_dto = sensor_update_model.dict()
+        SensorCommandUsercase(db_session=db, user=user).update_sensor(sensor_id, sensor_update_dto)
     except:
         raise
 
