@@ -24,7 +24,8 @@ router = APIRouter()
 async def create_car(car_create_model: CarCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        CarCommandUsercase(db_session=db, user=user).create_car(car_create_model)
+        car_create_dto = car_create_model.dict()
+        CarCommandUsercase(db_session=db, user=user).create_car(car_create_dto)
     except:
         raise
 
@@ -50,7 +51,8 @@ async def delete_car(car_id:str, db = Depends(get_db),
 async def update_car(car_id:str, car_update_model: CarUpdateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        CarCommandUsercase(db_session=db, user=user).update_car(car_id, car_update_model)
+        car_update_dto = car_update_model.dict()
+        CarCommandUsercase(db_session=db, user=user).update_car(car_id, car_update_dto)
     except:
         raise
 

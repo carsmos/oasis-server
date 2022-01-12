@@ -5,7 +5,7 @@ from sdgApp.Domain.sensor.sensor import SensorAggregate
 from sdgApp.Infrastructure.MongoDB.sensor.sensor_repoImpl import SensorRepoImpl
 
 
-def DTO_assembler(sensor: SensorAggregate):
+def dto_assembler(sensor: SensorAggregate):
     return sensor.shortcut_DO
 
 class SensorCommandUsercase(object):
@@ -14,10 +14,10 @@ class SensorCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_sensor(self, dto: SensorCreateDTO):
+    def create_sensor(self, dto: dict):
         try:
             uuid = shortuuid.uuid()
-            sensor_dict = dto.dict()
+            sensor_dict = dto
             sensor = SensorAggregate(id=uuid,
                                 name=sensor_dict["name"],
                                 type=sensor_dict["type"],
@@ -35,9 +35,9 @@ class SensorCommandUsercase(object):
         except:
             raise
 
-    def update_sensor(self, sensor_id:str, dto: SensorUpdateDTO):
+    def update_sensor(self, sensor_id:str, dto: dict):
         try:
-            sensor_update_dict = dto.dict()
+            sensor_update_dict = dto
             update_sensor = SensorAggregate(sensor_id,
                                             name=sensor_update_dict["name"],
                                             type=sensor_update_dict["type"],
@@ -60,7 +60,7 @@ class SensorQueryUsercase(object):
         try:
             sensor = self.repo.get(sensor_id)
             if sensor:
-                response_dto = DTO_assembler(sensor)
+                response_dto = dto_assembler(sensor)
                 return response_dto
         except:
             raise
@@ -71,7 +71,7 @@ class SensorQueryUsercase(object):
             sensor_lst = self.repo.list(query_param=query_param)
             if sensor_lst:
                 for sensor in sensor_lst:
-                    response_dto = DTO_assembler(sensor)
+                    response_dto = dto_assembler(sensor)
                     response_dto_lst.append(response_dto)
                 return response_dto_lst
         except:
