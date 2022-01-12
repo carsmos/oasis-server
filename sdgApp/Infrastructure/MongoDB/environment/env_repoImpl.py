@@ -27,7 +27,7 @@ class EnvRepoImpl(EnvsRepo):
         env_DO.update({"create_time": datetime.now(),
                       "last_modified": None})
         result = self.envs_collection.insert_one(env_DO)
-        if result:
+        if result.inserted_id:
             return env.id
 
     def delete_env(self, env_id: str):
