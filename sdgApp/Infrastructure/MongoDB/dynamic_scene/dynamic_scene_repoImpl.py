@@ -23,7 +23,7 @@ class DynamicSceneRepoImpl(DynamicScenesRepo):
         scenario_DO = {"id": scenario.id,
                        "name": scenario.name,
                        "desc": scenario.desc,
-                       "script_param": scenario.script_param}
+                       "scene_script": scenario.scene_script}
         scenario_DO.update({"create_time": datetime.now(),
                             "last_modified": None})
         result = self.scenarios_collection.insert_one(scenario_DO)
@@ -38,7 +38,7 @@ class DynamicSceneRepoImpl(DynamicScenesRepo):
     def update_scenario(self, dynamic_scene_id: str, scenario: DynamicScenesAggregate):
         scenario_DO = {"name": scenario.name,
                        "desc": scenario.desc,
-                       "script_param": scenario.script_param}
+                       "scene_script": scenario.scene_script}
         scenario_DO.update({"last_modified": datetime.now()})
         result = self.scenarios_collection.update_one(
             {

@@ -23,7 +23,7 @@ class DynamicSceneCommandUsercase(object):
                 uuid,
                 name=scenario_dict["name"],
                 desc=scenario_dict["desc"],
-                script_param=scenario_dict["script_param"])
+                scene_script=scenario_dict["scene_script"])
             return self.repo.create_scenario(scenario)
         except:
             raise
@@ -41,7 +41,7 @@ class DynamicSceneCommandUsercase(object):
                 dynamic_scene_id,
                 name=scenario_dict["name"],
                 desc=scenario_dict["desc"],
-                script_param=scenario_dict["script_param"]
+                scene_script=scenario_dict["scene_script"]
             )
             return self.repo.update_scenario(dynamic_scene_id, scenario)
         except:

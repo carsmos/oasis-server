@@ -7,7 +7,8 @@ class AssemberScenarioCreateDTO(BaseModel):
     desc: Optional[str] = Field(None, example="This is a demo scenario")
     map_name: str = Field(..., example="Town01")
     dynamic_scene_id: str = Field(..., example="e4aKGHrRpM2tBVyVppdYSq")
-    env_id: str = Field(..., example="e4aKGHrRpM2tBVyVppdYSq")
+    env_id: Optional[str] = Field(None, example="e4aKGHrRpM2tBVyVppdYSq")
+    env_name: Optional[str] = Field(None, example="ClearNoon")
 
 
 class AssemberScenarioUpdateDTO(BaseModel):
