@@ -26,6 +26,11 @@ class SensorCommandUsercase(object):
                                 desc=sensor_dict["desc"],
                                 param=sensor_dict["param"])
             self.repo.create(sensor)
+
+            sensor = self.repo.get(sensor_id=uuid)
+            if sensor:
+                response_dto = dto_assembler(sensor)
+                return response_dto
         except:
             raise
 
@@ -46,6 +51,11 @@ class SensorCommandUsercase(object):
                                             desc=sensor_update_dict["desc"],
                                             param=sensor_update_dict["param"])
             self.repo.update(update_sensor)
+
+            sensor = self.repo.get(sensor_id=sensor_id)
+            if sensor:
+                response_dto = dto_assembler(sensor)
+                return response_dto
         except:
             raise
 

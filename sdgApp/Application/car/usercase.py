@@ -23,6 +23,12 @@ class CarCommandUsercase(object):
                                desc=car_dict["desc"],
                                param=car_dict["param"])
             self.repo.create(car)
+
+            car = self.repo.get(car_id=uuid)
+            if car:
+                response_dto = dto_assembler(car)
+                return response_dto
+
         except:
             raise
 
@@ -40,6 +46,11 @@ class CarCommandUsercase(object):
                                       desc=car_update_dict["desc"],
                                       param=car_update_dict["param"])
             self.repo.update(update_car)
+
+            car = self.repo.get(car_id=car_id)
+            if car:
+                response_dto = dto_assembler(car)
+                return response_dto
         except:
             raise
 

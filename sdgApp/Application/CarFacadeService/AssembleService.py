@@ -34,7 +34,7 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
         sensor_dto["param"].update(sensor_extra_config)
         car_snapshot_dto["param"]["sensors"].append(sensor_dto["param"])
 
-    CarCommandUsercase(db_session=db_session, user=user).update_car(car_id=car_snapshot_dto["id"],
+    return CarCommandUsercase(db_session=db_session, user=user).update_car(car_id=car_snapshot_dto["id"],
                                                                     dto=car_snapshot_dto)
 
 
