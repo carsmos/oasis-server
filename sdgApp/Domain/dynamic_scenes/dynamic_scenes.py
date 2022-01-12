@@ -5,12 +5,12 @@ class DynamicScenesAggregate(object):
                  id,
                  name=None,
                  desc=None,
-                 param=None,
+                 script_param=None,
                  ):
         self.id = id
         self.name = name
         self.desc = desc
-        self.param = param
+        self.script_param = script_param
 
     def save_DO_shortcut(self, dto_dict: dict):
         self.shortcut_DO = dto_dict

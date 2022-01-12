@@ -23,7 +23,7 @@ class ScenarioRepoImpl(ScenariosRepo):
         scenario_DO = {"id": scenario.id,
                        "name": scenario.name,
                        "desc": scenario.desc,
-                       "param": scenario.param}
+                       "scenario_param": scenario.scenario_param}
         scenario_DO.update({"create_time": datetime.now(),
                             "last_modified": None})
         result = self.scenarios_collection.insert_one(scenario_DO)
@@ -38,7 +38,7 @@ class ScenarioRepoImpl(ScenariosRepo):
     def update_scenario(self, scenario_id: str, scenario: ScenariosAggregate):
         scenario_DO = {"name": scenario.name,
                        "desc": scenario.desc,
-                       "param": scenario.param}
+                       "scenario_param": scenario.scenario_param}
         scenario_DO.update({"last_modified": datetime.now()})
         result = self.scenarios_collection.update_one(
             {

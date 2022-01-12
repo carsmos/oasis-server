@@ -22,7 +22,7 @@ class EnvRepoImpl(EnvsRepo):
         env_DO = {"id": env.id,
                   "name": env.name,
                   "desc": env.desc,
-                  "param": env.param,
+                  "weather_param": env.weather_param,
                   }
         env_DO.update({"create_time": datetime.now(),
                       "last_modified": None})
@@ -39,7 +39,7 @@ class EnvRepoImpl(EnvsRepo):
         env_DO = {
                   "name": env.name,
                   "desc": env.desc,
-                  "param": env.param}
+                  "weather_param": env.weather_param}
         env_DO.update({"last_modified": datetime.now()})
         result = self.envs_collection.update_one(
             {

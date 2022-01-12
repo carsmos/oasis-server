@@ -22,7 +22,7 @@ class EnvCommandUsercase(object):
             env = EnvsAggregate(uuid,
                                 name=env_dict["name"],
                                 desc=env_dict["desc"],
-                                param=env_dict["param"])
+                                weather_param=env_dict["weather_param"])
             return self.repo.create_env(env)
         except:
             raise
@@ -39,7 +39,7 @@ class EnvCommandUsercase(object):
             env = EnvsAggregate(env_id,
                                 name=env_dict["name"],
                                 desc=env_dict["desc"],
-                                param=env_dict["param"])
+                                weather_param=env_dict["weather_param"])
             return self.repo.update_env(env_id, env)
         except:
             raise
