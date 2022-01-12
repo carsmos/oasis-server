@@ -21,7 +21,8 @@ async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends
                           user: UserDB = Depends(current_active_user)):
     try:
         dynamics_create_dto = dynamics_create_model.dict()
-        DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_dto)
+        dynamics_dto = DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_dto)
+        return dynamics_dto
     except:
         raise
 
@@ -48,7 +49,8 @@ async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdate
                           user: UserDB = Depends(current_active_user)):
     try:
         dynamics_update_dto = dynamics_update_model.dict()
-        DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_dto)
+        dynamics_dto = DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_dto)
+        return dynamics_dto
     except:
         raise
 

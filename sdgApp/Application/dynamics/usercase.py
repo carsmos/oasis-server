@@ -25,6 +25,11 @@ class DynamicsCommandUsercase(object):
                                 desc=dynamics_dict["desc"],
                                 param=dynamics_dict["param"])
             self.repo.create(dynamics)
+
+            dynamics = self.repo.get(dynamics_id=uuid)
+            if dynamics:
+                response_dto = dto_assembler(dynamics)
+                return response_dto
         except:
             raise
 
@@ -44,6 +49,11 @@ class DynamicsCommandUsercase(object):
                                             desc=dynamics_update_dict["desc"],
                                             param=dynamics_update_dict["param"])
             self.repo.update(update_dynamics)
+
+            dynamics = self.repo.get(dynamics_id=dynamics_id)
+            if dynamics:
+                response_dto = dto_assembler(dynamics)
+                return response_dto
         except:
             raise
 

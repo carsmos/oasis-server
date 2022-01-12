@@ -26,6 +26,11 @@ class WheelCommandUsercase(object):
                                 desc=wheel_dict["desc"],
                                 param=wheel_dict["param"])
             self.repo.create(wheel)
+
+            wheel = self.repo.get(wheel_id=uuid)
+            if wheel:
+                response_dto = dto_assembler(wheel)
+                return response_dto
         except:
             raise
 
@@ -45,6 +50,11 @@ class WheelCommandUsercase(object):
                                             desc=wheel_update_dict["desc"],
                                             param=wheel_update_dict["param"])
             self.repo.update(update_wheel)
+
+            wheel = self.repo.get(wheel_id=wheel_id)
+            if wheel:
+                response_dto = dto_assembler(wheel)
+                return response_dto
         except:
             raise
 

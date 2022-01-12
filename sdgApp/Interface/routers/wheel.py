@@ -21,7 +21,8 @@ async def create_wheel(wheel_create_model: WheelCreateDTO, db = Depends(get_db),
                        user: UserDB = Depends(current_active_user)):
     try:
         wheel_create_dto = wheel_create_model.dict()
-        WheelCommandUsercase(db_session=db, user=user).create_wheel(wheel_create_dto)
+        wheel_dto = WheelCommandUsercase(db_session=db, user=user).create_wheel(wheel_create_dto)
+        return wheel_dto
     except:
         raise
 
@@ -48,7 +49,8 @@ async def update_wheel(wheel_id:str, wheel_update_model: WheelUpdateDTO, db = De
                        user: UserDB = Depends(current_active_user)):
     try:
         wheel_update_dto = wheel_update_model.dict()
-        WheelCommandUsercase(db_session=db, user=user).update_wheel(wheel_id, wheel_update_dto)
+        wheel_dto = WheelCommandUsercase(db_session=db, user=user).update_wheel(wheel_id, wheel_update_dto)
+        return wheel_dto
     except:
         raise
 

@@ -12,10 +12,8 @@ from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_us
 
 router = APIRouter()
 
-##TODO: facade  外部Interface接口 内部service接口
-##TODO: 参考 fastapi-user 添加权限系统
 ##TODO: 整理 try except
-##TODO：插入时间
+##TODO: 将输入输出参数dict全部转化为model 小dto dict 转换为大 DTO model
 
 
 @router.post(
@@ -27,7 +25,8 @@ async def create_car(car_create_model: CarCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
         car_create_dto = car_create_model.dict()
-        CarCommandUsercase(db_session=db, user=user).create_car(car_create_dto)
+        car_dto = CarCommandUsercase(db_session=db, user=user).create_car(car_create_dto)
+        return car_dto
     except:
         raise
 
@@ -54,7 +53,8 @@ async def update_car(car_id:str, car_update_model: CarUpdateDTO, db = Depends(ge
                      user: UserDB = Depends(current_active_user)):
     try:
         car_update_dto = car_update_model.dict()
-        CarCommandUsercase(db_session=db, user=user).update_car(car_id, car_update_dto)
+        car_dto = CarCommandUsercase(db_session=db, user=user).update_car(car_id, car_update_dto)
+        return car_dto
     except:
         raise
 
@@ -97,6 +97,7 @@ async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(ge
                      user: UserDB = Depends(current_active_user)):
     try:
         assemble_create_dto = assemble_create_model.dict()
-        AssembleCarService(assemble_create_dto, db_session=db, user=user)
+        car_dto = AssembleCarService(assemble_create_dto, db_session=db, user=user)
+        return car_dto
     except:
         raise
