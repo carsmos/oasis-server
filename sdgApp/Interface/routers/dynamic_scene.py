@@ -17,7 +17,8 @@ router = APIRouter()
 async def create_dynamic_scene(dynamic_scene_create_model: DynamicSceneCreateDTO,
                                db=Depends(get_db)):
     try:
-        result = DynamicSceneCommandUsercase(db_session=db).create_scenario(dynamic_scene_create_model)
+        dynamic_scene_create_dto = dynamic_scene_create_model.dict()
+        result = DynamicSceneCommandUsercase(db_session=db).create_scenario(dynamic_scene_create_dto)
         return await find_specified_scenario(result, db)
     except:
         raise
@@ -38,11 +39,12 @@ async def delete_dynamic_scene(dynamic_scene_id: str, db=Depends(get_db)):
     tags=["DynamicScenes"]
 )
 async def update_dynamic_scene(dynamic_scene_id: str,
-                               dynamic_scene_id_update_model: DynamicSceneUpdateDTO,
+                               dynamic_scene_update_model: DynamicSceneUpdateDTO,
                                db=Depends(get_db)):
     try:
+        dynamic_scene_update_dto = dynamic_scene_update_model.dict()
         result = DynamicSceneCommandUsercase(db_session=db).update_scenario(dynamic_scene_id,
-                                                                       dynamic_scene_id_update_model)
+                                                                       dynamic_scene_update_dto)
         if result:
             return await find_specified_scenario(dynamic_scene_id, db)
     except:

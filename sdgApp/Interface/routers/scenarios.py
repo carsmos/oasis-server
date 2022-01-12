@@ -16,7 +16,8 @@ router = APIRouter()
 )
 async def create_scenario(scenario_create_model: ScenarioCreateDTO, db=Depends(get_db)):
     try:
-        result = ScenarioCommandUsercase(db_session=db).create_scenario(scenario_create_model)
+        scenario_create_dto = scenario_create_model.dict()
+        result = ScenarioCommandUsercase(db_session=db).create_scenario(scenario_create_dto)
         if result:
             return await find_specified_scenario(result, db)
     except:
@@ -41,8 +42,9 @@ async def update_scenario(scenario_id: str,
                           scenario_update_model: ScenarioUpdateDTO,
                           db=Depends(get_db)):
     try:
+        scenario_update_dto = scenario_update_model.dict()
         result = ScenarioCommandUsercase(db_session=db).update_scenario(scenario_id,
-                                                                     scenario_update_model)
+                                                                     scenario_update_dto)
         if result:
             return await find_specified_scenario(scenario_id, db)
     except:

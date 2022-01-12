@@ -16,7 +16,8 @@ router = APIRouter()
 )
 async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db)):
     try:
-        result = EnvCommandUsercase(db_session=db).create_env(env_create_model)
+        env_create_dto = env_create_model.dict()
+        result = EnvCommandUsercase(db_session=db).create_env(env_create_dto)
         return await find_specified_env(result, db)
     except:
         raise
@@ -38,7 +39,8 @@ async def delete_env(env_id: str, db=Depends(get_db)):
 )
 async def update_env(env_id: str, env_update_model: EnvUpdateDTO, db=Depends(get_db)):
     try:
-        result = EnvCommandUsercase(db_session=db).update_env(env_id, env_update_model)
+        env_update_dto = env_update_model.dict()
+        result = EnvCommandUsercase(db_session=db).update_env(env_id, env_update_dto)
         if result:
             return await find_specified_env(env_id, db)
     except:

@@ -5,7 +5,7 @@ from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
 
 
-def DTO_assembler(scenario: ScenariosAggregate):
+def dto_assembler(scenario: ScenariosAggregate):
     return scenario.shortcut_DO
 
 
@@ -15,10 +15,10 @@ class ScenarioCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session)
 
-    def create_scenario(self, dto: ScenarioCreateDTO):
+    def create_scenario(self, dto: dict):
         try:
             uuid = shortuuid.uuid()
-            scenario_dict = dto.dict()
+            scenario_dict = dto
             scenario = ScenariosAggregate(uuid,
                                           name=scenario_dict["name"],
                                           desc=scenario_dict["desc"],
@@ -34,9 +34,9 @@ class ScenarioCommandUsercase(object):
         except:
             raise
 
-    def update_scenario(self, scenario_id: str, dto: ScenarioUpdateDTO):
+    def update_scenario(self, scenario_id: str, dto: dict):
         try:
-            scenario_dict = dto.dict()
+            scenario_dict = dto
             scenario = ScenariosAggregate(
                 scenario_id,
                 name=scenario_dict["name"],
@@ -59,7 +59,7 @@ class ScenarioQueryUsercase(object):
             response_dto_list = []
             scenario_list = self.repo.find_all_scenario()
             for scenario in scenario_list:
-                response_dto = DTO_assembler(scenario)
+                response_dto = dto_assembler(scenario)
                 response_dto_list.append(response_dto)
             return response_dto_list
         except:
@@ -68,7 +68,7 @@ class ScenarioQueryUsercase(object):
     def find_specified_scenario(self, scenario_id: str):
         try:
             result = self.repo.find_specified_scenario(scenario_id)
-            response_dto = DTO_assembler(result)
+            response_dto = dto_assembler(result)
             return response_dto
         except:
             raise

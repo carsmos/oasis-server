@@ -5,7 +5,7 @@ from sdgApp.Domain.environments.envs import EnvsAggregate
 from sdgApp.Infrastructure.MongoDB.environment.env_repoImpl import EnvRepoImpl
 
 
-def DTO_assembler(env: EnvsAggregate):
+def dto_assembler(env: EnvsAggregate):
     return env.shortcut_DO
 
 
@@ -15,10 +15,10 @@ class EnvCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session)
 
-    def create_env(self, dto: EnvCreateDTO):
+    def create_env(self, dto: dict):
         try:
             uuid = shortuuid.uuid()
-            env_dict = dto.dict()
+            env_dict = dto
             env = EnvsAggregate(uuid,
                                 name=env_dict["name"],
                                 desc=env_dict["desc"],
@@ -33,9 +33,9 @@ class EnvCommandUsercase(object):
         except:
             raise
 
-    def update_env(self, env_id: str, dto: EnvUpdateDTO):
+    def update_env(self, env_id: str, dto: dict):
         try:
-            env_dict = dto.dict()
+            env_dict = dto
             env = EnvsAggregate(env_id,
                                 name=env_dict["name"],
                                 desc=env_dict["desc"],
@@ -56,7 +56,7 @@ class EnvQueryUsercase(object):
             response_dto_list = []
             env_list = self.repo.find_all_envs()
             for env in env_list:
-                response_dto = DTO_assembler(env)
+                response_dto = dto_assembler(env)
                 response_dto_list.append(response_dto)
             return response_dto_list
         except:
@@ -65,7 +65,7 @@ class EnvQueryUsercase(object):
     def find_specified_env(self, env_id: str):
         try:
             env = self.repo.find_specified_env(env_id)
-            response_dto = DTO_assembler(env)
+            response_dto = dto_assembler(env)
             return response_dto
         except:
             raise
