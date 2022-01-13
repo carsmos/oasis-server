@@ -22,6 +22,7 @@ class ScenarioCommandUsercase(object):
             scenario = ScenariosAggregate(uuid,
                                           name=scenario_dict["name"],
                                           desc=scenario_dict["desc"],
+                                          tags=scenario_dict["tags"],
                                           scenario_param=scenario_dict["scenario_param"]
                                           )
             return self.repo.create_scenario(scenario)
@@ -41,6 +42,7 @@ class ScenarioCommandUsercase(object):
                 scenario_id,
                 name=scenario_dict["name"],
                 desc=scenario_dict["desc"],
+                tags=scenario_dict["tags"],
                 scenario_param=scenario_dict["scenario_param"]
             )
             return self.repo.update_scenario(scenario_id, scenario)

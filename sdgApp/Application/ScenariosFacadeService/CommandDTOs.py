@@ -9,12 +9,13 @@ class AssemberScenarioCreateDTO(BaseModel):
     dynamic_scene_id: str = Field(..., example="e4aKGHrRpM2tBVyVppdYSq")
     env_id: Optional[str] = Field(None, example="e4aKGHrRpM2tBVyVppdYSq")
     env_name: Optional[str] = Field(None, example="ClearNoon")
+    tags: Optional[list] = Field([], example=['tag1', 'tag2'])
 
 
 class AssemberScenarioUpdateDTO(BaseModel):
     name: str = Field(..., example="scenario_01")
     desc: Optional[str] = Field(None, example="This is a demo scenario")
     scenario_param: Optional[dict]
-
+    tags: Optional[list] = Field([], example=['tag1', 'tag2'])
 
 
