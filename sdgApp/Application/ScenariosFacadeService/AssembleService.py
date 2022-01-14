@@ -11,7 +11,7 @@ def AssembleScenarioService(scenario_create_model: dict, db):
                     "MidRainyNoon", "HardRainNoon", "ClearSunset", "CloudySunset", "WetSunset",
                     "WetCloudySunset", "SoftRainSunset", "MidRainSunset", "HardRainSunset"]
     if scenario_dto["env_id"] in environments:
-        environment = scenario_dto["env_id"]
+        environment = {"weather_param": scenario_dto["env_id"]}
     else:
         environment = EnvQueryUsercase(
             db_session=db).find_specified_env(scenario_dto["env_id"])
