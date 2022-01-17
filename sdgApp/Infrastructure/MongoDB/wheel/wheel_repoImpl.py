@@ -67,7 +67,7 @@ class WheelRepoImpl(WheelRepo):
 
     def list(self, query_param: dict):
         filter = {"usr_id": self.user.id}
-        filter.update({query_param})
+        filter.update(query_param)
 
         wheel_aggregate_lst = []
         results_DO = self.wheel_collection.find(filter, {'_id': 0, 'usr_id': 0})

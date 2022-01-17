@@ -54,6 +54,27 @@ class CarCommandUsercase(object):
         except:
             raise
 
+    def update_car_snap(self, car_id:str, dto: dict):
+        try:
+            car_snap_dict = dto
+            snapshot_car = CarAggregate(car_id,
+                                        name=car_snap_dict["name"],
+                                        desc=car_snap_dict["desc"],
+                                        param=car_snap_dict["param"],
+                                        sensors_snap=car_snap_dict["sensors_snap"],
+                                        car_snap=car_snap_dict["car_snap"])
+            self.repo.update_snap(snapshot_car)
+
+            car = self.repo.get(car_id=car_id)
+            if car:
+                response_dto = dto_assembler(car)
+                return response_dto
+
+        except:
+            raise
+
+
+
 
 class CarQueryUsercase(object):
 
