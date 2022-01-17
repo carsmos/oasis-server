@@ -11,9 +11,9 @@ def dto_assembler(env: EnvsAggregate):
 
 class EnvCommandUsercase(object):
 
-    def __init__(self, db_session, repo=EnvRepoImpl):
+    def __init__(self, db_session, user, repo=EnvRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def create_env(self, dto: dict):
         try:
@@ -47,9 +47,9 @@ class EnvCommandUsercase(object):
 
 class EnvQueryUsercase(object):
 
-    def __init__(self, db_session, repo=EnvRepoImpl):
+    def __init__(self, db_session, user, repo=EnvRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def find_all_envs(self):
         try:

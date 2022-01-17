@@ -14,8 +14,9 @@ def DataMapper_to_Aggregate(DO):
 
 class EnvRepoImpl(EnvsRepo):
 
-    def __init__(self, db_session):
+    def __init__(self, db_session, user):
         self.db_session = db_session
+        self.user = user
         self.envs_collection = self.db_session['environments']
 
     def create_env(self, env: EnvsAggregate):

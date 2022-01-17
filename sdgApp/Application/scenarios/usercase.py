@@ -11,9 +11,9 @@ def dto_assembler(scenario: ScenariosAggregate):
 
 class ScenarioCommandUsercase(object):
 
-    def __init__(self, db_session, repo=ScenarioRepoImpl):
+    def __init__(self, db_session, user, repo=ScenarioRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def create_scenario(self, dto: dict):
         try:
@@ -52,9 +52,9 @@ class ScenarioCommandUsercase(object):
 
 class ScenarioQueryUsercase(object):
 
-    def __init__(self, db_session, repo=ScenarioRepoImpl):
+    def __init__(self, db_session, user, repo=ScenarioRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def find_all_scenarios(self):
         try:

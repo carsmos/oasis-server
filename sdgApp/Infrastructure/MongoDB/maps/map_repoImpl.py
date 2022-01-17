@@ -12,8 +12,9 @@ def DataMapper_to_Aggregate(DO):
 
 class MapRepoImpl(MapsRepo):
 
-    def __init__(self, db_session):
+    def __init__(self, db_session, user):
         self.db_session = db_session
+        self.user = user
         self.maps_collection = self.db_session['maps']
 
     def find_all_maps(self):

@@ -5,6 +5,8 @@ from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenar
 from sdgApp.Application.ScenariosFacadeService.AssembleService import AssembleScenarioService
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from fastapi import APIRouter, status, Depends
+from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
+from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
 from typing import List
 
 router = APIRouter()
@@ -16,10 +18,11 @@ router = APIRouter()
     response_model=ScenariosReadDTO,
     tags=["Scenarios"]
 )
-async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO, db=Depends(get_db)):
+async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
+                          db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         scenario_create_dto = scenario_create_model.dict()
-        result = AssembleScenarioService(scenario_create_dto, db)
+        result = AssembleScenarioService(scenario_create_dto, db, user)
         if result:
             return await find_specified_scenario(result, db)
     except:
@@ -27,9 +30,10 @@ async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO, db=D
 
 
 @router.delete("/scenarios/{scenario_id}", tags=["Scenarios"])
-async def delete_scenario(scenario_id: str, db=Depends(get_db)):
+async def delete_scenario(scenario_id: str, db=Depends(get_db),
+                          user: UserDB = Depends(current_active_user)):
     try:
-        return ScenarioCommandUsercase(db_session=db).delete_scenario(scenario_id)
+        return ScenarioCommandUsercase(db_session=db, user=user).delete_scenario(scenario_id)
     except:
         raise
 
@@ -42,10 +46,10 @@ async def delete_scenario(scenario_id: str, db=Depends(get_db)):
 )
 async def update_scenario(scenario_id: str,
                           scenario_update_model: ScenarioUpdateDTO,
-                          db=Depends(get_db)):
+                          db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         scenario_update_dto = scenario_update_model.dict()
-        result = ScenarioCommandUsercase(db_session=db).update_scenario(scenario_id,
+        result = ScenarioCommandUsercase(db_session=db, user=user).update_scenario(scenario_id,
                                                                      scenario_update_dto)
         if result:
             return await find_specified_scenario(scenario_id, db)
@@ -59,9 +63,9 @@ async def update_scenario(scenario_id: str,
     response_model=List[ScenariosReadDTO],
     tags=["Scenarios"]
 )
-async def find_all_scenarios(db=Depends(get_db)):
+async def find_all_scenarios(db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return ScenarioQueryUsercase(db_session=db).find_all_scenarios()
+        return ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios()
     except:
         raise
 
@@ -72,8 +76,9 @@ async def find_all_scenarios(db=Depends(get_db)):
     response_model=ScenariosReadDTO,
     tags=["Scenarios"]
 )
-async def find_specified_scenario(scenario_id: str, db=Depends(get_db)):
+async def find_specified_scenario(scenario_id: str, db=Depends(get_db),
+                                  user: UserDB = Depends(current_active_user)):
     try:
-        return ScenarioQueryUsercase(db_session=db).find_specified_scenario(scenario_id)
+        return ScenarioQueryUsercase(db_session=db, user=user).find_specified_scenario(scenario_id)
     except:
         raise

@@ -9,9 +9,9 @@ def DTO_assembler(map: MapsAggregate):
 
 class MapQueryUsercase(object):
 
-    def __init__(self, db_session, repo=MapRepoImpl):
+    def __init__(self, db_session, user, repo=MapRepoImpl):
         self.repo = repo
-        self.repo = self.repo(db_session)
+        self.repo = self.repo(db_session, user)
 
     def find_all_maps(self):
         try:

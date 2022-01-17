@@ -15,8 +15,9 @@ def DataMapper_to_Aggregate(DO):
 
 class ScenarioRepoImpl(ScenariosRepo):
 
-    def __init__(self, db_session):
+    def __init__(self, db_session, user):
         self.db_session = db_session
+        self.user = user
         self.scenarios_collection = self.db_session['scenarios']
 
     def create_scenario(self, scenario: ScenariosAggregate):
