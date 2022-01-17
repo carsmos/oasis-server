@@ -12,6 +12,10 @@ class CarRepo(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def update_snap(self, snapshot_car: CarAggregate):
+        raise NotImplementedError
+
+    @abstractmethod
     def update(self, car: CarAggregate):
         raise NotImplementedError
 

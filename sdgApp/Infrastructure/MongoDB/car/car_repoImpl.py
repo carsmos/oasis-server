@@ -23,7 +23,9 @@ class CarRepoImpl(CarRepo):
         car_DO = {"id": car.id,
                   "name": car.name,
                   "desc": car.desc,
-                  "param": car.param}
+                  "param": car.param,
+                  "sensors_snap": car.sensors_snap,
+                  "car_snap": car.car_snap}
         car_DO.update({"usr_id": self.user.id})
         car_DO.update({"create_time": datetime.now(),
                        "last_modified": None})
@@ -49,6 +51,23 @@ class CarRepoImpl(CarRepo):
 
         self.car_collection.update_one(filter
                                        , {'$set': update_car_DO})
+
+    def update_snap(self, snapshot_car: CarAggregate):
+        update_snap_DO = {"name": snapshot_car.name,
+                          "desc": snapshot_car.desc,
+                          "param": snapshot_car.param,
+                          "sensors_snap": snapshot_car.sensors_snap,
+                          "car_snap": snapshot_car.car_snap}
+        update_snap_DO.update({"last_modified": datetime.now()})
+
+        filter = {
+            'id': snapshot_car.id
+        }
+        filter.update({"usr_id": self.user.id})
+
+        self.car_collection.update_one(filter
+                                       , {'$set': update_snap_DO})
+
 
     def get(self, car_id: str):
         filter = {'id': car_id}

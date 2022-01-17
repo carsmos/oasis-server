@@ -89,7 +89,7 @@ async def list_car(db = Depends(get_db),
         raise
 
 @router.put(
-    "/cars/assemble-car",
+    "/cars-assemble",
     status_code=status.HTTP_201_CREATED,
     tags=["Cars"]
 )
