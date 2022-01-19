@@ -14,21 +14,17 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
     car_snapshot_dto = CarQueryUsercase(db_session=db_session, user=user).get_car(car_id)
     car_name = car_snapshot_dto["name"]
 
-    ## reset
-    car_snapshot_dto["car_snap"] = {}
-    car_snapshot_dto["sensors_snap"] = {}
+
 
     ## car_snap init
     car_snapshot_dto["car_snap"]["car_id"] = car_id
     car_snapshot_dto["car_snap"]["car_name"] = car_name
     car_snapshot_dto["car_snap"].update(car_snapshot_dto["param"])
-    car_snapshot_dto["car_snap"]["vehicle_physics_control"] = {}
-    car_snapshot_dto["car_snap"]["vehicle_physics_control"]["wheels"] = {}
+
 
     ## sensors_snap init
     car_snapshot_dto["sensors_snap"]["car_id"] = car_id
     car_snapshot_dto["sensors_snap"]["car_name"] = car_name
-    car_snapshot_dto["sensors_snap"]["sensors"] = []
 
 
 
@@ -40,7 +36,7 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
             car_snapshot_dto["car_snap"]["vehicle_physics_control"].update(dynamics_dto["param"])
 
     if wheels:
-        for wheel_name, wheel_info_dict in wheels.items():
+        for wheel_type, wheel_info_dict in wheels.items():
             wheel_id = wheel_info_dict["id"]
             wheel_position = wheel_info_dict["position"]
             wheel_dto = WheelQueryUsercase(db_session=db_session, user=user).get_wheel(wheel_id)
@@ -48,7 +44,7 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
                 wheel_dto["param"]["wheel_id"] = wheel_id
                 wheel_dto["param"]["wheel_name"] = wheel_dto["name"]
                 wheel_dto["param"]["position"] = wheel_position
-                car_snapshot_dto["car_snap"]["vehicle_physics_control"]["wheels"].update({wheel_name:wheel_dto["param"]})
+                car_snapshot_dto["car_snap"]["vehicle_physics_control"]["wheels"].update({wheel_type:wheel_dto["param"]})
 
     if sensors:
         for sensor_info_dict in sensors:

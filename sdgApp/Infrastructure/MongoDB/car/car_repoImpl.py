@@ -20,12 +20,43 @@ class CarRepoImpl(CarRepo):
         self.car_collection = self.db_session['cars']
 
     def create(self, car: CarAggregate):
+        DEFAULT_SENSORS_SNAP = {"sensors": []}
+
+        DEFAULT_CAR_SNAP = {
+            'vehicle_physics_control': {
+						'dynamics_id': '',
+						'dynamics_name': '',
+						'wheels': {
+							'front_left_wheel': {
+								'wheel_id': '',
+								'wheel_name': '',
+								'position': ''
+							},
+							'front_right_wheel': {
+								'wheel_id': '',
+								'wheel_name': '',
+								'position': ''
+							},
+							'rear_left_wheel': {
+								'wheel_id': '',
+								'wheel_name': '',
+								'position': ''
+							},
+							'rear_right_wheel': {
+								'wheel_id': '',
+								'wheel_name': '',
+								'position': ''
+							}
+						}
+            }
+        }
+
         car_DO = {"id": car.id,
                   "name": car.name,
                   "desc": car.desc,
                   "param": car.param,
-                  "sensors_snap": car.sensors_snap,
-                  "car_snap": car.car_snap}
+                  "sensors_snap": DEFAULT_SENSORS_SNAP,
+                  "car_snap": DEFAULT_CAR_SNAP}
         car_DO.update({"usr_id": self.user.id})
         car_DO.update({"create_time": datetime.now(),
                        "last_modified": datetime.now()})
@@ -84,6 +115,8 @@ class CarRepoImpl(CarRepo):
         car_aggregate_lst = []
         results_DO = self.car_collection.find(filter, {'name':1,
                                                        'id':1,
+                                                       'desc':1,
+                                                       'param':1,
                                                        '_id':0,
                                                        'car_snap.vehicle_physics_control.dynamics_name':1,
                                                        'car_snap.vehicle_physics_control.dynamics_id':1,

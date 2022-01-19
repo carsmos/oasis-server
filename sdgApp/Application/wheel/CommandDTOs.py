@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 class WheelCreateDTO(BaseModel):
     name: str = Field(..., example="Wheels_1")
-    position: Optional[str]
+    type: Optional[str]
     car_name: str = Field(..., example="car_1")
     car_id: str = Field(..., example="1234")
     desc: Optional[str]

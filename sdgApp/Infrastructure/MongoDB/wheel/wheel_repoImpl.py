@@ -22,7 +22,7 @@ class WheelRepoImpl(WheelRepo):
     def create(self, wheel: WheelAggregate):
         wheel_DO = {"id": wheel.id,
                      "name": wheel.name,
-                     "position": wheel.position,
+                     "type": wheel.type,
                      "car_id": wheel.car_id,
                      "car_name": wheel.car_name,
                      "desc": wheel.desc,
@@ -41,7 +41,7 @@ class WheelRepoImpl(WheelRepo):
 
     def update(self, update_wheel: WheelAggregate):
         update_wheel_DO = {"name": update_wheel.name,
-                            "position": update_wheel.position,
+                            "type": update_wheel.type,
                             "car_id": update_wheel.car_id,
                             "car_name": update_wheel.car_name,
                             "desc": update_wheel.desc,

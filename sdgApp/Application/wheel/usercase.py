@@ -20,7 +20,7 @@ class WheelCommandUsercase(object):
             wheel_dict = dto
             wheel = WheelAggregate(id=uuid,
                                 name=wheel_dict["name"],
-                                position=wheel_dict["position"],
+                                type=wheel_dict["type"],
                                 car_name=wheel_dict["car_name"],
                                 car_id=wheel_dict["car_id"],
                                 desc=wheel_dict["desc"],
@@ -45,6 +45,7 @@ class WheelCommandUsercase(object):
             wheel_update_dict = dto
             update_wheel = WheelAggregate(wheel_id,
                                             name=wheel_update_dict["name"],
+                                            type=wheel_update_dict["type"],
                                             car_name=wheel_update_dict["car_name"],
                                             car_id=wheel_update_dict["car_id"],
                                             desc=wheel_update_dict["desc"],

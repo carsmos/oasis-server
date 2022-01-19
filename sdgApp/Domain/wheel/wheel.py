@@ -1,14 +1,14 @@
 class WheelAggregate(object):
     def __init__(self, id,
                  name=None,
-                 position=None,
+                 type=None,
                  car_name=None,
                  car_id=None,
                  desc=None,
                  param=None):
         self.id = id
         self.name = name
-        self.position = position
+        self.type = type
         self.car_name = car_name
         self.car_id = car_id
         self.desc = desc

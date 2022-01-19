@@ -77,13 +77,13 @@ async def get_wheel(wheel_id:str, db = Depends(get_db),
     tags=["Wheels"]
 )
 async def list_wheel(car_id: Optional[str] = None,
-                     position: Optional[str] = None,
+                     type: Optional[str] = None,
                      db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
         query_param = {}
         if car_id: query_param.update({"car_id": car_id})
-        if position: query_param.update({"position": position})
+        if type: query_param.update({"type": type})
 
         wheel_dto_lst = WheelQueryUsercase(db_session=db, user=user).list_wheel(query_param=query_param)
         return wheel_dto_lst
