@@ -28,7 +28,7 @@ class DynamicsRepoImpl(DynamicsRepo):
                      "param": dynamics.param}
         dynamics_DO.update({"usr_id": self.user.id})
         dynamics_DO.update({"create_time": datetime.now(),
-                       "last_modified": None})
+                       "last_modified": datetime.now()})
 
         self.dynamics_collection.insert_one(dynamics_DO)
 

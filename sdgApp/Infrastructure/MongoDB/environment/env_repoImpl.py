@@ -26,7 +26,7 @@ class EnvRepoImpl(EnvsRepo):
                   "weather_param": env.weather_param,
                   }
         env_DO.update({"create_time": datetime.now(),
-                      "last_modified": None})
+                      "last_modified": datetime.now()})
         result = self.envs_collection.insert_one(env_DO)
         if result.inserted_id:
             return env.id

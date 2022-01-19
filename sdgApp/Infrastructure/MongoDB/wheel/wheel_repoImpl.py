@@ -29,7 +29,7 @@ class WheelRepoImpl(WheelRepo):
                      "param": wheel.param}
         wheel_DO.update({"usr_id": self.user.id})
         wheel_DO.update({"create_time": datetime.now(),
-                       "last_modified": None})
+                       "last_modified": datetime.now()})
 
         self.wheel_collection.insert_one(wheel_DO)
 

@@ -28,7 +28,7 @@ class CarRepoImpl(CarRepo):
                   "car_snap": car.car_snap}
         car_DO.update({"usr_id": self.user.id})
         car_DO.update({"create_time": datetime.now(),
-                       "last_modified": None})
+                       "last_modified": datetime.now()})
 
         self.car_collection.insert_one(car_DO)
 
@@ -82,7 +82,21 @@ class CarRepoImpl(CarRepo):
     def list(self):
         filter = {"usr_id": self.user.id}
         car_aggregate_lst = []
-        results_DO = self.car_collection.find(filter, {'_id': 0, 'usr_id': 0})
+        results_DO = self.car_collection.find(filter, {'name':1,
+                                                       'id':1,
+                                                       '_id':0,
+                                                       'car_snap.vehicle_physics_control.dynamics_name':1,
+                                                       'car_snap.vehicle_physics_control.dynamics_id':1,
+                                                       'car_snap.vehicle_physics_control.wheels.front_left_wheel.wheel_name':1,
+                                                       'car_snap.vehicle_physics_control.wheels.front_left_wheel.wheel_id':1,
+                                                       'car_snap.vehicle_physics_control.wheels.front_right_wheel.wheel_name':1,
+                                                       'car_snap.vehicle_physics_control.wheels.front_right_wheel.wheel_id':1,
+                                                       'car_snap.vehicle_physics_control.wheels.rear_left_wheel.wheel_name': 1,
+                                                       'car_snap.vehicle_physics_control.wheels.rear_left_wheel.wheel_id': 1,
+                                                       'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_name': 1,
+                                                       'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
+                                                       'sensors_snap.sensors.sensor_name':1,
+                                                       'sensors_snap.sensors.sensor_id':1})
         if results_DO:
             for one_result in results_DO:
                 one_car = CarAggregate(id=one_result["id"])

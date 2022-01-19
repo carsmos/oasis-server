@@ -3,8 +3,8 @@ class CarAggregate(object):
                  name=None,
                  desc=None,
                  param=None,
-                 sensors_snap=None,
-                 car_snap=None):
+                 sensors_snap={},
+                 car_snap={}):
         self.name = name
         self.id = id
         self.desc = desc

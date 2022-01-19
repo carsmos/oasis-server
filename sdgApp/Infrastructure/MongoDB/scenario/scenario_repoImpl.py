@@ -27,7 +27,7 @@ class ScenarioRepoImpl(ScenariosRepo):
                        "tags": scenario.tags,
                        "scenario_param": scenario.scenario_param}
         scenario_DO.update({"create_time": datetime.now(),
-                            "last_modified": None})
+                            "last_modified": datetime.now()})
         result = self.scenarios_collection.insert_one(scenario_DO)
         if result.inserted_id:
             return scenario.id

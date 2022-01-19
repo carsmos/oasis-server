@@ -29,7 +29,7 @@ class SensorRepoImpl(SensorRepo):
                      "param": sensor.param}
         sensor_DO.update({"usr_id": self.user.id})
         sensor_DO.update({"create_time": datetime.now(),
-                       "last_modified": None})
+                       "last_modified": datetime.now()})
 
         self.sensor_collection.insert_one(sensor_DO)
 
