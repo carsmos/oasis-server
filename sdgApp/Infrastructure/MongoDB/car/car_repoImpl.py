@@ -20,46 +20,16 @@ class CarRepoImpl(CarRepo):
         self.car_collection = self.db_session['cars']
 
     def create(self, car: CarAggregate):
-        DEFAULT_SENSORS_SNAP = {"sensors": []}
-
-        DEFAULT_CAR_SNAP = {
-            'vehicle_physics_control': {
-						'dynamics_id': '',
-						'dynamics_name': '',
-						'wheels': {
-							'front_left_wheel': {
-								'wheel_id': '',
-								'wheel_name': '',
-								'position': ''
-							},
-							'front_right_wheel': {
-								'wheel_id': '',
-								'wheel_name': '',
-								'position': ''
-							},
-							'rear_left_wheel': {
-								'wheel_id': '',
-								'wheel_name': '',
-								'position': ''
-							},
-							'rear_right_wheel': {
-								'wheel_id': '',
-								'wheel_name': '',
-								'position': ''
-							}
-						}
-            }
-        }
 
         car_DO = {"id": car.id,
                   "name": car.name,
                   "desc": car.desc,
                   "param": car.param,
-                  "sensors_snap": DEFAULT_SENSORS_SNAP,
-                  "car_snap": DEFAULT_CAR_SNAP}
+                  "sensors_snap": car.sensors_snap,
+                  "car_snap": car.car_snap}
         car_DO.update({"usr_id": self.user.id})
-        car_DO.update({"create_time": datetime.now(),
-                       "last_modified": datetime.now()})
+        car_DO.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                       "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         self.car_collection.insert_one(car_DO)
 
@@ -72,8 +42,10 @@ class CarRepoImpl(CarRepo):
     def update(self, update_car: CarAggregate):
         update_car_DO = {"name": update_car.name,
                          "desc": update_car.desc,
-                         "param": update_car.param}
-        update_car_DO.update({"last_modified": datetime.now()})
+                         "param": update_car.param,
+                         "sensors_snap": update_car.sensors_snap,
+                         "car_snap": update_car.car_snap}
+        update_car_DO.update({"last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         filter = {
             'id': update_car.id
@@ -83,23 +55,6 @@ class CarRepoImpl(CarRepo):
         self.car_collection.update_one(filter
                                        , {'$set': update_car_DO})
 
-    def update_snap(self, snapshot_car: CarAggregate):
-        update_snap_DO = {"name": snapshot_car.name,
-                          "desc": snapshot_car.desc,
-                          "param": snapshot_car.param,
-                          "sensors_snap": snapshot_car.sensors_snap,
-                          "car_snap": snapshot_car.car_snap}
-        update_snap_DO.update({"last_modified": datetime.now()})
-
-        filter = {
-            'id': snapshot_car.id
-        }
-        filter.update({"usr_id": self.user.id})
-
-        self.car_collection.update_one(filter
-                                       , {'$set': update_snap_DO})
-
-
     def get(self, car_id: str):
         filter = {'id': car_id}
         if self.user:
@@ -107,7 +62,12 @@ class CarRepoImpl(CarRepo):
 
         result_DO = self.car_collection.find_one(filter, {'_id': 0, 'usr_id': 0})
         if result_DO:
-            car = CarAggregate(id=result_DO["id"])
+            car = CarAggregate(id=result_DO["id"],
+                               name=result_DO['name'],
+                               desc=result_DO['desc'],
+                               param=result_DO['param'],
+                               sensors_snap=result_DO['sensors_snap'],
+                               car_snap=result_DO['car_snap'])
             car.save_DO_shortcut(result_DO)
             return car
 
@@ -118,6 +78,8 @@ class CarRepoImpl(CarRepo):
                                                        'id':1,
                                                        'desc':1,
                                                        'param':1,
+                                                       'create_time':1,
+                                                       'last_modified':1,
                                                        '_id':0,
                                                        'car_snap.vehicle_physics_control.dynamics_name':1,
                                                        'car_snap.vehicle_physics_control.dynamics_id':1,

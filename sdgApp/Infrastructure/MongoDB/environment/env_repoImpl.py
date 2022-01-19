@@ -25,8 +25,8 @@ class EnvRepoImpl(EnvsRepo):
                   "desc": env.desc,
                   "weather_param": env.weather_param,
                   }
-        env_DO.update({"create_time": datetime.now(),
-                      "last_modified": datetime.now()})
+        env_DO.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                      "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
         result = self.envs_collection.insert_one(env_DO)
         if result.inserted_id:
             return env.id
@@ -41,7 +41,7 @@ class EnvRepoImpl(EnvsRepo):
                   "name": env.name,
                   "desc": env.desc,
                   "weather_param": env.weather_param}
-        env_DO.update({"last_modified": datetime.now()})
+        env_DO.update({"last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
         result = self.envs_collection.update_one(
             {
                 'id': env_id,

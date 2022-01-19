@@ -26,8 +26,8 @@ class ScenarioRepoImpl(ScenariosRepo):
                        "desc": scenario.desc,
                        "tags": scenario.tags,
                        "scenario_param": scenario.scenario_param}
-        scenario_DO.update({"create_time": datetime.now(),
-                            "last_modified": datetime.now()})
+        scenario_DO.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
         result = self.scenarios_collection.insert_one(scenario_DO)
         if result.inserted_id:
             return scenario.id
@@ -42,7 +42,7 @@ class ScenarioRepoImpl(ScenariosRepo):
                        "desc": scenario.desc,
                        "tags": scenario.tags,
                        "scenario_param": scenario.scenario_param}
-        scenario_DO.update({"last_modified": datetime.now()})
+        scenario_DO.update({"last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
         result = self.scenarios_collection.update_one(
             {
                 'id': scenario_id,

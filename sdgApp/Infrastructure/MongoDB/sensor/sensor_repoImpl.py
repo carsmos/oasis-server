@@ -28,8 +28,8 @@ class SensorRepoImpl(SensorRepo):
                      "desc": sensor.desc,
                      "param": sensor.param}
         sensor_DO.update({"usr_id": self.user.id})
-        sensor_DO.update({"create_time": datetime.now(),
-                       "last_modified": datetime.now()})
+        sensor_DO.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                       "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         self.sensor_collection.insert_one(sensor_DO)
 
@@ -46,7 +46,7 @@ class SensorRepoImpl(SensorRepo):
                             "car_name": update_sensor.car_name,
                             "desc": update_sensor.desc,
                             "param": update_sensor.param}
-        update_sensor_DO.update({"last_modified": datetime.now()})
+        update_sensor_DO.update({"last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         filter = {
             'id': update_sensor.id

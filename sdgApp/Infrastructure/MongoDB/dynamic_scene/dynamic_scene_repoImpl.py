@@ -25,8 +25,8 @@ class DynamicSceneRepoImpl(DynamicScenesRepo):
                        "name": scenario.name,
                        "desc": scenario.desc,
                        "scene_script": scenario.scene_script}
-        scenario_DO.update({"create_time": datetime.now(),
-                            "last_modified": datetime.now()})
+        scenario_DO.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
         result = self.scenarios_collection.insert_one(scenario_DO)
         if result.inserted_id:
             return scenario.id
@@ -40,7 +40,7 @@ class DynamicSceneRepoImpl(DynamicScenesRepo):
         scenario_DO = {"name": scenario.name,
                        "desc": scenario.desc,
                        "scene_script": scenario.scene_script}
-        scenario_DO.update({"last_modified": datetime.now()})
+        scenario_DO.update({"last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
         result = self.scenarios_collection.update_one(
             {
                 'id': dynamic_scene_id,

@@ -28,8 +28,8 @@ class WheelRepoImpl(WheelRepo):
                      "desc": wheel.desc,
                      "param": wheel.param}
         wheel_DO.update({"usr_id": self.user.id})
-        wheel_DO.update({"create_time": datetime.now(),
-                       "last_modified": datetime.now()})
+        wheel_DO.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                       "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         self.wheel_collection.insert_one(wheel_DO)
 
@@ -46,7 +46,7 @@ class WheelRepoImpl(WheelRepo):
                             "car_name": update_wheel.car_name,
                             "desc": update_wheel.desc,
                             "param": update_wheel.param}
-        update_wheel_DO.update({"last_modified": datetime.now()})
+        update_wheel_DO.update({"last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         filter = {
             'id': update_wheel.id

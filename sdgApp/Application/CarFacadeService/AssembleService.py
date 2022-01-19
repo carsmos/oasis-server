@@ -1,4 +1,6 @@
-from sdgApp.Application.car.usercase import CarCommandUsercase, CarQueryUsercase
+import copy
+
+from sdgApp.Application.car.usercase import CarCommandUsercase, CarQueryUsercase, DEFAULT_SENSORS_SNAP, DEFAULT_CAR_SNAP
 from sdgApp.Application.dynamics.usercase import DynamicsQueryUsercase
 from sdgApp.Application.wheel.usercase import WheelQueryUsercase
 from sdgApp.Application.sensor.usercase import SensorQueryUsercase
@@ -14,7 +16,11 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
     car_snapshot_dto = CarQueryUsercase(db_session=db_session, user=user).get_car(car_id)
     car_name = car_snapshot_dto["name"]
 
-
+    ## reset
+    COPY_CAR_SNAP = copy.deepcopy(DEFAULT_CAR_SNAP)
+    COPY_SENSORS_SNAP = copy.deepcopy(DEFAULT_SENSORS_SNAP)
+    car_snapshot_dto["car_snap"] = COPY_CAR_SNAP
+    car_snapshot_dto["sensors_snap"] = COPY_SENSORS_SNAP
 
     ## car_snap init
     car_snapshot_dto["car_snap"]["car_id"] = car_id

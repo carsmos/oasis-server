@@ -27,8 +27,8 @@ class DynamicsRepoImpl(DynamicsRepo):
                      "desc": dynamics.desc,
                      "param": dynamics.param}
         dynamics_DO.update({"usr_id": self.user.id})
-        dynamics_DO.update({"create_time": datetime.now(),
-                       "last_modified": datetime.now()})
+        dynamics_DO.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                       "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         self.dynamics_collection.insert_one(dynamics_DO)
 
@@ -44,7 +44,7 @@ class DynamicsRepoImpl(DynamicsRepo):
                             "car_name": update_dynamics.car_name,
                             "desc": update_dynamics.desc,
                             "param": update_dynamics.param}
-        update_dynamics_DO.update({"last_modified": datetime.now()})
+        update_dynamics_DO.update({"last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         filter = {
             'id': update_dynamics.id
