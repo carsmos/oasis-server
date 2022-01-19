@@ -102,7 +102,8 @@ class CarRepoImpl(CarRepo):
 
     def get(self, car_id: str):
         filter = {'id': car_id}
-        filter.update({"usr_id": self.user.id})
+        if self.user:
+            filter.update({"usr_id": self.user.id})
 
         result_DO = self.car_collection.find_one(filter, {'_id': 0, 'usr_id': 0})
         if result_DO:

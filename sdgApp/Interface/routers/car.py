@@ -101,3 +101,16 @@ async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(ge
         return car_dto
     except:
         raise
+
+@router.get(
+    "/carla/cars/{car_id}",
+    status_code=status.HTTP_200_OK,
+    # response_model= CarGetDTO,
+    tags=["Carla"]
+)
+async def get_car(car_id:str, db = Depends(get_db)):
+    try:
+        car_dto = CarQueryUsercase(db_session=db, user=None).get_car(car_id)
+        return car_dto
+    except:
+        raise
