@@ -22,9 +22,9 @@ class JobRepoImpl(JobRepo):
 
     def create(self, job: JobAggregate):
         task_DO_list = []
-        filter = {"usr_id": self.user.id}
         for task_DO in job.task_list:
             scenario_id = task_DO['scenario_id']
+            filter = {'id': scenario_id}
             scen_dict = self.scen_collection.find_one(filter, {'_id': 0, 'scenario_param': 1})
             if scen_dict:
                 task_DO.update(scen_dict)
@@ -51,9 +51,9 @@ class JobRepoImpl(JobRepo):
 
     def update(self, update_job: JobAggregate):
         task_DO_list = []
-        filter = {"usr_id": self.user.id}
         for task_DO in update_job.task_list:
             scenario_id = task_DO['scenario_id']
+            filter = {'id': scenario_id}
             scen_dict = self.scen_collection.find_one(filter, {'_id': 0, 'scenario_param': 1})
             if scen_dict:
                 task_DO.update(scen_dict)
