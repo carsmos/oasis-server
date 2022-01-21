@@ -3,6 +3,7 @@ import shortuuid
 from sdgApp.Domain.job.job import JobAggregate
 from sdgApp.Domain.job.task import TaskEntity
 from sdgApp.Infrastructure.MongoDB.job.job_repoImpl import JobRepoImpl
+from sdgApp.Infrastructure.Redis.job.job_queueImpl import JobQueueImpl
 
 
 def dto_assembler(job: JobAggregate):
@@ -10,10 +11,10 @@ def dto_assembler(job: JobAggregate):
 
 class JobCommandUsercase(object):
 
-    def __init__(self, db_session, user, repo=JobRepoImpl):
+    def __init__(self, db_session, user, repo=JobRepoImpl, queue=JobQueueImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
-
+        self.queue = queue
     def create_job(self, dto: dict):
         try:
             uuid = shortuuid.uuid()
@@ -71,6 +72,22 @@ class JobCommandUsercase(object):
                 return response_dto
         except:
             raise
+
+    def run_job(self, job_id:str, queue_sess):
+        try:
+            job = self.repo.get(job_id)
+            if job:
+                self.queue = self.queue(queue_sess)
+                self.queue.publish(queue_name='tasks',
+                                   job=job)
+
+                response_dto = dto_assembler(job)
+                return response_dto
+        except:
+            raise
+
+
+
 
 
 class JobQueryUsercase(object):

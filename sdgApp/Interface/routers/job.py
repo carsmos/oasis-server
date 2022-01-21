@@ -3,6 +3,7 @@ from fastapi import APIRouter, status, Depends
 from sdgApp.Application.job.CommandDTOs import JobCreateDTO, JobUpdateDTO
 from sdgApp.Application.job.usercase import JobCommandUsercase, JobQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
+from sdgApp.Infrastructure.Redis.session_maker import get_redis
 from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
 from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
 
@@ -76,5 +77,19 @@ async def list_job(db = Depends(get_db),
     try:
         job_dto_lst = JobQueryUsercase(db_session=db, user=user).list_job()
         return job_dto_lst
+    except:
+        raise
+
+@router.get(
+    "/run-job/{job_id}",
+    status_code=status.HTTP_200_OK,
+    # response_model= List[CarGetDTO],
+    tags=["Job"]
+)
+async def run_job(job_id:str, db = Depends(get_db), queue_sess = Depends(get_redis),
+                   user: UserDB = Depends(current_active_user)):
+    try:
+        job_dto = JobCommandUsercase(db_session=db, user=user).run_job(job_id, queue_sess)
+        return job_dto
     except:
         raise

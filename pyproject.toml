@@ -10,6 +10,7 @@ fastapi = "^0.70.1"
 uvicorn = "^0.16.0"
 fastapi-users-db-mongodb = "^1.0.0"
 shortuuid = "^1.0.8"
+walrus = "^0.9.0"
 
 [tool.poetry.dev-dependencies]
 
