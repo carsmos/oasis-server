@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
 from pydantic.typing import List
 
-class TaskCreateDTO(BaseModel):
+class TaskDTO(BaseModel):
+    id: str
     name: str
     desc: str
     car_id: str
@@ -9,17 +10,13 @@ class TaskCreateDTO(BaseModel):
     scenario_id: str
     scenario_name: str
 
-class TaskUpdateDTO(TaskCreateDTO):
-    id: str
 
 
 class JobCreateDTO(BaseModel):
     name: str = Field(..., example="job_1")
     desc: str
-    task_list: List[TaskCreateDTO]
+    task_list: List[TaskDTO]
 
 
-class JobUpdateDTO(BaseModel):
-    name: str = Field(..., example="job_1")
-    desc: str
-    task_list: List[TaskUpdateDTO]
+class JobUpdateDTO(JobCreateDTO):
+    ...

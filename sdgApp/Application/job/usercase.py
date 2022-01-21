@@ -55,7 +55,11 @@ class JobCommandUsercase(object):
                                       name=job_update_dict["name"],
                                       desc=job_update_dict["desc"])
             for task_dict in tasks_lst:
-                task = TaskEntity(id=task_dict['id'],
+                if task_dict['id']:
+                    task_id = task_dict['id']
+                else:
+                    task_id = shortuuid.uuid()
+                task = TaskEntity(id=task_id,
                                    name=task_dict['name'],
                                    desc=task_dict['desc'],
                                    car_id=task_dict['car_id'],
