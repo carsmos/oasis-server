@@ -50,9 +50,9 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
                 wheel_dto["param"]["wheel_id"] = wheel_id
                 wheel_dto["param"]["wheel_name"] = wheel_dto["name"]
                 wheel_dto["param"]["position"] = wheel_position
-                wheel_dto["param"]["x"] = wheel_position[0]
-                wheel_dto["param"]["y"] = wheel_position[1]
-                wheel_dto["param"]["z"] = wheel_position[2]
+                # wheel_dto["param"]["x"] = wheel_position[0]
+                # wheel_dto["param"]["y"] = wheel_position[1]
+                # wheel_dto["param"]["z"] = wheel_position[2]
                 car_snapshot_dto["car_snap"]["vehicle_physics_control"]["wheels"].update({wheel_type:wheel_dto["param"]})
 
     if sensors:
@@ -64,9 +64,9 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
                 sensor_dto["param"]["sensor_id"] = sensor_id
                 sensor_dto["param"]["sensor_name"] = sensor_dto["name"]
                 sensor_dto["param"]["position"] = sensor_position
-                sensor_dto["param"]["x"] = sensor_position[0]
-                sensor_dto["param"]["y"] = sensor_position[1]
-                sensor_dto["param"]["z"] = sensor_position[2]
+                # sensor_dto["param"]["x"] = sensor_position[0]
+                # sensor_dto["param"]["y"] = sensor_position[1]
+                # sensor_dto["param"]["z"] = sensor_position[2]
                 sensor_dto["param"]["type"] = sensor_dto["type"]
                 car_snapshot_dto["sensors_snap"]["sensors"].append(sensor_dto["param"])
 
