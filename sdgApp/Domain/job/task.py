@@ -16,6 +16,8 @@ class TaskEntity(object):
         self.scenario_id = scenario_id
         self.scenario_name = scenario_name
         self.result = "no result"
+        self.status = "Not running"
+        self.replay_url = None
 
     def attach_to(self, job_id):
         self.job_id = job_id

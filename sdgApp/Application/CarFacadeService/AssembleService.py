@@ -44,12 +44,12 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
     if wheels:
         for wheel_type, wheel_info_dict in wheels.items():
             wheel_id = wheel_info_dict["id"]
-            wheel_position = wheel_info_dict["position"]
+            # wheel_position = wheel_info_dict["position"]
             wheel_dto = WheelQueryUsercase(db_session=db_session, user=user).get_wheel(wheel_id)
             if wheel_dto:
                 wheel_dto["param"]["wheel_id"] = wheel_id
                 wheel_dto["param"]["wheel_name"] = wheel_dto["name"]
-                wheel_dto["param"]["position"] = wheel_position
+                # wheel_dto["param"]["position"] = wheel_position
                 # wheel_dto["param"]["x"] = wheel_position[0]
                 # wheel_dto["param"]["y"] = wheel_position[1]
                 # wheel_dto["param"]["z"] = wheel_position[2]
@@ -58,12 +58,12 @@ def AssembleCarService(assemble_create_dto: dict, db_session, user):
     if sensors:
         for sensor_info_dict in sensors:
             sensor_id = sensor_info_dict["id"]
-            sensor_position = sensor_info_dict["position"]
+            # sensor_position = sensor_info_dict["position"]
             sensor_dto = SensorQueryUsercase(db_session=db_session, user=user).get_sensor(sensor_id)
             if sensor_dto:
                 sensor_dto["param"]["sensor_id"] = sensor_id
                 sensor_dto["param"]["sensor_name"] = sensor_dto["name"]
-                sensor_dto["param"]["position"] = sensor_position
+                # sensor_dto["param"]["position"] = sensor_position
                 # sensor_dto["param"]["x"] = sensor_position[0]
                 # sensor_dto["param"]["y"] = sensor_position[1]
                 # sensor_dto["param"]["z"] = sensor_position[2]

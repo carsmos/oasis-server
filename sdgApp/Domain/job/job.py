@@ -20,7 +20,9 @@ class JobAggregate(object):
                      "scenario_id":task.scenario_id,
                      "scenario_name":task.scenario_name,
                      "result":task.result,
-                     "job_id":task.job_id}
+                     "job_id":task.job_id,
+                     "status":task.status,
+                     "replay_url":task.replay_url}
         self.task_list.append(task_dict)
 
     def save_DO_shortcut(self, DO:dict):
