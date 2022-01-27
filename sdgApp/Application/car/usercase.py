@@ -10,7 +10,6 @@ DEFAULT_SENSORS_SNAP = {'car_id':'',
                         'car_name':'',
                         "sensors": [
 	{
-		"default":"1",
 		"type": "sensor.camera.rgb",
 		"id": "view",
 		"position": ["-4.5", "0", "2.8"],
@@ -58,10 +57,9 @@ DEFAULT_SENSORS_SNAP = {'car_id':'',
 		"lens_y_size": 0.08,
 		"bloom_intensity": 0.675,
 		"lens_flare_intensity": 0.1,
-		"sensor_id": "001",
+		"sensor_id": "default",
 		"sensor_name": "default_cam"
 	}, {
-		"default":"1",
 		"type": "sensor.lidar.ray_cast",
 		"id": "lidar1",
 		"position": ["0", "0", "2.4"],
@@ -76,7 +74,7 @@ DEFAULT_SENSORS_SNAP = {'car_id':'',
 		"rotation_frequency": 20,
 		"sensor_tick": 0.05,
 		"noise_stddev": 0,
-		"sensor_id": "002",
+		"sensor_id": "default",
 		"sensor_name": "default_lidar"
 	},
 ]}
