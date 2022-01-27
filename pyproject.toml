@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sdg2app_upgrade"
+name = "sdg2app"
 version = "0.1.0"
 description = ""
 authors = ["Cheng Fang"]
