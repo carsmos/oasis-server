@@ -5,6 +5,7 @@ from typing import Tuple
 from pymongo.database import Database
 from pymongo import MongoClient
 from sdgApp.Infrastructure.conf_parser import get_conf
+from sdgApp.Infrastructure.MongoDB.MongoLog import MongoLog
 
 '''mongo session'''
 
@@ -24,6 +25,17 @@ def mongo_session() -> Tuple[MongoClient, Database]:
     client = MongoClient(uri, uuidRepresentation="standard")
     db = client[db_name]
     return client, db
+
+def mongolog_session():
+    conf = get_conf()
+    uri = conf['DB Mongo']['connection_string']
+    db_name = str(conf['DB Mongo']['db_name'])
+    logger = "sdg-server"
+    mongolog = MongoLog(mongo_uri=uri,
+                        db=db_name,
+                        logger_name=logger)
+    return mongolog
+
 
 async def get_db():
     try:
