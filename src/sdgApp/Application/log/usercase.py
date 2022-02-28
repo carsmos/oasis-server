@@ -10,11 +10,14 @@ class LogQueryUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session)
 
-    def get_log(self, task_id:str, level:str):
+    def list_log(self, task_id:str, level:str):
         try:
-            log = self.repo.get(task_id, level)
-            if log:
-                response_dto = dto_assembler(log)
-                return response_dto
+            response_dto_lst = []
+            log_lst = self.repo.list(task_id, level)
+            if log_lst:
+                for log in log_lst:
+                    response_dto = dto_assembler(log)
+                    response_dto_lst.append(response_dto)
+                return response_dto_lst
         except:
             raise

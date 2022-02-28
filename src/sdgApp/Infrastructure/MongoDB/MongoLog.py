@@ -63,7 +63,10 @@ if __name__ == "__main__":
 
     mongolog = MongoLog(
         mongo_uri='mongodb://root:GuardStrike!!!@dds-2zeb146fafba16441401-pub.mongodb.rds.aliyuncs.com:3717,dds-2zeb146fafba16442383-pub.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-54022070',
-        db='sdgAppTest',
-        logger_name='sdg-engine')
+        db='sdgApp2',
+        logger_name='sdg-logtest')
 
-    mongolog.debug_log(msg_dict={"msg":"hello","task_id":"123456"})
+    mongolog.debug_log(msg_dict={"msg":"hello, this is a debug level message !","task_id":"123456"})
+    mongolog.info_log(msg_dict={"msg":"hello, this is a info level message !","task_id":"123456"})
+    mongolog.warn_log(msg_dict={"msg": "hello, this is a warn level message !", "task_id": "123456"})
+    mongolog.error_log(msg_dict={"msg": "hello, this is a error level message !", "task_id": "123456"})
