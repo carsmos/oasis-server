@@ -8,5 +8,6 @@ services:
             REDIS_PORT: "6379"
             REDIS_DB: "0"
             REDIS_PASSWORD: "GuardStrike@123"
+            USER_ID: test
             MONGO_CONNECTION_STRING: "mongodb://sdg:sdg3App3@dds-2zeb146fafba16441401-pub.mongodb.rds.aliyuncs.com:3717,dds-2zeb146fafba16442383-pub.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-54022070"
             MONGO_DB_NAME: "sdgApp2"

@@ -57,6 +57,7 @@
    REDIS_PORT = 
    REDIS_DB = 
    REDIS_PASSWORD = 
+   USER_ID = 
    ```
 
 3. Run
