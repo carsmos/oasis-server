@@ -12,24 +12,26 @@ from sdgApp.Infrastructure.MongoDB.MongoLog import MongoLog
 
 def async_mongo_session() -> Tuple[AsyncIOMotorClient, AsyncIOMotorDatabase]:
     conf = get_conf()
-    uri = conf['DB Mongo']['connection_string']
-    db_name = str(conf['DB Mongo']['db_name'])
+    uri = conf['DB_MONGO']['MONGO_CONNECTION_STRING']
+    db_name = str(conf['DB_MONGO']['MONGO_DB_NAME'])
     client = AsyncIOMotorClient(uri, uuidRepresentation="standard")
     db = client[db_name]
     return client, db
 
+
 def mongo_session() -> Tuple[MongoClient, Database]:
     conf = get_conf()
-    uri = conf['DB Mongo']['connection_string']
-    db_name = str(conf['DB Mongo']['db_name'])
+    uri = conf['DB_MONGO']['MONGO_CONNECTION_STRING']
+    db_name = str(conf['DB_MONGO']['MONGO_DB_NAME'])
     client = MongoClient(uri, uuidRepresentation="standard")
     db = client[db_name]
     return client, db
 
+
 def mongolog_session():
     conf = get_conf()
-    uri = conf['DB Mongo']['connection_string']
-    db_name = str(conf['DB Mongo']['db_name'])
+    uri = conf['DB_MONGO']['MONGO_CONNECTION_STRING']
+    db_name = str(conf['DB_MONGO']['MONGO_DB_NAME'])
     logger = "sdg-server"
     mongolog = MongoLog(mongo_uri=uri,
                         db=db_name,
@@ -43,4 +45,3 @@ async def get_db():
         yield db
     finally:
         client.close()
-

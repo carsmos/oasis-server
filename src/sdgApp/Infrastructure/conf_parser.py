@@ -8,18 +8,20 @@ def get_conf():
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE_PATH)
     # need to update if there new params
-    if os.environ.get("redis_host") is not None:
-        config['Queue Redis']['host'] = os.environ.get("redis_host")
-    if os.environ.get("redis_port") is not None:
-        config['Queue Redis']['port'] = os.environ.get("redis_port")
-    if os.environ.get("redis_db") is not None:
-        config['Queue Redis']['db'] = os.environ.get("redis_db")
-    if os.environ.get("redis_password") is not None:
-        config['Queue Redis']['password'] = os.environ.get("redis_password")
+    if os.environ.get("REDIS_HOST") is not None:
+        config['DB_REDIS']['REDIS_HOST'] = os.environ.get("REDIS_HOST")
+    if os.environ.get("REDIS_PORT") is not None:
+        config['DB_REDIS']['REDIS_PORT'] = os.environ.get("REDIS_PORT")
+    if os.environ.get("REDIS_DB") is not None:
+        config['DB_REDIS']['REDIS_DB'] = os.environ.get("REDIS_DB")
+    if os.environ.get("REDIS_PASSWORD") is not None:
+        config['DB_REDIS']['REDIS_PASSWORD'] = os.environ.get("REDIS_PASSWORD")
+    if os.environ.get("USER_ID") is not None:
+        config['DB_REDIS']['USER_ID'] = os.environ.get("USER_ID")
 
-    if os.environ.get("mongo_connection_string") is not None:
-        config['DB Mongo']['connection_string'] = os.environ.get(
-            "mongo_connection_string")
-    if os.environ.get("mongo_db_name") is not None:
-        config['DB Mongo']['db_name'] = os.environ.get("mongo_db_name")
+    if os.environ.get("MONGO_CONNECTION_STRING") is not None:
+        config['DB_MONGO']['MONGO_CONNECTION_STRING'] = os.environ.get(
+            "MONGO_CONNECTION_STRING")
+    if os.environ.get("MONGO_DB_NAME") is not None:
+        config['DB_MONGO']['MONGO_DB_NAME'] = os.environ.get("MONGO_DB_NAME")
     return config

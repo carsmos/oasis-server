@@ -1,12 +1,13 @@
 import walrus
 from sdgApp.Infrastructure.conf_parser import get_conf
 
+
 def redis_session() -> walrus.Database:
     conf = get_conf()
-    host = str(conf['Queue Redis']['host'])
-    port = int(conf['Queue Redis']['port'])
-    db = int(conf['Queue Redis']['db'])
-    password = str(conf['Queue Redis']['password'])
+    host = str(conf['DB_REDIS']['REDIS_HOST'])
+    port = int(conf['DB_REDIS']['REDIS_PORT'])
+    db = int(conf['DB_REDIS']['REDIS_DB'])
+    password = str(conf['DB_REDIS']['REDIS_PASSWORD'])
     session = walrus.Database(host=host,
                               port=port,
                               db=db,
@@ -14,6 +15,7 @@ def redis_session() -> walrus.Database:
                               password=password)
     session.ping()
     return session
+
 
 async def get_redis():
     try:

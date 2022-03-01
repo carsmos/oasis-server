@@ -37,7 +37,7 @@
 
    ```bash
    # download repo
-   git clone https://codeup.aliyun.com/5f3f374f6207a1a8b17f933f/sdg_server_2.1.0.git
+   git clone https://codeup.aliyun.com/5f3f374f6207a1a8b17f933f/sdg-server.git
    
    # go to the folder where the pyproject.toml is
    poetry install 
@@ -48,15 +48,15 @@
    ```python
    # src/conf.ini
    
-   [DB Mongo]
-   connection_string = 
-   db_name = 
+   [DB_MONGO]
+   MONGO_CONNECTION_STRING = 
+   MONGO_DB_NAME = 
    
-   [Queue Redis]
-   host = 
-   port = 
-   db = 
-   password = 
+   [DB_REDIS]
+   REDIS_HOST = 
+   REDIS_PORT = 
+   REDIS_DB = 
+   REDIS_PASSWORD = 
    ```
 
 3. Run
@@ -73,4 +73,41 @@ you can use this interactive doc to execute the provided request api with exampl
 
 
 ## Docker
+
+1.拉取镜像
+
+```bash
+docker pull registry.cn-beijing.aliyuncs.com/selfdriveguard/sdg-server:0.3.2
+```
+
+此镜像的制作是基于根目录下的dockerfile
+
+2.编辑docker-compose.yml
+
+```yaml
+services: 
+    app:
+        image:
+        ports:
+            - "8000:8000"
+        environment: 
+            REDIS_HOST: ""
+            REDIS_PORT: ""
+            REDIS_DB: ""
+            REDIS_PASSWORD: ""
+            MONGO_CONNECTION_STRING: ""
+            MONGO_DB_NAME: ""
+```
+
+3. Run
+
+```bash
+docker-compose -f docker-compose.yml -p sdg-replay up -d
+```
+
+4. Stop
+
+```bash
+docker-compose -p sdg-replay down
+```
 
