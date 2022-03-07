@@ -37,7 +37,7 @@ async def get_user_manager(user_db: MongoDBUserDatabase = Depends(get_user_db)):
   yield UserManager(user_db)
 
 jwt_authentication = JWTAuthentication(
-    secret=SECRET, lifetime_seconds=3600, tokenUrl="auth/jwt/login"
+    secret=SECRET, lifetime_seconds=None, tokenUrl="auth/jwt/login"
 )
 
 fastapi_users = FastAPIUsers(
