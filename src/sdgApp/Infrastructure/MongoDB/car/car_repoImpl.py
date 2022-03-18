@@ -38,6 +38,7 @@ class CarRepoImpl(CarRepo):
         update_car_DO = CarDO(id=update_car.id,
                               name=update_car.name,
                               param=update_car.param,
+                              desc=update_car.desc,
                               sensors_snap=update_car.sensors_snap,
                               car_snap=update_car.car_snap,
                               usr_id=None,

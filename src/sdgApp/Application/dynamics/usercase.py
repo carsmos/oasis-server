@@ -6,9 +6,6 @@ from sdgApp.Domain.dynamics.dynamics import DynamicsAggregate
 from sdgApp.Infrastructure.MongoDB.dynamics.dynamics_repoImpl import DynamicsRepoImpl
 
 
-def dto_assembler(dynamics: DynamicsAggregate):
-    return dynamics.shortcut_DO
-
 class DynamicsCommandUsercase(object):
 
     def __init__(self, db_session, user, repo=DynamicsRepoImpl):
@@ -17,6 +14,7 @@ class DynamicsCommandUsercase(object):
 
     def create_dynamics(self, dynamics_create_model: DynamicsCreateDTO):
         try:
+            uuid = shortuuid.uuid()
             dynamics = DynamicsAggregate(id=uuid,
                                 name=dynamics_create_model.name,
                                 desc=dynamics_create_model.desc,
@@ -63,7 +61,7 @@ class DynamicsQueryUsercase(object):
         try:
             response_dto_lst = []
             filter = {"usr_id": self.user.id}
-            results_dict = self.dynamics_collection.find(filter, {'_id': 0})
+            results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id':0})
             if results_dict:
                 for one_result in results_dict:
                     response_dto_lst.append(DynamicsReadDTO(**one_result))

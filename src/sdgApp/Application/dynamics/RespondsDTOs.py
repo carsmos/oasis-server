@@ -4,6 +4,6 @@ class DynamicsReadDTO(BaseModel):
     id: str
     name: str
     desc: str
-    param: str
+    param: dict
     create_time: str
     last_modified: str

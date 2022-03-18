@@ -1,12 +1,10 @@
 import shortuuid
 
 from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO, SensorUpdateDTO
+from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
 from sdgApp.Domain.sensor.sensor import SensorAggregate
 from sdgApp.Infrastructure.MongoDB.sensor.sensor_repoImpl import SensorRepoImpl
 
-
-def dto_assembler(sensor: SensorAggregate):
-    return sensor.shortcut_DO
 
 class SensorCommandUsercase(object):
 
@@ -14,23 +12,17 @@ class SensorCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_sensor(self, dto: dict):
+    def create_sensor(self, sensor_create_model: SensorCreateDTO):
         try:
             uuid = shortuuid.uuid()
-            sensor_dict = dto
+
             sensor = SensorAggregate(id=uuid,
-                                name=sensor_dict["name"],
-                                type=sensor_dict["type"],
-                                car_name=sensor_dict["car_name"],
-                                car_id=sensor_dict["car_id"],
-                                desc=sensor_dict["desc"],
-                                param=sensor_dict["param"])
+                                name=sensor_create_model.name,
+                                type=sensor_create_model.type,
+                                desc=sensor_create_model.desc,
+                                param=sensor_create_model.param)
             self.repo.create(sensor)
 
-            sensor = self.repo.get(sensor_id=uuid)
-            if sensor:
-                response_dto = dto_assembler(sensor)
-                return response_dto
         except:
             raise
 
@@ -40,22 +32,16 @@ class SensorCommandUsercase(object):
         except:
             raise
 
-    def update_sensor(self, sensor_id:str, dto: dict):
+    def update_sensor(self, sensor_id:str, sensor_update_model: SensorUpdateDTO):
         try:
-            sensor_update_dict = dto
-            update_sensor = SensorAggregate(sensor_id,
-                                            name=sensor_update_dict["name"],
-                                            type=sensor_update_dict["type"],
-                                            car_name=sensor_update_dict["car_name"],
-                                            car_id=sensor_update_dict["car_id"],
-                                            desc=sensor_update_dict["desc"],
-                                            param=sensor_update_dict["param"])
-            self.repo.update(update_sensor)
+            sensor_retrieved = self.repo.get(sensor_id=sensor_id)
+            sensor_retrieved.name = sensor_update_model.name
+            sensor_retrieved.type = sensor_update_model.type
+            sensor_retrieved.param = sensor_update_model.param
+            sensor_retrieved.desc = sensor_update_model.desc
 
-            sensor = self.repo.get(sensor_id=sensor_id)
-            if sensor:
-                response_dto = dto_assembler(sensor)
-                return response_dto
+            self.repo.update(sensor_retrieved)
+
         except:
             raise
 
@@ -63,26 +49,29 @@ class SensorCommandUsercase(object):
 class SensorQueryUsercase(object):
 
     def __init__(self, db_session, user, repo=SensorRepoImpl):
-        self.repo = repo
-        self.repo = self.repo(db_session, user)
+        self.db_session = db_session
+        self.user = user
+        self.sensor_collection = self.db_session['sensors']
 
     def get_sensor(self, sensor_id:str):
         try:
-            sensor = self.repo.get(sensor_id)
-            if sensor:
-                response_dto = dto_assembler(sensor)
-                return response_dto
+            filter = {'id': sensor_id}
+            filter.update({"usr_id": self.user.id})
+            result_dict = self.sensor_collection.find_one(filter, {'_id': 0, 'usr_id': 0})
+            return SensorReadDTO(**result_dict)
         except:
             raise
 
     def list_sensor(self, query_param: dict):
         try:
             response_dto_lst = []
-            sensor_lst = self.repo.list(query_param=query_param)
-            if sensor_lst:
-                for sensor in sensor_lst:
-                    response_dto = dto_assembler(sensor)
-                    response_dto_lst.append(response_dto)
+            filter = {"usr_id": self.user.id}
+            filter.update(query_param)
+
+            results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0})
+            if results_dict:
+                for one_result in results_dict:
+                    response_dto_lst.append(SensorReadDTO(**one_result))
                 return response_dto_lst
         except:
             raise

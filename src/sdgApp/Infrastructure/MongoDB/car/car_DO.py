@@ -1,4 +1,4 @@
-from pydantic.typing import Optional
+from pydantic.typing import Any
 from pydantic import BaseModel, Field
 
 from sdgApp.Domain.car.car import CarAggregate
@@ -11,7 +11,7 @@ class CarDO(BaseModel):
     param: dict
     sensors_snap: dict
     car_snap: dict
-    usr_id: str = None
+    usr_id: Any
     create_time: str = None
     last_modified: str
 

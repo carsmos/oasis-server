@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends
 from pydantic.typing import List, Optional
 
 from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO, SensorUpdateDTO
-from sdgApp.Application.sensor.RespondsDTOs import SensorGetDTO
+from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
 from sdgApp.Application.sensor.usercase import SensorCommandUsercase, SensorQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
@@ -20,9 +20,7 @@ router = APIRouter()
 async def create_sensor(sensor_create_model: SensorCreateDTO, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        sensor_create_dto = sensor_create_model.dict()
-        sensor_dto = SensorCommandUsercase(db_session=db, user=user).create_sensor(sensor_create_dto)
-        return sensor_dto
+        SensorCommandUsercase(db_session=db, user=user).create_sensor(sensor_create_model)
     except:
         raise
 
@@ -48,9 +46,7 @@ async def delete_sensor(sensor_id:str, db = Depends(get_db),
 async def update_sensor(sensor_id:str, sensor_update_model: SensorUpdateDTO, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        sensor_update_dto = sensor_update_model.dict()
-        sensor_dto = SensorCommandUsercase(db_session=db, user=user).update_sensor(sensor_id, sensor_update_dto)
-        return sensor_dto
+        SensorCommandUsercase(db_session=db, user=user).update_sensor(sensor_id, sensor_update_model)
     except:
         raise
 
@@ -58,7 +54,7 @@ async def update_sensor(sensor_id:str, sensor_update_model: SensorUpdateDTO, db 
 @router.get(
     "/sensors/{sensor_id}",
     status_code=status.HTTP_200_OK,
-    # response_model= SensorGetDTO,
+    response_model= SensorReadDTO,
     tags=["Sensors"]
 )
 async def get_sensor(sensor_id:str, db = Depends(get_db),
@@ -73,16 +69,14 @@ async def get_sensor(sensor_id:str, db = Depends(get_db),
 @router.get(
     "/sensors",
     status_code=status.HTTP_200_OK,
-    # response_model= List[SensorGetDTO],
+    response_model= List[SensorReadDTO],
     tags=["Sensors"]
 )
-async def list_sensor(car_id: Optional[str] = None,
-                      sensor_type: Optional[str] = None,
+async def list_sensor(sensor_type: Optional[str] = None,
                       db = Depends(get_db),
                       user: UserDB = Depends(current_active_user)):
     try:
         query_param = {}
-        if car_id: query_param.update({"car_id": car_id})
         if sensor_type: query_param.update({"type": sensor_type})
 
         sensor_dto_lst = SensorQueryUsercase(db_session=db, user=user).list_sensor(query_param=query_param)

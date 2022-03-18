@@ -4,7 +4,6 @@ from sdgApp.Application.car.usercase import CarCommandUsercase, CarQueryUsercase
 from sdgApp.Application.CarFacadeService.CommandDTOs import AssembleCreateDTO
 from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
 from sdgApp.Application.dynamics.usercase import DynamicsQueryUsercase
-from sdgApp.Application.wheel.usercase import WheelQueryUsercase
 from sdgApp.Application.sensor.usercase import SensorQueryUsercase
 
 DEFAULT_SENSORS_SNAP = {'car_id':'',
@@ -95,9 +94,9 @@ def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, use
     if dynamics_id:
         dynamics_dto = DynamicsQueryUsercase(db_session=db_session, user=user).get_dynamics(dynamics_id)
         if dynamics_dto:
-            dynamics_dto["param"]["dynamics_id"] = dynamics_id
-            dynamics_dto["param"]["dynamics_name"] = dynamics_dto["name"]
-            car_snap_dict["vehicle_physics_control"].update(dynamics_dto["param"])
+            dynamics_dto.param["dynamics_id"] = dynamics_id
+            dynamics_dto.param["dynamics_name"] = dynamics_dto.name
+            car_snap_dict["vehicle_physics_control"].update(dynamics_dto.param)
 
 
     if sensors:
@@ -106,11 +105,11 @@ def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, use
             sensor_position = sensor_info_dict["position"]
             sensor_dto = SensorQueryUsercase(db_session=db_session, user=user).get_sensor(sensor_id)
             if sensor_dto:
-                sensor_dto["param"]["sensor_id"] = sensor_id
-                sensor_dto["param"]["sensor_name"] = sensor_dto["name"]
-                sensor_dto["param"]["position"] = sensor_position
-                sensor_dto["param"]["type"] = sensor_dto["type"]
-                sensors_snap_dict["sensors"].append(sensor_dto["param"])
+                sensor_dto.param["sensor_id"] = sensor_id
+                sensor_dto.param["sensor_name"] = sensor_dto.name
+                sensor_dto.param["position"] = sensor_position
+                sensor_dto.param["type"] = sensor_dto.type
+                sensors_snap_dict["sensors"].append(sensor_dto.param)
 
     if not assemble_create_model.id:
 

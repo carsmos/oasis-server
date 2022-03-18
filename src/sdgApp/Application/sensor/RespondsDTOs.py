@@ -1,5 +1,10 @@
 from pydantic import BaseModel
-from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO
 
-class SensorGetDTO(SensorCreateDTO):
+class SensorReadDTO(BaseModel):
     id: str
+    name: str
+    type: str
+    desc: str
+    param: dict
+    create_time: str
+    last_modified: str

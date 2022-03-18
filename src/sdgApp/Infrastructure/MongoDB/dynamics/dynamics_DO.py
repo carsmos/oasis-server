@@ -1,6 +1,5 @@
-from pydantic.typing import Optional
 from pydantic import BaseModel, Field
-
+from pydantic.typing import Any
 from sdgApp.Domain.dynamics.dynamics import DynamicsAggregate
 from datetime import datetime
 
@@ -8,8 +7,8 @@ class DynamicsDO(BaseModel):
     id: str
     name: str
     desc: str
-    param: str
-    usr_id: str = None
+    param: dict
+    usr_id: Any
     create_time: str = None
     last_modified: str
 
