@@ -1,5 +1,9 @@
 from pydantic import BaseModel
-from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO
 
-class DynamicsGetDTO(DynamicsCreateDTO):
+class DynamicsReadDTO(BaseModel):
     id: str
+    name: str
+    desc: str
+    param: str
+    create_time: str
+    last_modified: str

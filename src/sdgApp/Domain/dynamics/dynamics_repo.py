@@ -20,5 +20,5 @@ class DynamicsRepo(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def list(self, query_param: dict):
+    def list(self):
         raise NotImplementedError

@@ -91,7 +91,7 @@ class CarQueryUsercase(object):
             if self.user:                     # used by carla ros backend
                 filter.update({"usr_id": self.user.id})
 
-            result_dict = self.car_collection.find_one(filter, {'_id': 0})
+            result_dict = self.car_collection.find_one(filter, {'_id': 0, 'usr_id':0})
             return CarReadDTO(**result_dict)
         except:
             raise

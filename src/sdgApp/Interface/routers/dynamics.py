@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends
 from pydantic.typing import List, Optional
 
 from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO, DynamicsUpdateDTO
-from sdgApp.Application.dynamics.RespondsDTOs import DynamicsGetDTO
+from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO
 from sdgApp.Application.dynamics.usercase import DynamicsCommandUsercase, DynamicsQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
@@ -20,9 +20,7 @@ router = APIRouter()
 async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_create_dto = dynamics_create_model.dict()
-        dynamics_dto = DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_dto)
-        return dynamics_dto
+        DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_model)
     except:
         raise
 
@@ -48,9 +46,7 @@ async def delete_dynamics(dynamics_id:str, db = Depends(get_db),
 async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_update_dto = dynamics_update_model.dict()
-        dynamics_dto = DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_dto)
-        return dynamics_dto
+        DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_model)
     except:
         raise
 
@@ -58,7 +54,7 @@ async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdate
 @router.get(
     "/dynamics/{dynamics_id}",
     status_code=status.HTTP_200_OK,
-    # response_model= DynamicsGetDTO,
+    response_model= DynamicsReadDTO,
     tags=["Dynamics"]
 )
 async def get_dynamics(dynamics_id:str, db = Depends(get_db),
@@ -73,17 +69,13 @@ async def get_dynamics(dynamics_id:str, db = Depends(get_db),
 @router.get(
     "/dynamics",
     status_code=status.HTTP_200_OK,
-    # response_model= List[DynamicsGetDTO],
+    response_model= List[DynamicsReadDTO],
     tags=["Dynamics"]
 )
-async def list_dynamics(car_id: Optional[str] = None,
-                        db = Depends(get_db),
+async def list_dynamics(db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        query_param = {}
-        if car_id: query_param.update({"car_id": car_id})
-
-        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(query_param=query_param)
+        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db, user=user).list_dynamics()
         return dynamics_dto_lst
     except:
         raise

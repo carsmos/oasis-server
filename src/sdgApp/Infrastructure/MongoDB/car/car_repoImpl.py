@@ -5,14 +5,6 @@ from sdgApp.Domain.car.car_repo import CarRepo
 from sdgApp.Infrastructure.MongoDB.car.car_DO import CarDO
 
 
-def DataMapper_to_DO(aggregate):
-    return aggregate.shortcut_DO
-
-
-def DataMapper_to_Aggregate(DO):
-    ...
-
-
 class CarRepoImpl(CarRepo):
 
     def __init__(self, db_session, user):
