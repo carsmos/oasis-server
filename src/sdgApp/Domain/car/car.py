@@ -12,6 +12,4 @@ class CarAggregate(object):
         self.sensors_snap = sensors_snap
         self.car_snap = car_snap
 
-    def save_DO_shortcut(self, DO:dict):
-        self.shortcut_DO = DO
 

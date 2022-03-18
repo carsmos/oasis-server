@@ -13,9 +13,9 @@ def create_app() -> FastAPI:
 
     app = FastAPI(
         debug=True,
-        title="SDG App",
-        version="v2.1",
-        description="Debug Mode",
+        title="SDG Server",
+        version="v0.4.0",
+        description="",
     )
     app.add_middleware(
         CORSMiddleware,

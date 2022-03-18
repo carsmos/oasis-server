@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends
 from pydantic.typing import List
 
 from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
-from sdgApp.Application.car.RespondsDTOs import CarGetDTO
+from sdgApp.Application.car.RespondsDTOs import CarReadDTO
 from sdgApp.Application.car.usercase import CarCommandUsercase, CarQueryUsercase
 from sdgApp.Application.CarFacadeService.CommandDTOs import AssembleCreateDTO
 from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarService
@@ -24,9 +24,7 @@ router = APIRouter()
 async def create_car(car_create_model: CarCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        car_create_dto = car_create_model.dict()
-        car_dto = CarCommandUsercase(db_session=db, user=user).create_car(car_create_dto)
-        return car_dto
+        CarCommandUsercase(db_session=db, user=user).create_car(car_create_model)
     except:
         raise
 
@@ -52,9 +50,7 @@ async def delete_car(car_id:str, db = Depends(get_db),
 async def update_car(car_id:str, car_update_model: CarUpdateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        car_update_dto = car_update_model.dict()
-        car_dto = CarCommandUsercase(db_session=db, user=user).update_car(car_id, car_update_dto)
-        return car_dto
+        CarCommandUsercase(db_session=db, user=user).update_car(car_id, car_update_model)
     except:
         raise
 
@@ -62,7 +58,7 @@ async def update_car(car_id:str, car_update_model: CarUpdateDTO, db = Depends(ge
 @router.get(
     "/cars/{car_id}",
     status_code=status.HTTP_200_OK,
-    # response_model= CarGetDTO,
+    response_model= CarReadDTO,
     tags=["Cars"]
 )
 async def get_car(car_id:str, db = Depends(get_db),
@@ -77,7 +73,7 @@ async def get_car(car_id:str, db = Depends(get_db),
 @router.get(
     "/cars",
     status_code=status.HTTP_200_OK,
-    # response_model= List[CarGetDTO],
+    response_model= List[CarReadDTO],
     tags=["Cars"]
 )
 async def list_car(db = Depends(get_db),
@@ -96,16 +92,14 @@ async def list_car(db = Depends(get_db),
 async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        assemble_create_dto = assemble_create_model.dict()
-        car_dto = AssembleCarService(assemble_create_dto, db_session=db, user=user)
-        return car_dto
+        AssembleCarService(assemble_create_model, db_session=db, user=user)
     except:
         raise
 
 @router.get(
     "/carla/cars/{car_id}",
     status_code=status.HTTP_200_OK,
-    # response_model= CarGetDTO,
+    response_model= CarReadDTO,
     tags=["Carla"]
 )
 async def get_car(car_id:str, db = Depends(get_db)):

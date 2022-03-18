@@ -2,116 +2,11 @@ import shortuuid
 import copy
 
 from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
+from sdgApp.Application.car.RespondsDTOs import CarReadDTO
 from sdgApp.Domain.car.car import CarAggregate
 from sdgApp.Infrastructure.MongoDB.car.car_repoImpl import CarRepoImpl
 
 
-DEFAULT_SENSORS_SNAP = {'car_id':'',
-                        'car_name':'',
-                        "sensors": [
-	{
-		"type": "sensor.camera.rgb",
-		"id": "view",
-		"position": ["-4.5", "0", "2.8"],
-		"roll": 0,
-		"pitch": -20,
-		"yaw": 0,
-		"image_size_x": 800,
-		"image_size_y": 600,
-		"fov": 90,
-		"sensor_tick": 0.05,
-		"gamma": 2.2,
-		"shutter_speed": 200,
-		"iso": 100,
-		"fstop": 8,
-		"min_fstop": 1.2,
-		"blade_count": 5,
-		"exposure_mode": "histogram",
-		"exposure_compensation": 0,
-		"exposure_min_bright": 7,
-		"exposure_max_bright": 9,
-		"exposure_speed_up": 3,
-		"exposure_speed_down": 1,
-		"calibration_constant": 16,
-		"focal_distance": 1000,
-		"blur_amount": 1,
-		"blur_radius": 0,
-		"motion_blur_intensity": 0.45,
-		"motion_blur_max_distortion": 0.35,
-		"motion_blur_min_object_screen_size": 0.1,
-		"slope": 0.88,
-		"toe": 0.55,
-		"shoulder": 0.26,
-		"black_clip": 0,
-		"white_clip": 0.04,
-		"temp": 6500,
-		"tint": 0,
-		"chromatic_aberration_intensity": 0,
-		"chromatic_aberration_offset": 0,
-		"enable_postprocess_effects": "True",
-		"lens_circle_falloff": 5,
-		"lens_circle_multiplier": 0,
-		"lens_k": -1,
-		"lens_kcube": 0,
-		"lens_x_size": 0.08,
-		"lens_y_size": 0.08,
-		"bloom_intensity": 0.675,
-		"lens_flare_intensity": 0.1,
-		"sensor_id": "default",
-		"sensor_name": "default_cam"
-	}, {
-		"type": "sensor.lidar.ray_cast",
-		"id": "lidar1",
-		"position": ["0", "0", "2.4"],
-		"roll": 0,
-		"pitch": 0,
-		"yaw": 0,
-		"range": 50,
-		"channels": 32,
-		"points_per_second": 320000,
-		"upper_fov": 2,
-		"lower_fov": -26.8,
-		"rotation_frequency": 20,
-		"sensor_tick": 0.05,
-		"noise_stddev": 0,
-		"sensor_id": "default",
-		"sensor_name": "default_lidar"
-	},
-]}
-
-DEFAULT_CAR_SNAP = {'car_id':'',
-                    'car_name':'',
-                    'vehicle_physics_control': {
-                                'dynamics_id': '',
-                                'dynamics_name': '',
-                                'wheels': {
-                                    'front_left_wheel': {
-                                        'wheel_id': '',
-                                        'wheel_name': '',
-                                        'position': ''
-                                    },
-                                    'front_right_wheel': {
-                                        'wheel_id': '',
-                                        'wheel_name': '',
-                                        'position': ''
-                                    },
-                                    'rear_left_wheel': {
-                                        'wheel_id': '',
-                                        'wheel_name': '',
-                                        'position': ''
-                                    },
-                                    'rear_right_wheel': {
-                                        'wheel_id': '',
-                                        'wheel_name': '',
-                                        'position': ''
-                                    }
-                                  }
-                                }
-                    }
-
-
-def dto_assembler(car: CarAggregate):
-    return car.shortcut_DO
 
 class CarCommandUsercase(object):
 
@@ -119,33 +14,22 @@ class CarCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_car(self, dto: dict):
+    def create_car(self, car_create_model: CarCreateDTO):
         try:
             uuid = shortuuid.uuid()
-            car_dict = dto
 
-            COPY_CAR_SNAP = copy.deepcopy(DEFAULT_CAR_SNAP)
-            COPY_SENSORS_SNAP = copy.deepcopy(DEFAULT_SENSORS_SNAP)
-
-            COPY_CAR_SNAP['car_id'] = uuid
-            COPY_CAR_SNAP['car_name'] = car_dict["name"]
-            COPY_CAR_SNAP.update(car_dict["param"])
-
-            COPY_SENSORS_SNAP['car_id'] = uuid
-            COPY_SENSORS_SNAP['car_name'] = car_dict["name"]
+            car_create_model.sensors_snap['car_id'] = uuid
+            car_create_model.sensors_snap['car_name'] = car_create_model.name
+            car_create_model.car_snap['car_id'] = uuid
+            car_create_model.car_snap['car_name'] = car_create_model.name
 
             car = CarAggregate(uuid,
-                               name=car_dict["name"],
-                               desc=car_dict["desc"],
-                               param=car_dict["param"],
-                               sensors_snap=COPY_SENSORS_SNAP,
-                               car_snap=COPY_CAR_SNAP)
+                               name=car_create_model.name,
+                               desc=car_create_model.desc,
+                               param=car_create_model.param,
+                               sensors_snap=car_create_model.sensors_snap,
+                               car_snap=car_create_model.car_snap)
             self.repo.create(car)
-
-            car = self.repo.get(car_id=uuid)
-            if car:
-                response_dto = dto_assembler(car)
-                return response_dto
 
         except:
             raise
@@ -156,24 +40,19 @@ class CarCommandUsercase(object):
         except:
             raise
 
-    def update_car(self, car_id:str, dto: dict):
+    def update_car(self, car_id:str, car_update_model: CarUpdateDTO):
         try:
             car_retrieved = self.repo.get(car_id=car_id)
-            car_update_dict = dto
 
-            car_retrieved.name = car_update_dict["name"]
-            car_retrieved.desc = car_update_dict["desc"]
-            car_retrieved.param = car_update_dict["param"]
-            car_retrieved.car_snap.update(car_update_dict["param"])
-            car_retrieved.car_snap['car_name'] = car_update_dict["name"]
-            car_retrieved.sensors_snap['car_name'] = car_update_dict["name"]
+            car_retrieved.name = car_update_model.name
+            car_retrieved.desc = car_update_model.desc
+            car_retrieved.param = car_update_model.param
+            car_retrieved.car_snap.update(car_update_model.param)
+            car_retrieved.car_snap['car_name'] = car_update_model.name
+            car_retrieved.sensors_snap['car_name'] = car_update_model.name
 
             self.repo.update(car_retrieved)
 
-            car = self.repo.get(car_id=car_id)
-            if car:
-                response_dto = dto_assembler(car)
-                return response_dto
         except:
             raise
 
@@ -202,27 +81,49 @@ class CarCommandUsercase(object):
 class CarQueryUsercase(object):
 
     def __init__(self, db_session, user, repo=CarRepoImpl):
-        self.repo = repo
-        self.repo = self.repo(db_session, user)
+        self.db_session = db_session
+        self.user = user
+        self.car_collection = self.db_session['cars']
 
     def get_car(self, car_id:str):
         try:
-            car = self.repo.get(car_id)
-            if car:
-                response_dto = dto_assembler(car)
-                return response_dto
+            filter = {'id': car_id}
+            if self.user:                     # used by carla ros backend
+                filter.update({"usr_id": self.user.id})
+
+            result_dict = self.car_collection.find_one(filter, {'_id': 0})
+            return CarReadDTO(**result_dict)
         except:
             raise
 
     def list_car(self):
         try:
             response_dto_lst = []
-            car_lst = self.repo.list()
-            if car_lst:
-                for car in car_lst:
-                    response_dto = dto_assembler(car)
-                    response_dto_lst.append(response_dto)
+            filter = {"usr_id": self.user.id}
+            results_dict = self.car_collection.find(filter, {'name': 1,
+                                                           'id': 1,
+                                                           'desc': 1,
+                                                           'param': 1,
+                                                           'create_time': 1,
+                                                           'last_modified': 1,
+                                                           '_id': 0,
+                                                           'car_snap.vehicle_physics_control.dynamics_name': 1,
+                                                           'car_snap.vehicle_physics_control.dynamics_id': 1,
+                                                           'car_snap.vehicle_physics_control.wheels.front_left_wheel.wheel_name': 1,
+                                                           'car_snap.vehicle_physics_control.wheels.front_left_wheel.wheel_id': 1,
+                                                           'car_snap.vehicle_physics_control.wheels.front_right_wheel.wheel_name': 1,
+                                                           'car_snap.vehicle_physics_control.wheels.front_right_wheel.wheel_id': 1,
+                                                           'car_snap.vehicle_physics_control.wheels.rear_left_wheel.wheel_name': 1,
+                                                           'car_snap.vehicle_physics_control.wheels.rear_left_wheel.wheel_id': 1,
+                                                           'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_name': 1,
+                                                           'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
+                                                           'sensors_snap.sensors.sensor_name': 1,
+                                                           'sensors_snap.sensors.sensor_id': 1})
+            if results_dict:
+                for one_result in results_dict:
+                    response_dto_lst.append(CarReadDTO(**one_result))
                 return response_dto_lst
+
         except:
             raise
 
