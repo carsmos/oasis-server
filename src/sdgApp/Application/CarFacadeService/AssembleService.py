@@ -96,7 +96,7 @@ def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, use
         if dynamics_dto:
             dynamics_dto.param["dynamics_id"] = dynamics_id
             dynamics_dto.param["dynamics_name"] = dynamics_dto.name
-            car_snap_dict["vehicle_physics_control"].update(dynamics_dto.param)
+            car_snap_dict["vehicle_physics_control"] = dynamics_dto.param
 
 
     if sensors:

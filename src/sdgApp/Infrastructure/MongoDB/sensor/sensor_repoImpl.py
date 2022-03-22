@@ -46,7 +46,7 @@ class SensorRepoImpl(SensorRepo):
         filter.update({"usr_id": self.user.id})
 
         self.sensor_collection.update_one(filter
-                                           , {'$set': update_sensor_DO.dict(exclude_none=True)})
+                                           , {'$set': update_sensor_DO.dict(exclude={'usr_id','create_time'})})
 
     def get(self, sensor_id: str):
         filter = {'id': sensor_id}

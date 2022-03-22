@@ -1,6 +1,5 @@
 from walrus import Database
 from sdgApp.Domain.job.job_queue import JobQueue
-from sdgApp.Domain.job.job import JobAggregate
 import json
 from sdgApp.Infrastructure.MongoDB.session_maker import mongolog_session
 from sdgApp.Infrastructure.conf_parser import get_conf
@@ -11,13 +10,12 @@ class JobQueueImpl(JobQueue):
         self.sess = sess
         self.log = mongolog_session()
 
-    def publish(self, queue_name: str, job: JobAggregate):
-        job_DO = job.shortcut_DO
+    def publish(self, queue_name: str, job: dict):
         conf = get_conf()
         queue_name = conf['DB_REDIS']['USER_ID']
-        if job_DO:
-            for task_DO in job_DO['task_list']:
-                self.sess.set(task_DO['id'], json.dumps(task_DO))
-                self.sess.lpush(queue_name, task_DO['id'])
-                self.log.info_log({"msg": "Task in queue, waiting to be processed. task_id:{}".format(task_DO['id']),
-                                   "task_id": task_DO['id']})
+        if job:
+            for task in job['task_list']:
+                self.sess.set(task['id'], json.dumps(task))
+                self.sess.lpush(queue_name, task['id'])
+                self.log.info_log({"msg": "Task in queue, waiting to be processed. task_id:{}".format(task['id']),
+                                   "task_id": task['id']})

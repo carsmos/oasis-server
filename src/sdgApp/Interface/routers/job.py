@@ -1,6 +1,8 @@
 from fastapi import APIRouter, status, Depends
+from pydantic.typing import List
 
 from sdgApp.Application.job.CommandDTOs import JobCreateDTO, JobUpdateDTO
+from sdgApp.Application.job.RespondsDTOs import JobReadDTO, JobStatusMsg
 from sdgApp.Application.job.usercase import JobCommandUsercase, JobQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Infrastructure.Redis.session_maker import get_redis
@@ -17,9 +19,7 @@ router = APIRouter()
 async def create_job(job_create_model: JobCreateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        job_create_dto = job_create_model.dict()
-        job_dto = JobCommandUsercase(db_session=db, user=user).create_job(job_create_dto)
-        return job_dto
+        JobCommandUsercase(db_session=db, user=user).create_job(job_create_model)
     except:
         raise
     
@@ -44,9 +44,7 @@ async def delete_job(job_id:str, db = Depends(get_db),
 async def update_job(job_id:str, job_update_model: JobUpdateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        job_update_dto = job_update_model.dict()
-        job_dto = JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_dto)
-        return job_dto
+        JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_model)
     except:
         raise
 
@@ -54,7 +52,7 @@ async def update_job(job_id:str, job_update_model: JobUpdateDTO, db = Depends(ge
 @router.get(
     "/job/{job_id}",
     status_code=status.HTTP_200_OK,
-    # response_model= JobGetDTO,
+    response_model= JobReadDTO,
     tags=["Job"]
 )
 async def get_job(job_id:str, db = Depends(get_db),
@@ -69,7 +67,7 @@ async def get_job(job_id:str, db = Depends(get_db),
 @router.get(
     "/job",
     status_code=status.HTTP_200_OK,
-    # response_model= List[CarGetDTO],
+    response_model= List[JobReadDTO],
     tags=["Job"]
 )
 async def list_job(db = Depends(get_db),
@@ -80,16 +78,16 @@ async def list_job(db = Depends(get_db),
     except:
         raise
 
-@router.get(
+@router.post(
     "/run-job/{job_id}",
     status_code=status.HTTP_200_OK,
-    # response_model= List[CarGetDTO],
+    responses={200:{"model": JobStatusMsg}},
     tags=["Job"]
 )
 async def run_job(job_id:str, db = Depends(get_db), queue_sess = Depends(get_redis),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_dto = JobCommandUsercase(db_session=db, user=user).run_job(job_id, queue_sess)
-        return job_dto
+        JobCommandUsercase(db_session=db, user=user).run_job(job_id, queue_sess)
+        return {"status":"success"}
     except:
         raise

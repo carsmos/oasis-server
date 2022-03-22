@@ -44,7 +44,7 @@ class DynamicsRepoImpl(DynamicsRepo):
         }
         filter.update({"usr_id": self.user.id})
         self.dynamics_collection.update_one(filter
-                                           , {'$set': update_dynamics_DO.dict(exclude_none=True)})
+                                           , {'$set': update_dynamics_DO.dict(exclude={'usr_id','create_time'})})
 
     def get(self, dynamics_id: str):
         filter = {'id': dynamics_id}

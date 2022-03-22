@@ -6,21 +6,21 @@ class TaskEntity(object):
                  car_id,
                  car_name,
                  scenario_id,
-                 scenario_name):
+                 scenario_name,
+                 job_id="",
+                 result="no result",
+                 status="Not running",
+                 replay_url=None):
         self.id = id
-        self.job_id = ""
         self.name = name
         self.desc = desc
         self.car_id = car_id
         self.car_name = car_name
         self.scenario_id = scenario_id
         self.scenario_name = scenario_name
-        self.result = "no result"
-        self.status = "Not running"
-        self.replay_url = None
-
-    def attach_to(self, job_id):
         self.job_id = job_id
-
-    def write_result(self, result):
         self.result = result
+        self.status = status
+        self.replay_url = replay_url
+
+

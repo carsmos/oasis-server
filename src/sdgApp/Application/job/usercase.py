@@ -4,6 +4,8 @@ from sdgApp.Domain.job.job import JobAggregate
 from sdgApp.Domain.job.task import TaskEntity
 from sdgApp.Infrastructure.MongoDB.job.job_repoImpl import JobRepoImpl
 from sdgApp.Infrastructure.Redis.job.job_queueImpl import JobQueueImpl
+from sdgApp.Application.job.CommandDTOs import JobCreateDTO, JobUpdateDTO
+from sdgApp.Application.job.RespondsDTOs import JobReadDTO
 
 
 def dto_assembler(job: JobAggregate):
@@ -12,32 +14,30 @@ def dto_assembler(job: JobAggregate):
 class JobCommandUsercase(object):
 
     def __init__(self, db_session, user, repo=JobRepoImpl, queue=JobQueueImpl):
+        self.db_session = db_session
+        self.user = user
+        self.job_collection = self.db_session['job']
         self.repo = repo
         self.repo = self.repo(db_session, user)
         self.queue = queue
-    def create_job(self, dto: dict):
+    def create_job(self, job_create_model: JobCreateDTO):
         try:
             uuid = shortuuid.uuid()
-            job_dict = dto
 
-            tasks_lst = job_dict["task_list"]
+            tasks_lst = job_create_model.task_list
             job = JobAggregate(id=uuid,
-                                name=job_dict["name"],
-                                desc=job_dict["desc"])
-            for task_dict in tasks_lst:
+                                name=job_create_model.name,
+                                desc=job_create_model.desc)
+            for task_model in tasks_lst:
                 task = TaskEntity(id=shortuuid.uuid(),
-                                   name=task_dict['name'],
-                                   desc=task_dict['desc'],
-                                   car_id=task_dict['car_id'],
-                                   car_name=task_dict['car_name'],
-                                   scenario_id=task_dict['scenario_id'],
-                                   scenario_name=task_dict["scenario_name"])
+                                   name=task_model.name,
+                                   desc=task_model.desc,
+                                   car_id=task_model.car_id,
+                                   car_name=task_model.car_name,
+                                   scenario_id=task_model.scenario_id,
+                                   scenario_name=task_model.scenario_name)
                 job.add_task(task)
             self.repo.create(job)
-            job = self.repo.get(job_id=uuid)
-            if job:
-                response_dto = dto_assembler(job)
-                return response_dto
         except:
             raise
 
@@ -47,46 +47,42 @@ class JobCommandUsercase(object):
         except:
             raise
 
-    def update_job(self, job_id:str, dto: dict):
+    def update_job(self, job_id:str, job_update_model: JobUpdateDTO):
+        ## ! update finished job can cause status and replay url loss
         try:
-            job_update_dict = dto
-            tasks_lst = job_update_dict["task_list"]
-            update_job = JobAggregate(id=job_id,
-                                      name=job_update_dict["name"],
-                                      desc=job_update_dict["desc"])
-            for task_dict in tasks_lst:
-                if task_dict['id']:
-                    task_id = task_dict['id']
+            job_retrieved = self.repo.get(job_id=job_id)
+            tasks_lst = job_update_model.task_list
+            job_retrieved.name = job_update_model.name
+            job_retrieved.desc = job_update_model.desc
+            job_retrieved.task_list = []
+
+            for task_model in tasks_lst:
+                if task_model.id:
+                    task_id = task_model.id
                 else:
                     task_id = shortuuid.uuid()
                 task = TaskEntity(id=task_id,
-                                   name=task_dict['name'],
-                                   desc=task_dict['desc'],
-                                   car_id=task_dict['car_id'],
-                                   car_name=task_dict['car_name'],
-                                   scenario_id=task_dict['scenario_id'],
-                                   scenario_name=task_dict["scenario_name"])
-                update_job.add_task(task)
+                                   name=task_model['name'],
+                                   desc=task_model['desc'],
+                                   car_id=task_model['car_id'],
+                                   car_name=task_model['car_name'],
+                                   scenario_id=task_model['scenario_id'],
+                                   scenario_name=task_model["scenario_name"])
+                job_retrieved.add_task(task)
 
-            self.repo.update(update_job)
-
-            job = self.repo.get(job_id=job_id)
-            if job:
-                response_dto = dto_assembler(job)
-                return response_dto
+            self.repo.update(job_retrieved)
         except:
             raise
 
     def run_job(self, job_id:str, queue_sess):
         try:
-            job = self.repo.get(job_id)
-            if job:
+            filter = {'id': job_id}
+            filter.update({"usr_id": self.user.id})
+            result_dict = self.job_collection.find_one(filter, {'_id': 0})
+            if result_dict:
                 self.queue = self.queue(queue_sess)
                 self.queue.publish(queue_name='tasks',
-                                   job=job)
-
-                response_dto = dto_assembler(job)
-                return response_dto
+                                   job=result_dict)
         except:
             raise
 
@@ -97,26 +93,28 @@ class JobCommandUsercase(object):
 class JobQueryUsercase(object):
 
     def __init__(self, db_session, user, repo=JobRepoImpl):
-        self.repo = repo
-        self.repo = self.repo(db_session, user)
+        self.db_session = db_session
+        self.user = user
+        self.job_collection = self.db_session['job']
 
     def get_job(self, job_id:str):
         try:
-            job = self.repo.get(job_id)
-            if job:
-                response_dto = dto_assembler(job)
-                return response_dto
+            filter = {'id': job_id}
+            filter.update({"usr_id": self.user.id})
+
+            result_dict = self.job_collection.find_one(filter, {'_id': 0, 'usr_id':0})
+            return JobReadDTO(**result_dict)
         except:
             raise
-        
+
     def list_job(self):
         try:
             response_dto_lst = []
-            job_lst = self.repo.list()
-            if job_lst:
-                for job in job_lst:
-                    response_dto = dto_assembler(job)
-                    response_dto_lst.append(response_dto)
+            filter = {"usr_id": self.user.id}
+            results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0})
+            if results_dict:
+                for one_result in results_dict:
+                    response_dto_lst.append(JobReadDTO(**one_result))
                 return response_dto_lst
         except:
             raise
