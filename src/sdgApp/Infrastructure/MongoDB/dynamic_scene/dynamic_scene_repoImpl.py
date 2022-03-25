@@ -46,7 +46,7 @@ class DynamicSceneRepoImpl(DynamicScenesRepo):
                                             last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         filter = {'id': dynamic_scene_id}
         self.scenarios_collection.update_one(filter,
-                                             {'$set': update_scenario_DO.dict(exclude={'create_time'})})
+                                             {'$set': update_scenario_DO.dict(exclude={'create_time','usr_id'})})
 
     def get(self, dynamic_scene_id: str):
         filter = {'id': dynamic_scene_id}
