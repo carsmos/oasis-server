@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import ScenarioDO
 from sdgApp.Domain.scenarios.scenarios_repo import ScenariosRepo
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from fastapi import HTTPException
@@ -21,50 +21,47 @@ class ScenarioRepoImpl(ScenariosRepo):
         self.scenarios_collection = self.db_session['scenarios']
 
     def create_scenario(self, scenario: ScenariosAggregate):
-        scenario_DO = {"id": scenario.id,
-                       "name": scenario.name,
-                       "desc": scenario.desc,
-                       "tags": scenario.tags,
-                       "scenario_param": scenario.scenario_param}
-        scenario_DO.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                            "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-        result = self.scenarios_collection.insert_one(scenario_DO)
-        if result.inserted_id:
-            return scenario.id
+        scenario_DO = ScenarioDO(id=scenario.id,
+                                 name=scenario.name,
+                                 desc=scenario.desc,
+                                 tags=scenario.tags,
+                                 usr_id=self.user.id,
+                                 scenario_param=scenario.scenario_param,
+                                 create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                 last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                 )
+        self.scenarios_collection.insert_one(scenario_DO.dict())
 
     def delete_scenario_by_id(self, scenario_id: str):
-        result = self.scenarios_collection.delete_one({"id": scenario_id})
-        if result.deleted_count != 0:
-            return {"status_code": 200, "Detail": "Delete data sucess"}
+        filter = {"id": scenario_id}
+        self.scenarios_collection.delete_one(filter)
 
-    def update_scenario(self, scenario_id: str, scenario: ScenariosAggregate):
-        scenario_DO = {"name": scenario.name,
-                       "desc": scenario.desc,
-                       "tags": scenario.tags,
-                       "scenario_param": scenario.scenario_param}
-        scenario_DO.update({"last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-        result = self.scenarios_collection.update_one(
-            {
-                'id': scenario_id,
-            }, {'$set': scenario_DO})
-        if result.matched_count == 1 and result.modified_count == 1:
-            return True
-        else:
-            raise HTTPException(status_code=400, detail="update data failed")
+    def update_scenario(self, scenario_id: str, update_scenario: ScenariosAggregate):
+        scenario_DO = ScenarioDO(id=update_scenario.id,
+                                 name=update_scenario.name,
+                                 desc=update_scenario.desc,
+                                 tags=update_scenario.tags,
+                                 scenario_param=update_scenario.scenario_param,
+                                 usr_id=None,
+                                 create_time=None,
+                                 last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                 )
+        filter = {'id': scenario_id}
+        self.scenarios_collection.update_one(filter, {'$set': scenario_DO.dict(exclude={'usr_id', 'create_time'})})
 
-    def find_all_scenario(self):
-        scenario_aggregate_list = []
-        results_DO = self.scenarios_collection.find({}, {'_id': 0})
-        if results_DO:
-            for one_result in results_DO:
-                one_scenario = ScenariosAggregate(id=one_result["id"])
-                one_scenario.save_DO_shortcut(one_result)
-                scenario_aggregate_list.append(one_scenario)
-            return scenario_aggregate_list
-
-    def find_specified_scenario(self, scenario_id: str):
-        result_DO = self.scenarios_collection.find_one({"id": scenario_id}, {'_id': 0})
-        if result_DO:
-            scenario = ScenariosAggregate(result_DO["id"])
-            scenario.save_DO_shortcut(result_DO)
+    def get(self, scenario_id: str):
+        filter = {'id': scenario_id}
+        result_dict = self.scenarios_collection.find_one(filter, {'_id': 0})
+        if result_dict:
+            scenario = ScenarioDO(**result_dict).to_entity()
             return scenario
+
+    def list(self):
+        filter = {}
+        scenario_aggregate_lst = []
+        results_dict = self.scenarios_collection.find(filter)
+        if results_dict:
+            for one_result in results_dict:
+                one_scenario = ScenarioDO(**one_result).to_entity()
+                scenario_aggregate_lst.append(one_scenario)
+            return scenario_aggregate_lst

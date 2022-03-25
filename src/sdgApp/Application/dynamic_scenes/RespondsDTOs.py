@@ -5,5 +5,5 @@ from typing import Union
 
 class DynamicSceneReadDTO(DynamicSceneCreateDTO):
     id: str
-    create_time: datetime
-    last_modified: Union[None, datetime]
+    create_time: str
+    last_modified: str

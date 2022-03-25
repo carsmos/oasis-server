@@ -19,17 +19,17 @@ router = APIRouter()
 async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db),
                     user: UserDB = Depends(current_active_user)):
     try:
-        env_create_dto = env_create_model.dict()
-        result = EnvCommandUsercase(db_session=db, user=user).create_env(env_create_dto)
-        return await find_specified_env(result, db)
+        EnvCommandUsercase(db_session=db, user=user).create_env(env_create_model)
     except:
         raise
 
 
-@router.delete("/environments/{env_id}", tags=["Envs"])
+@router.delete("/environments/{env_id}",
+               status_code=status.HTTP_202_ACCEPTED,
+               tags=["Envs"])
 async def delete_env(env_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return EnvCommandUsercase(db_session=db, user=user).delete_env(env_id)
+        EnvCommandUsercase(db_session=db, user=user).delete_env(env_id)
     except:
         raise
 
@@ -43,10 +43,20 @@ async def delete_env(env_id: str, db=Depends(get_db), user: UserDB = Depends(cur
 async def update_env(env_id: str, env_update_model: EnvUpdateDTO, db=Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        env_update_dto = env_update_model.dict()
-        result = EnvCommandUsercase(db_session=db, user=user).update_env(env_id, env_update_dto)
-        if result:
-            return await find_specified_env(env_id, db)
+        EnvCommandUsercase(db_session=db, user=user).update_env(env_id, env_update_model)
+    except:
+        raise
+
+@router.get(
+    "/environments/{env_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=EnvReadDTO,
+    tags=["Envs"]
+)
+async def find_specified_env(env_id: str, db=Depends(get_db),
+                             user: UserDB = Depends(current_active_user)):
+    try:
+        return EnvQueryUsercase(db_session=db, user=user).find_specified_env(env_id)
     except:
         raise
 
@@ -64,15 +74,4 @@ async def find_all_envs(db=Depends(get_db), user: UserDB = Depends(current_activ
         raise
 
 
-@router.get(
-    "/environments/{env_id}",
-    status_code=status.HTTP_200_OK,
-    response_model=EnvReadDTO,
-    tags=["Envs"]
-)
-async def find_specified_env(env_id: str, db=Depends(get_db),
-                             user: UserDB = Depends(current_active_user)):
-    try:
-        return EnvQueryUsercase(db_session=db, user=user).find_specified_env(env_id)
-    except:
-        raise
+

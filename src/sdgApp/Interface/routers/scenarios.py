@@ -21,19 +21,16 @@ router = APIRouter()
 async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        scenario_create_dto = scenario_create_model.dict()
-        result = AssembleScenarioService(scenario_create_dto, db, user)
-        if result:
-            return await find_specified_scenario(result, db)
+        AssembleScenarioService(scenario_create_model, db, user)
     except:
         raise
 
 
-@router.delete("/scenarios/{scenario_id}", tags=["Scenarios"])
+@router.delete("/scenarios/{scenario_id}", status_code=status.HTTP_202_ACCEPTED, tags=["Scenarios"])
 async def delete_scenario(scenario_id: str, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        return ScenarioCommandUsercase(db_session=db, user=user).delete_scenario(scenario_id)
+        ScenarioCommandUsercase(db_session=db, user=user).delete_scenario(scenario_id)
     except:
         raise
 
@@ -48,9 +45,8 @@ async def update_scenario(scenario_id: str,
                           scenario_update_model: ScenarioUpdateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        scenario_update_dto = scenario_update_model.dict()
         result = ScenarioCommandUsercase(db_session=db, user=user).update_scenario(scenario_id,
-                                                                     scenario_update_dto)
+                                                                                   scenario_update_model)
         if result:
             return await find_specified_scenario(scenario_id, db)
     except:

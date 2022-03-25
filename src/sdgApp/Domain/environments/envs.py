@@ -12,5 +12,3 @@ class EnvsAggregate(object):
         self.desc = desc
         self.weather_param = weather_param
 
-    def save_DO_shortcut(self, dto_dict: dict):
-        self.shortcut_DO = dto_dict

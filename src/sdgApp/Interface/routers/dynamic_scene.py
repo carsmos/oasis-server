@@ -19,18 +19,18 @@ router = APIRouter()
 async def create_dynamic_scene(dynamic_scene_create_model: DynamicSceneCreateDTO,
                                db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        dynamic_scene_create_dto = dynamic_scene_create_model.dict()
-        result = DynamicSceneCommandUsercase(db_session=db, user=user).create_scenario(dynamic_scene_create_dto)
-        return await find_specified_scenario(result, db)
+        DynamicSceneCommandUsercase(db_session=db, user=user).create_scenario(dynamic_scene_create_model)
     except:
         raise
 
 
-@router.delete("/dynamic_scenes/{dynamic_scene_id}", tags=["DynamicScenes"])
+@router.delete("/dynamic_scenes/{dynamic_scene_id}",
+               status_code=status.HTTP_202_ACCEPTED,
+               tags=["DynamicScenes"])
 async def delete_dynamic_scene(dynamic_scene_id: str, db=Depends(get_db),
                                user: UserDB = Depends(current_active_user)):
     try:
-        return DynamicSceneCommandUsercase(db_session=db, user=user).delete_scenario(dynamic_scene_id)
+        DynamicSceneCommandUsercase(db_session=db, user=user).delete_scenario(dynamic_scene_id)
     except:
         raise
 
@@ -45,11 +45,8 @@ async def update_dynamic_scene(dynamic_scene_id: str,
                                dynamic_scene_update_model: DynamicSceneUpdateDTO,
                                db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        dynamic_scene_update_dto = dynamic_scene_update_model.dict()
-        result = DynamicSceneCommandUsercase(db_session=db, user=user).update_scenario(dynamic_scene_id,
-                                                                       dynamic_scene_update_dto)
-        if result:
-            return await find_specified_scenario(dynamic_scene_id, db)
+        DynamicSceneCommandUsercase(db_session=db, user=user).update_scenario(dynamic_scene_id,
+                                                                              dynamic_scene_update_model)
     except:
         raise
 

@@ -1,12 +1,9 @@
 import shortuuid
 
 from sdgApp.Application.dynamic_scenes.CommandDTOs import DynamicSceneCreateDTO, DynamicSceneUpdateDTO
+from sdgApp.Application.dynamic_scenes.RespondsDTOs import DynamicSceneReadDTO
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes import DynamicScenesAggregate
 from sdgApp.Infrastructure.MongoDB.dynamic_scene.dynamic_scene_repoImpl import DynamicSceneRepoImpl
-
-
-def dto_assembler(scenario: DynamicScenesAggregate):
-    return scenario.shortcut_DO
 
 
 class DynamicSceneCommandUsercase(object):
@@ -15,60 +12,61 @@ class DynamicSceneCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_scenario(self, dto: dict):
+    def create_scenario(self, dynamic_scene_create_model: DynamicSceneCreateDTO):
         try:
             uuid = shortuuid.uuid()
-            scenario_dict = dto
             scenario = DynamicScenesAggregate(
                 uuid,
-                name=scenario_dict["name"],
-                desc=scenario_dict["desc"],
-                scene_script=scenario_dict["scene_script"])
-            return self.repo.create_scenario(scenario)
+                name=dynamic_scene_create_model.name,
+                desc=dynamic_scene_create_model.desc,
+                scene_script=dynamic_scene_create_model.scene_script,
+                type=dynamic_scene_create_model.type)
+            self.repo.create_scenario(scenario)
         except:
             raise
 
     def delete_scenario(self, dynamic_scene_id: str):
         try:
-            return self.repo.delete_scenario_by_id(dynamic_scene_id)
+            self.repo.delete_scenario_by_id(dynamic_scene_id)
         except:
             raise
 
-    def update_scenario(self, dynamic_scene_id: str, dto: dict):
+    def update_scenario(self, dynamic_scene_id: str, dynamic_scene_update_model: DynamicSceneUpdateDTO):
         try:
-            scenario_dict = dto
-            scenario = DynamicScenesAggregate(
-                dynamic_scene_id,
-                name=scenario_dict["name"],
-                desc=scenario_dict["desc"],
-                scene_script=scenario_dict["scene_script"]
-            )
-            return self.repo.update_scenario(dynamic_scene_id, scenario)
+            scenario_retrieved = self.repo.get(dynamic_scene_id)
+            scenario_retrieved.name = dynamic_scene_update_model.name
+            scenario_retrieved.desc = dynamic_scene_update_model.desc
+            scenario_retrieved.scene_script = dynamic_scene_update_model.scene_script
+            scenario_retrieved.type = dynamic_scene_update_model.type
+            self.repo.update_scenario(dynamic_scene_id, scenario_retrieved)
         except:
             raise
 
 
 class DynamicSceneQueryUsercase(object):
 
-    def __init__(self, db_session, user, repo=DynamicSceneRepoImpl):
-        self.repo = repo
-        self.repo = self.repo(db_session, user)
-
-    def find_all_scenarios(self):
-        try:
-            response_dto_list = []
-            scenario_list = self.repo.find_all_scenario()
-            for scenario in scenario_list:
-                response_dto = dto_assembler(scenario)
-                response_dto_list.append(response_dto)
-            return response_dto_list
-        except:
-            raise
+    def __init__(self, db_session, user):
+        self.user = user
+        self.db_session = db_session
+        self.scenarios_collection = self.db_session['dynamic_scenes']
 
     def find_specified_scenario(self, dynamic_scene_id: str):
         try:
-            scenario = self.repo.find_specified_scenario(dynamic_scene_id)
-            response_dto = dto_assembler(scenario)
+            filter = {'id': dynamic_scene_id}
+            result_dict = self.scenarios_collection.find_one(filter, {'_id': 0})
+            response_dto = DynamicSceneReadDTO(**result_dict)
             return response_dto
+        except:
+            raise
+
+    def find_all_scenarios(self):
+        try:
+            response_dto_lst = []
+            filter = {}
+            results_dict = self.scenarios_collection.find(filter, {'_id': 0})
+            if results_dict:
+                for one_result in results_dict:
+                    response_dto_lst.append(DynamicSceneReadDTO(**one_result))
+                return response_dto_lst
         except:
             raise

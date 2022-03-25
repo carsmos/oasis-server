@@ -9,17 +9,17 @@ class DynamicScenesRepo(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def find_specified_scenario(self, scenario_id: str):
-        raise NotImplementedError
-
-    @abstractmethod
-    def find_all_scenario(self):
-        raise NotImplementedError
-
-    @abstractmethod
     def update_scenario(self, scenario_id: str, scenario: DynamicScenesAggregate):
         raise NotImplementedError
 
     @abstractmethod
     def delete_scenario_by_id(self, scenario_id: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def get(self, id: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def list(self):
         raise NotImplementedError

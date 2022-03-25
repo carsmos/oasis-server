@@ -17,9 +17,9 @@ class EnvsRepo(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def find_all_envs(self):
+    def get(self, id: str):
         raise NotImplementedError
 
     @abstractmethod
-    def find_specified_env(self, env_id: str):
+    def list(self):
         raise NotImplementedError
