@@ -62,12 +62,12 @@ class JobCommandUsercase(object):
                 else:
                     task_id = shortuuid.uuid()
                 task = TaskEntity(id=task_id,
-                                   name=task_model['name'],
-                                   desc=task_model['desc'],
-                                   car_id=task_model['car_id'],
-                                   car_name=task_model['car_name'],
-                                   scenario_id=task_model['scenario_id'],
-                                   scenario_name=task_model["scenario_name"])
+                                   name=task_model.name,
+                                   desc=task_model.desc,
+                                   car_id=task_model.car_id,
+                                   car_name=task_model.car_name,
+                                   scenario_id=task_model.scenario_id,
+                                   scenario_name=task_model.scenario_name)
                 job_retrieved.add_task(task)
 
             self.repo.update(job_retrieved)
