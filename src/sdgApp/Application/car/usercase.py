@@ -47,7 +47,8 @@ class CarCommandUsercase(object):
             car_retrieved.name = car_update_model.name
             car_retrieved.desc = car_update_model.desc
             car_retrieved.param = car_update_model.param
-            car_retrieved.car_snap.update(car_update_model.param)
+            car_retrieved.car_snap.update(car_update_model.car_snap)
+            car_retrieved.sensors_snap.update(car_update_model.sensors_snap)
             car_retrieved.car_snap['car_name'] = car_update_model.name
             car_retrieved.sensors_snap['car_name'] = car_update_model.name
 

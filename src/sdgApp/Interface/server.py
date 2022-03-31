@@ -3,7 +3,7 @@ import importlib
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import fastapi_users, jwt_authentication
+from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import fastapi_users, auth_backend
 from sdgApp.Interface import routers
 
 conn_factory = {}
@@ -34,7 +34,7 @@ def create_app() -> FastAPI:
 def register_fastapi_users(app: FastAPI) -> None:
 
     app.include_router(
-        fastapi_users.get_auth_router(jwt_authentication), prefix="/auth/jwt", tags=["auth"]
+        fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
     )
     app.include_router(
         fastapi_users.get_register_router(), prefix="/auth", tags=["auth"]
