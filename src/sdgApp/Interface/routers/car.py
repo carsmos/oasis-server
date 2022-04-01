@@ -13,7 +13,7 @@ from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_us
 router = APIRouter()
 
 ##TODO: 整理 try except 包括去重
-##TODO: 将输入输出参数dict全部转化为model 小dto dict 转换为大 DTO model
+
 
 
 @router.post(
@@ -96,15 +96,16 @@ async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(ge
     except:
         raise
 
-@router.get(
-    "/carla/cars/{car_id}",
+@router.post(
+    "/overview",
     status_code=status.HTTP_200_OK,
-    response_model= CarReadDTO,
-    tags=["Carla"]
+    response_model=CarReadDTO,
+    tags=["Cars"]
 )
-async def get_car(car_id:str, db = Depends(get_db)):
+async def overview(assemble_create_model: AssembleCreateDTO, db = Depends(get_db),
+                     user: UserDB = Depends(current_active_user)):
     try:
-        car_dto = CarQueryUsercase(db_session=db, user=None).get_car(car_id)
-        return car_dto
+        overview_dto = AssembleCarService(assemble_create_model, db_session=db, user=user, overview_only=True)
+        return overview_dto
     except:
         raise
