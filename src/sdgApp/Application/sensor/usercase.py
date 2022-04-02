@@ -1,5 +1,6 @@
 import shortuuid
 
+from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO, SensorUpdateDTO
 from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
 from sdgApp.Domain.sensor.sensor import SensorAggregate
@@ -62,16 +63,18 @@ class SensorQueryUsercase(object):
         except:
             raise
 
-    def list_sensor(self, query_param: dict):
+    def list_sensor(self, p_num, query_param: dict):
         try:
             response_dto_lst = []
             filter = {"usr_id": self.user.id}
             filter.update(query_param)
 
-            results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0})
+            results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)])
             if results_dict:
                 for one_result in results_dict:
                     response_dto_lst.append(SensorReadDTO(**one_result))
+
+                response_dto_lst = split_page(p_num, response_dto_lst)
                 return response_dto_lst
         except:
             raise

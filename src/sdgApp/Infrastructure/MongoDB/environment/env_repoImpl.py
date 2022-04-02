@@ -25,6 +25,7 @@ class EnvRepoImpl(EnvsRepo):
 
     def delete_env(self, env_id: str):
         filter = {'id': env_id}
+        filter.update({"usr_id": self.user.id})
         self.envs_collection.delete_one(filter)
 
     def update_env(self, env_id: str, env: EnvsAggregate):
@@ -37,10 +38,12 @@ class EnvRepoImpl(EnvsRepo):
                               last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                               )
         filter = {'id': env_id}
+        filter.update({"usr_id": self.user.id})
         self.envs_collection.update_one(filter, {'$set': update_env_DO.dict(exclude={'usr_id', 'create_time'})})
 
     def get(self, env_id: str):
         filter = {'id': env_id}
+        filter.update({"usr_id": self.user.id})
         result_dict = self.envs_collection.find_one(filter, {'_id': 0})
         if result_dict:
             dynamics = EnvDO(**result_dict).to_entity()
@@ -48,6 +51,7 @@ class EnvRepoImpl(EnvsRepo):
 
     def list(self):
         filter = {}
+        filter.update({"usr_id": self.user.id})
         envs_lst = []
         results_dict = self.envs_collection.find(filter, {'_id': 0})
         if results_dict:

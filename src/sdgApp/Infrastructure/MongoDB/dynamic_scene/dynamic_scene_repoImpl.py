@@ -33,6 +33,7 @@ class DynamicSceneRepoImpl(DynamicScenesRepo):
 
     def delete_scenario_by_id(self, dynamic_scene_id: str):
         filter = {"id": dynamic_scene_id}
+        filter.update({"usr_id": self.user.id})
         self.scenarios_collection.delete_one(filter)
 
     def update_scenario(self, dynamic_scene_id: str, update_scenario: DynamicScenesAggregate):
@@ -45,11 +46,13 @@ class DynamicSceneRepoImpl(DynamicScenesRepo):
                                             usr_id=None,
                                             last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         filter = {'id': dynamic_scene_id}
+        filter.update({"usr_id": self.user.id})
         self.scenarios_collection.update_one(filter,
                                              {'$set': update_scenario_DO.dict(exclude={'create_time','usr_id'})})
 
     def get(self, dynamic_scene_id: str):
         filter = {'id': dynamic_scene_id}
+        filter.update({"usr_id": self.user.id})
         result_dict = self.scenarios_collection.find_one(filter, {'_id': 0})
         if result_dict:
             scenario = DynamicSceneDO(**result_dict).to_entity()
@@ -57,6 +60,7 @@ class DynamicSceneRepoImpl(DynamicScenesRepo):
 
     def list(self):
         filter = {"usr_id": self.user.id}
+        filter.update({"usr_id": self.user.id})
         scenario_aggregate_lst = []
         results_dict = self.scenarios_collection.find(filter, {'_id': 0})
         if results_dict:

@@ -76,10 +76,10 @@ async def get_car(car_id:str, db = Depends(get_db),
     response_model= List[CarReadDTO],
     tags=["Cars"]
 )
-async def list_car(db = Depends(get_db),
+async def list_car(skip: int = 0,  db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        car_dto_lst = CarQueryUsercase(db_session=db, user=user).list_car()
+        car_dto_lst = CarQueryUsercase(db_session=db, user=user).list_car(skip)
         return car_dto_lst
     except:
         raise

@@ -57,9 +57,9 @@ async def update_dynamic_scene(dynamic_scene_id: str,
     response_model=List[DynamicSceneReadDTO],
     tags=["DynamicScenes"]
 )
-async def find_all_dynamic_scenes(db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def find_all_dynamic_scenes(skip: int = 0,db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return DynamicSceneQueryUsercase(db_session=db, user=user).find_all_scenarios()
+        return DynamicSceneQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
     except:
         raise
 

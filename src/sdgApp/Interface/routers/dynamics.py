@@ -69,13 +69,13 @@ async def get_dynamics(dynamics_id:str, db = Depends(get_db),
 @router.get(
     "/dynamics",
     status_code=status.HTTP_200_OK,
-    response_model= List[DynamicsReadDTO],
+    response_model=List[DynamicsReadDTO],
     tags=["Dynamics"]
 )
-async def list_dynamics(db = Depends(get_db),
+async def list_dynamics(skip: int = 0, db=Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db, user=user).list_dynamics()
+        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(skip)
         return dynamics_dto_lst
     except:
         raise
