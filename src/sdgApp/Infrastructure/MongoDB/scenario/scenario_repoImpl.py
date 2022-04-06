@@ -34,6 +34,7 @@ class ScenarioRepoImpl(ScenariosRepo):
 
     def delete_scenario_by_id(self, scenario_id: str):
         filter = {"id": scenario_id}
+        filter.update({"usr_id": self.user.id})
         self.scenarios_collection.delete_one(filter)
 
     def update_scenario(self, scenario_id: str, update_scenario: ScenariosAggregate):
@@ -47,10 +48,12 @@ class ScenarioRepoImpl(ScenariosRepo):
                                  last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                                  )
         filter = {'id': scenario_id}
+        filter.update({"usr_id": self.user.id})
         self.scenarios_collection.update_one(filter, {'$set': scenario_DO.dict(exclude={'usr_id', 'create_time'})})
 
     def get(self, scenario_id: str):
         filter = {'id': scenario_id}
+        filter.update({"usr_id": self.user.id})
         result_dict = self.scenarios_collection.find_one(filter, {'_id': 0})
         if result_dict:
             scenario = ScenarioDO(**result_dict).to_entity()
@@ -58,6 +61,7 @@ class ScenarioRepoImpl(ScenariosRepo):
 
     def list(self):
         filter = {}
+        filter.update({"usr_id": self.user.id})
         scenario_aggregate_lst = []
         results_dict = self.scenarios_collection.find(filter)
         if results_dict:

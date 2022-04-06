@@ -59,9 +59,9 @@ async def update_scenario(scenario_id: str,
     response_model=List[ScenariosReadDTO],
     tags=["Scenarios"]
 )
-async def find_all_scenarios(db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def find_all_scenarios(skip: int = 0, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios()
+        return ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
     except:
         raise
 

@@ -1,4 +1,6 @@
 import shortuuid
+
+from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
@@ -56,18 +58,22 @@ class ScenarioQueryUsercase(object):
     def find_specified_scenario(self, scenario_id: str):
         try:
             filter = {"id": scenario_id}
+            filter.update({"usr_id": self.user.id})
             result_dict = self.scenarios_collection.find_one(filter)
             return ScenariosReadDTO(**result_dict)
         except:
             raise
 
-    def find_all_scenarios(self):
+    def find_all_scenarios(self, p_num):
         try:
             response_dto_list = []
             filter = {}
-            scenario_list = self.scenarios_collection.find(filter)
+            filter.update({"usr_id": self.user.id})
+            scenario_list = self.scenarios_collection.find(filter).sort([('last_modified', -1)])
             for scenario in scenario_list:
                 response_dto_list.append(ScenariosReadDTO(**scenario))
+
+            response_dto_list = split_page(p_num, response_dto_list)
             return response_dto_list
         except:
             raise

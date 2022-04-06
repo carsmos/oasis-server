@@ -67,9 +67,9 @@ async def find_specified_env(env_id: str, db=Depends(get_db),
     response_model=List[EnvReadDTO],
     tags=["Envs"]
 )
-async def find_all_envs(db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def find_all_envs(skip: int = 0, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return EnvQueryUsercase(db_session=db, user=user).find_all_envs()
+        return EnvQueryUsercase(db_session=db, user=user).find_all_envs(skip)
     except:
         raise
 

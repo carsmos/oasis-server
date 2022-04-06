@@ -70,10 +70,10 @@ async def get_job(job_id:str, db = Depends(get_db),
     response_model= List[JobReadDTO],
     tags=["Job"]
 )
-async def list_job(db = Depends(get_db),
+async def list_job(skip: int = 0, db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_dto_lst = JobQueryUsercase(db_session=db, user=user).list_job()
+        job_dto_lst = JobQueryUsercase(db_session=db, user=user).list_job(skip)
         return job_dto_lst
     except:
         raise

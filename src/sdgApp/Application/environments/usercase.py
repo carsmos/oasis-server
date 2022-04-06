@@ -1,4 +1,6 @@
 import shortuuid
+
+from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.environments.RespondsDTOs import EnvReadDTO
 from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
 from sdgApp.Domain.environments.envs import EnvsAggregate
@@ -49,19 +51,22 @@ class EnvQueryUsercase(object):
     def find_specified_env(self, env_id: str):
         try:
             filter = {'id': env_id}
+            filter.update({"usr_id": self.user.id})
             result_dict = self.envs_collection.find_one(filter, {'_id': 0})
             return EnvReadDTO(**result_dict)
         except:
             raise
 
-    def find_all_envs(self):
+    def find_all_envs(self, p_num):
         try:
             response_dto_lst = []
-            filter = {}
-            results_dict = self.envs_collection.find(filter, {'_id': 0})
+            filter = ({"usr_id": self.user.id})
+            results_dict = self.envs_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)])
             if results_dict:
                 for one_result in results_dict:
                     response_dto_lst.append(EnvReadDTO(**one_result))
+
+                response_dto_lst = split_page(p_num, response_dto_lst)
                 return response_dto_lst
         except:
             raise

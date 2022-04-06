@@ -1,5 +1,6 @@
 import shortuuid
 
+from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO, DynamicsUpdateDTO
 from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO
 from sdgApp.Domain.dynamics.dynamics import DynamicsAggregate
@@ -57,14 +58,16 @@ class DynamicsQueryUsercase(object):
         except:
             raise
 
-    def list_dynamics(self):
+    def list_dynamics(self, p_num):
         try:
             response_dto_lst = []
             filter = {"usr_id": self.user.id}
-            results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id':0})
+            results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)])
             if results_dict:
                 for one_result in results_dict:
                     response_dto_lst.append(DynamicsReadDTO(**one_result))
+
+                response_dto_lst = split_page(p_num,  response_dto_lst)
                 return response_dto_lst
         except:
             raise
