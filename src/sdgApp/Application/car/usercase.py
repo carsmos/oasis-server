@@ -139,6 +139,8 @@ def split_page(p_num,  response_dto_lst, limit: int = 15):
                 return response_dto_lst[(p_num - 1) * limit: p_num * limit]
             else:
                 return response_dto_lst[(max_page_num - 1) * limit:]
+        elif p_num == 0:
+            return response_dto_lst
         else:
             return response_dto_lst[:limit]
     else:
