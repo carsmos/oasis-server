@@ -1,5 +1,6 @@
 import shortuuid
 
+from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.dynamic_scenes.CommandDTOs import DynamicSceneCreateDTO, DynamicSceneUpdateDTO
 from sdgApp.Application.dynamic_scenes.RespondsDTOs import DynamicSceneReadDTO
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes import DynamicScenesAggregate
@@ -53,20 +54,25 @@ class DynamicSceneQueryUsercase(object):
     def find_specified_scenario(self, dynamic_scene_id: str):
         try:
             filter = {'id': dynamic_scene_id}
+            filter.update({"usr_id": self.user.id})
             result_dict = self.scenarios_collection.find_one(filter, {'_id': 0})
             response_dto = DynamicSceneReadDTO(**result_dict)
             return response_dto
         except:
             raise
 
-    def find_all_scenarios(self):
+    def find_all_scenarios(self, p_num):
         try:
             response_dto_lst = []
             filter = {}
-            results_dict = self.scenarios_collection.find(filter, {'_id': 0})
+            filter.update({"usr_id": self.user.id})
+            results_dict = self.scenarios_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)])
             if results_dict:
                 for one_result in results_dict:
                     response_dto_lst.append(DynamicSceneReadDTO(**one_result))
+
+                response_dto_lst = split_page(p_num, response_dto_lst)
                 return response_dto_lst
         except:
             raise
+
