@@ -3,7 +3,7 @@ import importlib
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import fastapi_users, auth_backend
+from sdgApp.Interface.FastapiUsers.manager import fastapi_users, auth_backend
 from sdgApp.Interface import routers
 
 conn_factory = {}

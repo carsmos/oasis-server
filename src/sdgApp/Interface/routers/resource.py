@@ -4,8 +4,8 @@ from fastapi import APIRouter, status, Depends
 
 from sdgApp.Application.resource.usercase import ResourceQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
+from sdgApp.Interface.FastapiUsers.users_model import UserDB
+from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
 router = APIRouter()
 

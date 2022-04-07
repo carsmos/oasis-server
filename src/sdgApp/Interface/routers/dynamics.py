@@ -1,12 +1,12 @@
 from fastapi import APIRouter, status, Depends
-from pydantic.typing import List, Optional
+from pydantic.typing import List
 
 from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO, DynamicsUpdateDTO
 from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO
 from sdgApp.Application.dynamics.usercase import DynamicsCommandUsercase, DynamicsQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
+from sdgApp.Interface.FastapiUsers.users_model import UserDB
+from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
 router = APIRouter()
 

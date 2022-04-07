@@ -9,5 +9,5 @@ class AssembleCreateDTO(BaseModel):
     desc: str
     param: dict
     dynamics_id: Optional[str] = None
-    sensors: Optional[List[dict]] = Field(None, example=[{"id": "123", "position":(0.0,0.0,0.0)},
-                                                  {"id": "123", "position":(0.0,0.0,0.0)}])
+    sensors: Optional[List[dict]] = Field(None, example=[{"id": "123", "position":["0.0","0.0","0.0"]},
+                                                  {"id": "123", "position":["0.0","0.0","0.0"]}])

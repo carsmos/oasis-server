@@ -1,12 +1,12 @@
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
-from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
+from sdgApp.Application.scenarios.CommandDTOs import ScenarioUpdateDTO
 from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase, ScenarioQueryUsercase
 from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
 from sdgApp.Application.ScenariosFacadeService.AssembleService import AssembleScenarioService
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from fastapi import APIRouter, status, Depends
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
+from sdgApp.Interface.FastapiUsers.users_model import UserDB
+from sdgApp.Interface.FastapiUsers.manager import current_active_user
 from typing import List
 
 router = APIRouter()

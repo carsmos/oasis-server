@@ -7,8 +7,8 @@ from sdgApp.Application.car.usercase import CarCommandUsercase, CarQueryUsercase
 from sdgApp.Application.CarFacadeService.CommandDTOs import AssembleCreateDTO
 from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarService
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
+from sdgApp.Interface.FastapiUsers.users_model import UserDB
+from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
 router = APIRouter()
 

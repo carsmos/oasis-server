@@ -9,10 +9,14 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import MongoDBUserDatabase
 
-from sdgApp.Infrastructure.MongoDB.session_maker import async_mongo_session
+from sdgApp.Infrastructure.MongoDB.session_maker import async_mongo_session, mongo_session
 from .users_model import User, UserCreate, UserDB, UserUpdate
+from .insert_default_config import insert_default
 
 SECRET = "7165bf1355c0bddf29d0b6326af2ac9b6e876ee8514c93ae887796c540e33ddf"
+client, db = async_mongo_session()
+collection = db["users"]
+_, db_session = mongo_session()
 
 class UserManager(BaseUserManager[UserCreate, UserDB]):
   user_db_model = UserDB
@@ -21,6 +25,7 @@ class UserManager(BaseUserManager[UserCreate, UserDB]):
 
   async def on_after_register(self, user: UserDB, request: Optional[Request] = None):
     print(f"User {user.id} has registered.")
+    insert_default(db_session, user)
 
 
   async def on_after_forgot_password(self, user: UserDB, token: str, request: Optional[Request] = None):
@@ -31,14 +36,11 @@ class UserManager(BaseUserManager[UserCreate, UserDB]):
     print(f"Verification requested for user {user.id}. Verification token: {token}")
 
 
-client, db = async_mongo_session()
-collection = db["users"]
-
 async def get_user_db():
     yield MongoDBUserDatabase(UserDB, collection)
 
 async def get_user_manager(user_db: MongoDBUserDatabase = Depends(get_user_db)):
-  yield UserManager(user_db)
+    yield UserManager(user_db)
 
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")

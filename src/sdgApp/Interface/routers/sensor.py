@@ -5,8 +5,8 @@ from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO, SensorUpdateD
 from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
 from sdgApp.Application.sensor.usercase import SensorCommandUsercase, SensorQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.users_model import UserDB
-from sdgApp.Infrastructure.MongoDB.FastapiUsers.manager import current_active_user
+from sdgApp.Interface.FastapiUsers.users_model import UserDB
+from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
 router = APIRouter()
 
