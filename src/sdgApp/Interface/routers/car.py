@@ -24,7 +24,7 @@ router = APIRouter()
 async def create_car(car_create_model: CarCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        CarCommandUsercase(db_session=db, user=user).create_car(car_create_model)
+        await CarCommandUsercase(db_session=db, user=user).create_car(car_create_model)
     except:
         raise
 
@@ -37,7 +37,7 @@ async def create_car(car_create_model: CarCreateDTO, db = Depends(get_db),
 async def delete_car(car_id:str, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        CarCommandUsercase(db_session=db, user=user).delete_car(car_id)
+        await CarCommandUsercase(db_session=db, user=user).delete_car(car_id)
     except:
         raise
 
@@ -50,7 +50,7 @@ async def delete_car(car_id:str, db = Depends(get_db),
 async def update_car(car_id:str, car_update_model: CarUpdateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        CarCommandUsercase(db_session=db, user=user).update_car(car_id, car_update_model)
+        await CarCommandUsercase(db_session=db, user=user).update_car(car_id, car_update_model)
     except:
         raise
 
@@ -64,7 +64,7 @@ async def update_car(car_id:str, car_update_model: CarUpdateDTO, db = Depends(ge
 async def get_car(car_id:str, db = Depends(get_db),
                   user: UserDB = Depends(current_active_user)):
     try:
-        car_dto = CarQueryUsercase(db_session=db, user=user).get_car(car_id)
+        car_dto = await CarQueryUsercase(db_session=db, user=user).get_car(car_id)
         return car_dto
     except:
         raise
@@ -79,7 +79,7 @@ async def get_car(car_id:str, db = Depends(get_db),
 async def list_car(skip: int = 0,  db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        car_dto_lst = CarQueryUsercase(db_session=db, user=user).list_car(skip)
+        car_dto_lst = await CarQueryUsercase(db_session=db, user=user).list_car(skip)
         return car_dto_lst
     except:
         raise
@@ -92,7 +92,7 @@ async def list_car(skip: int = 0,  db=Depends(get_db),
 async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        AssembleCarService(assemble_create_model, db_session=db, user=user)
+        await AssembleCarService(assemble_create_model, db_session=db, user=user)
     except:
         raise
 
@@ -105,7 +105,7 @@ async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(ge
 async def overview(assemble_create_model: AssembleCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        overview_dto = AssembleCarService(assemble_create_model, db_session=db, user=user, overview_only=True)
+        overview_dto = await AssembleCarService(assemble_create_model, db_session=db, user=user, overview_only=True)
         return overview_dto
     except:
         raise

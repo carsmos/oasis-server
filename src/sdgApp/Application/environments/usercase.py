@@ -13,30 +13,30 @@ class EnvCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_env(self, env_create_model: EnvCreateDTO):
+    async def create_env(self, env_create_model: EnvCreateDTO):
         try:
             uuid = shortuuid.uuid()
             env = EnvsAggregate(id=uuid,
                                 name=env_create_model.name,
                                 desc=env_create_model.desc,
                                 weather_param=env_create_model.weather_param)
-            self.repo.create_env(env)
+            await self.repo.create_env(env)
         except:
             raise
 
-    def delete_env(self, env_id: str):
+    async def delete_env(self, env_id: str):
         try:
-            self.repo.delete_env(env_id)
+            await self.repo.delete_env(env_id)
         except:
             raise
 
-    def update_env(self, env_id: str, env_create_model: EnvUpdateDTO):
+    async def update_env(self, env_id: str, env_create_model: EnvUpdateDTO):
         try:
             env_retrieved = self.repo.get(env_id)
             env_retrieved.name = env_create_model.name
             env_retrieved.desc = env_create_model.desc
             env_retrieved.weather_param = env_create_model.weather_param
-            self.repo.update_env(env_id, env_retrieved)
+            await self.repo.update_env(env_id, env_retrieved)
         except:
             raise
 
@@ -48,22 +48,22 @@ class EnvQueryUsercase(object):
         self.user = user
         self.envs_collection = self.db_session['environments']
 
-    def find_specified_env(self, env_id: str):
+    async def find_specified_env(self, env_id: str):
         try:
             filter = {'id': env_id}
             filter.update({"usr_id": self.user.id})
-            result_dict = self.envs_collection.find_one(filter, {'_id': 0})
+            result_dict = await self.envs_collection.find_one(filter, {'_id': 0})
             return EnvReadDTO(**result_dict)
         except:
             raise
 
-    def find_all_envs(self, p_num):
+    async def find_all_envs(self, p_num):
         try:
             response_dto_lst = []
             filter = ({"usr_id": self.user.id})
             results_dict = self.envs_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)])
             if results_dict:
-                for one_result in results_dict:
+                async for one_result in results_dict:
                     response_dto_lst.append(EnvReadDTO(**one_result))
 
                 response_dto_lst = split_page(p_num, response_dto_lst)

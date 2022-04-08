@@ -81,7 +81,7 @@ DEFAULT_SENSORS_SNAP = {'car_id': '',
                         ]}
 
 
-def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, user, overview_only=False):
+async def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, user, overview_only=False):
     dynamics_id = assemble_create_model.dynamics_id
     sensors = assemble_create_model.sensors
 
@@ -91,7 +91,7 @@ def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, use
     car_snap_dict.update(assemble_create_model.param)
 
     if dynamics_id:
-        dynamics_dto = DynamicsQueryUsercase(db_session=db_session, user=user).get_dynamics(dynamics_id)
+        dynamics_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).get_dynamics(dynamics_id)
         if dynamics_dto:
             dynamics_dto.param["dynamics_id"] = dynamics_id
             dynamics_dto.param["dynamics_name"] = dynamics_dto.name
@@ -101,7 +101,7 @@ def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, use
         for sensor_info_dict in sensors:
             sensor_id = sensor_info_dict["id"]
             sensor_position = sensor_info_dict["position"]
-            sensor_dto = SensorQueryUsercase(db_session=db_session, user=user).get_sensor(sensor_id)
+            sensor_dto = await SensorQueryUsercase(db_session=db_session, user=user).get_sensor(sensor_id)
             if sensor_dto:
                 sensor_dto.param["sensor_id"] = sensor_id
                 sensor_dto.param["sensor_name"] = sensor_dto.name
@@ -121,7 +121,7 @@ def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, use
                               last_modified=""
                               )
         else:
-            car_dto = CarQueryUsercase(db_session=db_session, user=user).get_car(assemble_create_model.id)
+            car_dto = await CarQueryUsercase(db_session=db_session, user=user).get_car(assemble_create_model.id)
             return CarReadDTO(id=assemble_create_model.id,
                               name=assemble_create_model.name,
                               desc=assemble_create_model.desc,
@@ -139,7 +139,7 @@ def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, use
                                         param=assemble_create_model.param,
                                         car_snap=car_snap_dict,
                                         sensors_snap=sensors_snap_dict)
-        CarCommandUsercase(db_session=db_session, user=user).create_car(car_creata_model)
+        await CarCommandUsercase(db_session=db_session, user=user).create_car(car_creata_model)
 
     else:
 
@@ -148,5 +148,5 @@ def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_session, use
                                         param=assemble_create_model.param,
                                         car_snap=car_snap_dict,
                                         sensors_snap=sensors_snap_dict)
-        CarCommandUsercase(db_session=db_session, user=user).update_car(assemble_create_model.id,
+        await CarCommandUsercase(db_session=db_session, user=user).update_car(assemble_create_model.id,
                                                                         car_update_model)

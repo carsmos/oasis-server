@@ -10,14 +10,14 @@ class ResourceQueryUsercase(object):
         self.environments = self.db_session['environments']
         self.sensors = self.db_session['sensors']
 
-    def item_dic(self):
+    async def item_dic(self):
         try:
             response_item_dic = {}
             filter = {"usr_id": self.user.id}
-            dynamics_num = self.dynamics.find(filter).count()
-            dynamic_scenes_num = self.dynamic_scenes.find(filter).count()
-            environments_num = self.environments.find(filter).count()
-            sensors_num = self.sensors.find(filter).count()
+            dynamics_num = await self.dynamics.count_documents(filter)
+            dynamic_scenes_num = await self.dynamic_scenes.count_documents(filter)
+            environments_num = await self.environments.count_documents(filter)
+            sensors_num = await self.sensors.count_documents(filter)
 
             response_item_dic["dynamic"] = dynamics_num
             response_item_dic["dynamic_scenes"] = dynamic_scenes_num

@@ -12,7 +12,7 @@ class EnvRepoImpl(EnvsRepo):
         self.user = user
         self.envs_collection = self.db_session['environments']
 
-    def create_env(self, env: EnvsAggregate):
+    async def create_env(self, env: EnvsAggregate):
         env_DO = EnvDO(id=env.id,
                        name=env.name,
                        desc=env.desc,
@@ -21,14 +21,14 @@ class EnvRepoImpl(EnvsRepo):
                        create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                        last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                        )
-        self.envs_collection.insert_one(env_DO.dict())
+        await self.envs_collection.insert_one(env_DO.dict())
 
-    def delete_env(self, env_id: str):
+    async def delete_env(self, env_id: str):
         filter = {'id': env_id}
         filter.update({"usr_id": self.user.id})
-        self.envs_collection.delete_one(filter)
+        await self.envs_collection.delete_one(filter)
 
-    def update_env(self, env_id: str, env: EnvsAggregate):
+    async def update_env(self, env_id: str, env: EnvsAggregate):
         update_env_DO = EnvDO(id=env.id,
                               name=env.name,
                               desc=env.desc,
@@ -39,23 +39,23 @@ class EnvRepoImpl(EnvsRepo):
                               )
         filter = {'id': env_id}
         filter.update({"usr_id": self.user.id})
-        self.envs_collection.update_one(filter, {'$set': update_env_DO.dict(exclude={'usr_id', 'create_time'})})
+        await self.envs_collection.update_one(filter, {'$set': update_env_DO.dict(exclude={'usr_id', 'create_time'})})
 
-    def get(self, env_id: str):
+    async def get(self, env_id: str):
         filter = {'id': env_id}
         filter.update({"usr_id": self.user.id})
-        result_dict = self.envs_collection.find_one(filter, {'_id': 0})
+        result_dict = await self.envs_collection.find_one(filter, {'_id': 0})
         if result_dict:
             dynamics = EnvDO(**result_dict).to_entity()
             return dynamics
 
-    def list(self):
+    async def list(self):
         filter = {}
         filter.update({"usr_id": self.user.id})
         envs_lst = []
         results_dict = self.envs_collection.find(filter, {'_id': 0})
         if results_dict:
-            for one_result in results_dict:
+            async for one_result in results_dict:
                 one_env = EnvDO(**one_result).to_entity()
                 envs_lst.append(one_env)
             return envs_lst

@@ -7,17 +7,13 @@ from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
 
 
-def dto_assembler(scenario: ScenariosAggregate):
-    return scenario.shortcut_DO
-
-
 class ScenarioCommandUsercase(object):
 
     def __init__(self, db_session, user, repo=ScenarioRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
-    def create_scenario(self, scenario_create_model: ScenarioCreateDTO):
+    async def create_scenario(self, scenario_create_model: ScenarioCreateDTO):
         try:
             uuid = shortuuid.uuid()
             scenario = ScenariosAggregate(uuid,
@@ -26,24 +22,24 @@ class ScenarioCommandUsercase(object):
                                           tags=scenario_create_model.tags,
                                           scenario_param=scenario_create_model.scenario_param
                                           )
-            self.repo.create_scenario(scenario)
+            await self.repo.create_scenario(scenario)
         except:
             raise
 
-    def delete_scenario(self, scenario_id: str):
+    async def delete_scenario(self, scenario_id: str):
         try:
-            self.repo.delete_scenario_by_id(scenario_id)
+            await self.repo.delete_scenario_by_id(scenario_id)
         except:
             raise
 
-    def update_scenario(self, scenario_id: str, scenario_update_model: ScenarioCreateDTO):
+    async def update_scenario(self, scenario_id: str, scenario_update_model: ScenarioCreateDTO):
         try:
             scenario_retrieved = self.repo.get(scenario_id)
             scenario_retrieved.name = scenario_update_model.name
             scenario_retrieved.desc = scenario_update_model.desc
             scenario_retrieved.tags = scenario_update_model.tags
             scenario_retrieved.scenario_param = scenario_update_model.scenario_param
-            self.repo.update_scenario(scenario_id, scenario_retrieved)
+            await self.repo.update_scenario(scenario_id, scenario_retrieved)
         except:
             raise
 
@@ -55,22 +51,22 @@ class ScenarioQueryUsercase(object):
         self.scenarios_collection = self.db_session['scenarios']
         self.user = user
 
-    def find_specified_scenario(self, scenario_id: str):
+    async def find_specified_scenario(self, scenario_id: str):
         try:
             filter = {"id": scenario_id}
             filter.update({"usr_id": self.user.id})
-            result_dict = self.scenarios_collection.find_one(filter)
+            result_dict = await self.scenarios_collection.find_one(filter)
             return ScenariosReadDTO(**result_dict)
         except:
             raise
 
-    def find_all_scenarios(self, p_num):
+    async def find_all_scenarios(self, p_num):
         try:
             response_dto_list = []
             filter = {}
             filter.update({"usr_id": self.user.id})
             scenario_list = self.scenarios_collection.find(filter).sort([('last_modified', -1)])
-            for scenario in scenario_list:
+            async for scenario in scenario_list:
                 response_dto_list.append(ScenariosReadDTO(**scenario))
 
             response_dto_list = split_page(p_num, response_dto_list)

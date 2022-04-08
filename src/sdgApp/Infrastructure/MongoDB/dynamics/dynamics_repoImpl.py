@@ -12,7 +12,7 @@ class DynamicsRepoImpl(DynamicsRepo):
         self.user = user
         self.dynamics_collection = self.db_session['dynamics']
 
-    def create(self, dynamics: DynamicsAggregate):
+    async def create(self, dynamics: DynamicsAggregate):
         
         dynamics_DO = DynamicsDO(id=dynamics.id,
                                  name=dynamics.name,
@@ -22,15 +22,15 @@ class DynamicsRepoImpl(DynamicsRepo):
                                  create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                  last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
-        self.dynamics_collection.insert_one(dynamics_DO.dict())
+        await self.dynamics_collection.insert_one(dynamics_DO.dict())
 
-    def delete(self, dynamics_id: str):
+    async def delete(self, dynamics_id: str):
         filter = {'id': dynamics_id}
         filter.update({"usr_id": self.user.id})
 
-        self.dynamics_collection.delete_one(filter)
+        await self.dynamics_collection.delete_one(filter)
 
-    def update(self, update_dynamics: DynamicsAggregate):
+    async def update(self, update_dynamics: DynamicsAggregate):
         update_dynamics_DO = DynamicsDO(id=update_dynamics.id,
                                  name=update_dynamics.name,
                                  desc=update_dynamics.desc,
@@ -43,24 +43,24 @@ class DynamicsRepoImpl(DynamicsRepo):
             'id': update_dynamics.id
         }
         filter.update({"usr_id": self.user.id})
-        self.dynamics_collection.update_one(filter
+        await self.dynamics_collection.update_one(filter
                                            , {'$set': update_dynamics_DO.dict(exclude={'usr_id', 'create_time'})})
 
-    def get(self, dynamics_id: str):
+    async def get(self, dynamics_id: str):
         filter = {'id': dynamics_id}
         filter.update({"usr_id": self.user.id})
 
-        result_dict = self.dynamics_collection.find_one(filter, {'_id': 0})
+        result_dict = await self.dynamics_collection.find_one(filter, {'_id': 0})
         if result_dict:
             dynamics = DynamicsDO(**result_dict).to_entity()
             return dynamics
 
-    def list(self):
+    async def list(self):
         filter = {"usr_id": self.user.id}
         dynamics_aggregate_lst = []
         results_dict = self.dynamics_collection.find(filter, {'_id': 0})
         if results_dict:
-            for one_result in results_dict:
+            async for one_result in results_dict:
                 one_dynamics = DynamicsDO(**one_result).to_entity()
                 dynamics_aggregate_lst.append(one_dynamics)
             return dynamics_aggregate_lst

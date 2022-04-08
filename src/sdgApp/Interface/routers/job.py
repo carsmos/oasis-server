@@ -19,7 +19,7 @@ router = APIRouter()
 async def create_job(job_create_model: JobCreateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        JobCommandUsercase(db_session=db, user=user).create_job(job_create_model)
+        await JobCommandUsercase(db_session=db, user=user).create_job(job_create_model)
     except:
         raise
     
@@ -32,7 +32,7 @@ async def create_job(job_create_model: JobCreateDTO, db = Depends(get_db),
 async def delete_job(job_id:str, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        JobCommandUsercase(db_session=db, user=user).delete_job(job_id)
+        await JobCommandUsercase(db_session=db, user=user).delete_job(job_id)
     except:
         raise
     
@@ -44,7 +44,7 @@ async def delete_job(job_id:str, db = Depends(get_db),
 async def update_job(job_id:str, job_update_model: JobUpdateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_model)
+        await JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_model)
     except:
         raise
 
@@ -58,7 +58,7 @@ async def update_job(job_id:str, job_update_model: JobUpdateDTO, db = Depends(ge
 async def get_job(job_id:str, db = Depends(get_db),
                        user: UserDB = Depends(current_active_user)):
     try:
-        job_dto = JobQueryUsercase(db_session=db, user=user).get_job(job_id)
+        job_dto = await JobQueryUsercase(db_session=db, user=user).get_job(job_id)
         return job_dto
     except:
         raise
@@ -73,7 +73,7 @@ async def get_job(job_id:str, db = Depends(get_db),
 async def list_job(skip: int = 0, db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_dto_lst = JobQueryUsercase(db_session=db, user=user).list_job(skip)
+        job_dto_lst = await JobQueryUsercase(db_session=db, user=user).list_job(skip)
         return job_dto_lst
     except:
         raise
@@ -87,7 +87,7 @@ async def list_job(skip: int = 0, db=Depends(get_db),
 async def run_job(job_id:str, db = Depends(get_db), queue_sess = Depends(get_redis),
                    user: UserDB = Depends(current_active_user)):
     try:
-        JobCommandUsercase(db_session=db, user=user).run_job(job_id, queue_sess)
+        await JobCommandUsercase(db_session=db, user=user).run_job(job_id, queue_sess)
         return {"status":"success"}
     except:
         raise

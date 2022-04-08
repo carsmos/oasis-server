@@ -41,7 +41,7 @@ def mongolog_session():
 
 async def get_db():
     try:
-        client, db = mongo_session()
+        client, db = async_mongo_session()
         yield db
     finally:
         client.close()

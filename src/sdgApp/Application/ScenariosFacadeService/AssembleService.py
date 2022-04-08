@@ -5,8 +5,8 @@ from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenar
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO
 
 
-def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateDTO, db, user):
-    dynamic_scene = DynamicSceneQueryUsercase(
+async def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateDTO, db, user):
+    dynamic_scene = await DynamicSceneQueryUsercase(
         db_session=db, user=user).find_specified_scenario(scenario_create_model.dynamic_scene_id)
     environments = ["ClearNoon", "CloudyNoon", "WetNoon", "WetCloudyNoon", "SoftRainNoon",
                     "MidRainyNoon", "HardRainNoon", "ClearSunset", "CloudySunset", "WetSunset",
@@ -14,7 +14,7 @@ def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateDTO, db
     if scenario_create_model.env_id in environments:
         environment = {"weather_param": scenario_create_model.env_id}
     else:
-        environment = EnvQueryUsercase(
+        environment = await EnvQueryUsercase(
             db_session=db, user=user).find_specified_env(scenario_create_model.env_id)
     scenario_param = {"map_name": scenario_create_model.map_name, "dynamic_scene": dynamic_scene,
                       "environment": environment}
@@ -22,4 +22,4 @@ def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateDTO, db
                                               desc=scenario_create_model.desc,
                                               tags=scenario_create_model.tags,
                                               scenario_param=scenario_param)
-    ScenarioCommandUsercase(db, user).create_scenario(scenario_create_model)
+    await ScenarioCommandUsercase(db, user).create_scenario(scenario_create_model)
