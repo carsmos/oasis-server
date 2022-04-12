@@ -4,6 +4,7 @@ from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.dynamic_scenes.CommandDTOs import DynamicSceneCreateDTO, DynamicSceneUpdateDTO
 from sdgApp.Application.dynamic_scenes.RespondsDTOs import DynamicSceneReadDTO
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes import DynamicScenesAggregate
+from sdgApp.Domain.dynamic_scenes.dynamic_scenes_exceptions import DynamicScenesNotFoundError
 from sdgApp.Infrastructure.MongoDB.dynamic_scene.dynamic_scene_repoImpl import DynamicSceneRepoImpl
 
 
@@ -56,6 +57,8 @@ class DynamicSceneQueryUsercase(object):
             filter = {'id': dynamic_scene_id}
             filter.update({"usr_id": self.user.id})
             result_dict = self.scenarios_collection.find_one(filter, {'_id': 0})
+            if result_dict is None:
+                raise DynamicScenesNotFoundError
             response_dto = DynamicSceneReadDTO(**result_dict)
             return response_dto
         except:

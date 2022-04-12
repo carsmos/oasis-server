@@ -1,4 +1,5 @@
 from fastapi import APIRouter, status, Depends
+from fastapi.responses import JSONResponse
 from pydantic.typing import List
 
 from sdgApp.Application.job.CommandDTOs import JobCreateDTO, JobUpdateDTO
@@ -8,6 +9,10 @@ from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Infrastructure.Redis.session_maker import get_redis
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
 from sdgApp.Interface.FastapiUsers.manager import current_active_user
+
+from sdgApp.Domain.car.car_exceptions import CarNotFoundError
+from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
+
 
 router = APIRouter()
 
@@ -20,6 +25,10 @@ async def create_job(job_create_model: JobCreateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
         JobCommandUsercase(db_session=db, user=user).create_job(job_create_model)
+    except CarNotFoundError as e:
+        return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
+    except ScenarioNotFoundError as e:
+        return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except:
         raise
     
@@ -45,6 +54,10 @@ async def update_job(job_id:str, job_update_model: JobUpdateDTO, db = Depends(ge
                           user: UserDB = Depends(current_active_user)):
     try:
         JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_model)
+    except CarNotFoundError as e:
+        return JSONResponse(status_code=200, content={"status":"fail", "detail":e.message})
+    except ScenarioNotFoundError as e:
+        return JSONResponse(status_code=200, content={"status":"fail", "detail":e.message})
     except:
         raise
 

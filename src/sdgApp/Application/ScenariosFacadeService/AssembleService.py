@@ -2,7 +2,7 @@ from sdgApp.Application.dynamic_scenes.usercase import DynamicSceneQueryUsercase
 from sdgApp.Application.environments.usercase import EnvQueryUsercase
 from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase
 from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
-from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO
+from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
 
 
 def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateDTO, db, user):
@@ -18,8 +18,15 @@ def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateDTO, db
             db_session=db, user=user).find_specified_env(scenario_create_model.env_id)
     scenario_param = {"map_name": scenario_create_model.map_name, "dynamic_scene": dynamic_scene,
                       "environment": environment}
-    scenario_create_model = ScenarioCreateDTO(name=scenario_create_model.name,
-                                              desc=scenario_create_model.desc,
-                                              tags=scenario_create_model.tags,
-                                              scenario_param=scenario_param)
-    ScenarioCommandUsercase(db, user).create_scenario(scenario_create_model)
+    if not scenario_create_model.id:
+        scenario_create_model = ScenarioCreateDTO(name=scenario_create_model.name,
+                                                  desc=scenario_create_model.desc,
+                                                  tags=scenario_create_model.tags,
+                                                  scenario_param=scenario_param)
+        ScenarioCommandUsercase(db, user).create_scenario(scenario_create_model)
+    else:
+        scenario_update_model = ScenarioUpdateDTO(name=scenario_create_model.name,
+                                                  desc=scenario_create_model.desc,
+                                                  tags=scenario_create_model.tags,
+                                                  scenario_param=scenario_param)
+        ScenarioCommandUsercase(db, user).update_scenario(scenario_create_model.id, scenario_update_model)

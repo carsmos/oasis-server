@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from pydantic.typing import List
+from pydantic.typing import List, Optional
 
 class JobReadDTO(BaseModel):
     id: str
@@ -11,3 +11,4 @@ class JobReadDTO(BaseModel):
 
 class JobStatusMsg(BaseModel):
     status: str
+    detail: Optional[str]

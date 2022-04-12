@@ -1,4 +1,4 @@
-class CarCreateError(Exception):
-    message = "car create error"
+class CarNotFoundError(Exception):
+    message = "车辆不存在"
     def __str__(self):
-        return CarCreateError.message
+        return CarNotFoundError.message

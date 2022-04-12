@@ -1,5 +1,4 @@
-class ScenarioCreateError(Exception):
-    message = "scenario create error"
-
+class ScenarioNotFoundError(Exception):
+    message = "场景不存在"
     def __str__(self):
-        return ScenarioCreateError.message
+        return ScenarioNotFoundError.message

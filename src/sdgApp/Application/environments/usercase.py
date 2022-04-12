@@ -4,6 +4,7 @@ from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.environments.RespondsDTOs import EnvReadDTO
 from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
 from sdgApp.Domain.environments.envs import EnvsAggregate
+from sdgApp.Domain.environments.envs_exceptions import EnvNotFoundError
 from sdgApp.Infrastructure.MongoDB.environment.env_repoImpl import EnvRepoImpl
 
 
@@ -53,6 +54,8 @@ class EnvQueryUsercase(object):
             filter = {'id': env_id}
             filter.update({"usr_id": self.user.id})
             result_dict = self.envs_collection.find_one(filter, {'_id': 0})
+            if result_dict is None:
+                raise EnvNotFoundError
             return EnvReadDTO(**result_dict)
         except:
             raise
