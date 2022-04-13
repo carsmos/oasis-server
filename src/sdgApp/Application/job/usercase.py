@@ -8,6 +8,10 @@ from sdgApp.Infrastructure.Redis.job.job_queueImpl import JobQueueImpl
 from sdgApp.Application.job.CommandDTOs import JobCreateDTO, JobUpdateDTO
 from sdgApp.Application.job.RespondsDTOs import JobReadDTO
 
+from sdgApp.Application.car.usercase import CarQueryUsercase
+from sdgApp.Domain.car.car_exceptions import CarNotFoundError
+from sdgApp.Application.scenarios.usercase import ScenarioQueryUsercase
+from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 
 def dto_assembler(job: JobAggregate):
     return job.shortcut_DO
@@ -30,6 +34,10 @@ class JobCommandUsercase(object):
                                 name=job_create_model.name,
                                 desc=job_create_model.desc)
             for task_model in tasks_lst:
+
+                CarQueryUsercase(db_session=self.db_session, user=self.user).get_car(task_model.car_id)
+                ScenarioQueryUsercase(db_session=self.db_session, user=self.user).find_specified_scenario(task_model.scenario_id)
+
                 task = TaskEntity(id=shortuuid.uuid(),
                                    name=task_model.name,
                                    desc=task_model.desc,
@@ -39,6 +47,13 @@ class JobCommandUsercase(object):
                                    scenario_name=task_model.scenario_name)
                 job.add_task(task)
             self.repo.create(job)
+
+        except CarNotFoundError:
+            raise
+
+        except ScenarioNotFoundError:
+            raise
+
         except:
             raise
 
@@ -58,6 +73,11 @@ class JobCommandUsercase(object):
             job_retrieved.task_list = []
 
             for task_model in tasks_lst:
+
+                CarQueryUsercase(db_session=self.db_session, user=self.user).get_car(task_model.car_id)
+                ScenarioQueryUsercase(db_session=self.db_session, user=self.user).find_specified_scenario(
+                    task_model.scenario_id)
+
                 if task_model.id:
                     task_id = task_model.id
                 else:
@@ -72,6 +92,13 @@ class JobCommandUsercase(object):
                 job_retrieved.add_task(task)
 
             self.repo.update(job_retrieved)
+
+        except CarNotFoundError:
+            raise
+
+        except ScenarioNotFoundError:
+            raise
+
         except:
             raise
 
@@ -121,6 +148,5 @@ class JobQueryUsercase(object):
                 return response_dto_lst
         except:
             raise
-
 
 
