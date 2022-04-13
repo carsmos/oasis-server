@@ -3,8 +3,8 @@ import importlib
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from sdgApp.Interface.FastapiUsers.manager import fastapi_users, auth_backend
 from sdgApp.Interface import routers
+from sdgApp.Infrastructure.MongoDB.session_maker import connect, close
 
 conn_factory = {}
 
@@ -25,13 +25,17 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # register_startend(app)
+    connect()
     register_fastapi_users(app)
-    register_startend(app)
+    register_all_routers(app)
 
     return app
 
 
 def register_fastapi_users(app: FastAPI) -> None:
+
+    from sdgApp.Interface.FastapiUsers.manager import fastapi_users, auth_backend
 
     app.include_router(
         fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
@@ -52,19 +56,21 @@ def register_fastapi_users(app: FastAPI) -> None:
     app.include_router(fastapi_users.get_users_router(), prefix="/users", tags=["users"])
 
 
+def register_all_routers(app: FastAPI) -> None:
+    for routermodule in routers.__all__:
+        imported_module = importlib.import_module("sdgApp.Interface.routers." +
+                                                  routermodule)
+        app.include_router(imported_module.router)
 
 
-def register_startend(app: FastAPI) -> None:
-    @app.on_event("startup")
-    async def startup():
-        # register routers
-        for routermodule in routers.__all__:
-            imported_module = importlib.import_module("sdgApp.Interface.routers." +
-                                                      routermodule)
-            app.include_router(imported_module.router)
-
-    @app.on_event("shutdown")
-    async def shutdown():
-        for conn in conn_factory.values():
-            conn.disconnect()
-            print("{}  disconnected".format(conn))
+# def register_startend(app: FastAPI) -> None:
+#     @app.on_event("startup")
+#     async def startup():
+#         # database connection init
+#         await connect()
+#
+#
+#     @app.on_event("shutdown")
+#     async def shutdown():
+#         # database disconnection
+#         await close()

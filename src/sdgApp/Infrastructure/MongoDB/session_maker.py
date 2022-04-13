@@ -10,24 +10,6 @@ from sdgApp.Infrastructure.MongoDB.MongoLog import MongoLog
 '''mongo session'''
 
 
-def async_mongo_session() -> Tuple[AsyncIOMotorClient, AsyncIOMotorDatabase]:
-    conf = get_conf()
-    uri = conf['DB_MONGO']['MONGO_CONNECTION_STRING']
-    db_name = str(conf['DB_MONGO']['MONGO_DB_NAME'])
-    client = AsyncIOMotorClient(uri, uuidRepresentation="standard")
-    db = client[db_name]
-    return client, db
-
-
-def mongo_session() -> Tuple[MongoClient, Database]:
-    conf = get_conf()
-    uri = conf['DB_MONGO']['MONGO_CONNECTION_STRING']
-    db_name = str(conf['DB_MONGO']['MONGO_DB_NAME'])
-    client = MongoClient(uri, uuidRepresentation="standard")
-    db = client[db_name]
-    return client, db
-
-
 def mongolog_session():
     conf = get_conf()
     uri = conf['DB_MONGO']['MONGO_CONNECTION_STRING']
@@ -39,9 +21,23 @@ def mongolog_session():
     return mongolog
 
 
+class Database:
+    client: AsyncIOMotorClient = None
+    db: AsyncIOMotorDatabase = None
+
+mongo_db = Database()
+
 async def get_db():
-    try:
-        client, db = async_mongo_session()
-        yield db
-    finally:
-        client.close()
+    return mongo_db.db
+
+def connect():
+    conf = get_conf()
+    uri = conf['DB_MONGO']['MONGO_CONNECTION_STRING']
+    db_name = str(conf['DB_MONGO']['MONGO_DB_NAME'])
+    mongo_db.client = AsyncIOMotorClient(uri, uuidRepresentation="standard")
+    mongo_db.db = mongo_db.client[db_name]
+    print("MongoDB connected")
+
+def close():
+    mongo_db.client.close()
+    print("mongoDB disconnected")
