@@ -4,6 +4,7 @@ import copy
 from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
 from sdgApp.Application.car.RespondsDTOs import CarReadDTO
 from sdgApp.Domain.car.car import CarAggregate
+from sdgApp.Domain.car.car_exceptions import CarNotFoundError
 from sdgApp.Infrastructure.MongoDB.car.car_repoImpl import CarRepoImpl
 
 
@@ -93,6 +94,8 @@ class CarQueryUsercase(object):
                 filter.update({"usr_id": self.user.id})
 
             result_dict = self.car_collection.find_one(filter, {'_id': 0, 'usr_id':0})
+            if result_dict is None:
+                raise CarNotFoundError
             return CarReadDTO(**result_dict)
         except:
             raise

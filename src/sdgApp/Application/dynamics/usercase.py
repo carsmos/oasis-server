@@ -4,6 +4,7 @@ from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO, DynamicsUpdateDTO
 from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO
 from sdgApp.Domain.dynamics.dynamics import DynamicsAggregate
+from sdgApp.Domain.dynamics.dynamics_exceptions import DynamicsNotFoundError
 from sdgApp.Infrastructure.MongoDB.dynamics.dynamics_repoImpl import DynamicsRepoImpl
 
 
@@ -54,6 +55,8 @@ class DynamicsQueryUsercase(object):
             filter.update({"usr_id": self.user.id})
 
             result_dict = self.dynamics_collection.find_one(filter, {'_id': 0, 'usr_id':0})
+            if result_dict is None:
+                raise DynamicsNotFoundError
             return DynamicsReadDTO(**result_dict)
         except:
             raise

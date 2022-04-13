@@ -1,5 +1,4 @@
-class EnvCreateError(Exception):
-    message = "environment create error"
-
+class EnvNotFoundError(Exception):
+    message = "场景天气不存在"
     def __str__(self):
-        return EnvCreateError.message
+        return EnvNotFoundError.message

@@ -13,8 +13,8 @@ from sdgApp.Interface.FastapiUsers.manager import current_active_user
 from sdgApp.Domain.car.car_exceptions import CarNotFoundError
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 
-
 router = APIRouter()
+
 
 @router.post(
     "/job",
@@ -106,3 +106,4 @@ async def run_job(job_id: str, db=Depends(get_db), queue_sess=Depends(get_redis)
         return {"status": "success"}
     except:
         raise
+

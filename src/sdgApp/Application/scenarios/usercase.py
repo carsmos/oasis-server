@@ -4,6 +4,7 @@ from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
+from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
 
 
@@ -36,7 +37,7 @@ class ScenarioCommandUsercase(object):
         except:
             raise
 
-    def update_scenario(self, scenario_id: str, scenario_update_model: ScenarioCreateDTO):
+    def update_scenario(self, scenario_id: str, scenario_update_model: ScenarioUpdateDTO):
         try:
             scenario_retrieved = self.repo.get(scenario_id)
             scenario_retrieved.name = scenario_update_model.name
@@ -60,6 +61,8 @@ class ScenarioQueryUsercase(object):
             filter = {"id": scenario_id}
             filter.update({"usr_id": self.user.id})
             result_dict = self.scenarios_collection.find_one(filter)
+            if result_dict is None:
+                raise ScenarioNotFoundError
             return ScenariosReadDTO(**result_dict)
         except:
             raise

@@ -4,6 +4,7 @@ from sdgApp.Application.car.usercase import split_page
 from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO, SensorUpdateDTO
 from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
 from sdgApp.Domain.sensor.sensor import SensorAggregate
+from sdgApp.Domain.sensor.sensor_exceptions import SensorNotFoundError
 from sdgApp.Infrastructure.MongoDB.sensor.sensor_repoImpl import SensorRepoImpl
 
 
@@ -59,6 +60,8 @@ class SensorQueryUsercase(object):
             filter = {'id': sensor_id}
             filter.update({"usr_id": self.user.id})
             result_dict = self.sensor_collection.find_one(filter, {'_id': 0, 'usr_id': 0})
+            if result_dict is None:
+                raise SensorNotFoundError
             return SensorReadDTO(**result_dict)
         except:
             raise

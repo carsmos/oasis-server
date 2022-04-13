@@ -1,4 +1,5 @@
 from fastapi import APIRouter, status, Depends
+from fastapi.responses import JSONResponse
 from pydantic.typing import List
 
 from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
@@ -9,6 +10,9 @@ from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarServi
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
 from sdgApp.Interface.FastapiUsers.manager import current_active_user
+
+from sdgApp.Domain.dynamics.dynamics_exceptions import DynamicsNotFoundError
+from sdgApp.Domain.sensor.sensor_exceptions import SensorNotFoundError
 
 router = APIRouter()
 
@@ -93,6 +97,10 @@ async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(ge
                      user: UserDB = Depends(current_active_user)):
     try:
         AssembleCarService(assemble_create_model, db_session=db, user=user)
+    except DynamicsNotFoundError as e:
+        return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
+    except SensorNotFoundError as e:
+        return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except:
         raise
 
