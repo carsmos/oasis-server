@@ -10,7 +10,8 @@ class TaskEntity(object):
                  job_id="",
                  result="no result",
                  status="Not running",
-                 replay_url=None):
+                 replay_url=None,
+                 cam_url=None):
         self.id = id
         self.name = name
         self.desc = desc
@@ -22,5 +23,6 @@ class TaskEntity(object):
         self.result = result
         self.status = status
         self.replay_url = replay_url
+        self.cam_url = cam_url
 
 

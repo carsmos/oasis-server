@@ -36,6 +36,7 @@ class JobRepoImpl(JobRepo):
                                        job_id=task.job_id,
                                        status=task.status,
                                        replay_url=task.replay_url,
+                                       cam_url=task.cam_url,
                                        scenario_param=scen_dict['scenario_param'],
                                        car_snap=car_snap['car_snap'],
                                        sensors_snap=sensors_snap['sensors_snap']
@@ -79,6 +80,7 @@ class JobRepoImpl(JobRepo):
                                        job_id=task.job_id,
                                        status=task.status,
                                        replay_url=task.replay_url,
+                                       cam_url=task.cam_url,
                                        scenario_param=scen_dict['scenario_param'],
                                        car_snap=car_snap['car_snap'],
                                        sensors_snap=sensors_snap['sensors_snap']

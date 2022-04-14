@@ -14,6 +14,7 @@ class TaskDO(BaseModel):
     job_id: str
     status: str
     replay_url: str = None
+    cam_url: str = None
     scenario_param: dict = None
     car_snap: dict = None
     sensors_snap: dict = None
