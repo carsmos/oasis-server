@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from sdgApp.Interface import routers
-from sdgApp.Infrastructure.MongoDB.session_maker import connect, close
+from sdgApp.Infrastructure.MongoDB.session_maker import database_connect, mongolog_connect
 
 conn_factory = {}
 
@@ -26,7 +26,8 @@ def create_app() -> FastAPI:
     )
 
     # register_startend(app)
-    connect()
+    mongolog_connect()
+    database_connect()
     register_fastapi_users(app)
     register_all_routers(app)
 

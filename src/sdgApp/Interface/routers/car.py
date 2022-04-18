@@ -97,7 +97,6 @@ async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(ge
                      user: UserDB = Depends(current_active_user)):
     try:
         await AssembleCarService(assemble_create_model, db_session=db, user=user)
-        AssembleCarService(assemble_create_model, db_session=db, user=user)
     except DynamicsNotFoundError as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except SensorNotFoundError as e:

@@ -26,7 +26,7 @@ class UserManager(BaseUserManager[UserCreate, UserDB]):
 
   async def on_after_register(self, user: UserDB, request: Optional[Request] = None):
     print(f"User {user.id} has registered.")
-    # insert_default(db_session, user)
+    await insert_default(db, user)
 
 
   async def on_after_forgot_password(self, user: UserDB, token: str, request: Optional[Request] = None):

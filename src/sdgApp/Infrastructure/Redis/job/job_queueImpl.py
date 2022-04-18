@@ -1,14 +1,14 @@
 from walrus import Database
 from sdgApp.Domain.job.job_queue import JobQueue
 import json
-from sdgApp.Infrastructure.MongoDB.session_maker import mongolog_session
+from sdgApp.Infrastructure.MongoDB.session_maker import mongo_log
 from sdgApp.Infrastructure.conf_parser import get_conf
 
 
 class JobQueueImpl(JobQueue):
     def __init__(self, sess: Database):
         self.sess = sess
-        self.log = mongolog_session()
+        self.log = mongo_log.log_sess
 
     def publish(self, queue_name: str, job: dict):
         conf = get_conf()

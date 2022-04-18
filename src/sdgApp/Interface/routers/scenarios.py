@@ -26,7 +26,6 @@ async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         await AssembleScenarioService(scenario_create_model, db, user)
-        AssembleScenarioService(scenario_create_model, db, user)
     except DynamicScenesNotFoundError as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except EnvNotFoundError as e:

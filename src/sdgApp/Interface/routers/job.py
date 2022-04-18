@@ -24,7 +24,6 @@ async def create_job(job_create_model: JobCreateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).create_job(job_create_model)
-        JobCommandUsercase(db_session=db, user=user).create_job(job_create_model)
     except CarNotFoundError as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except ScenarioNotFoundError as e:
@@ -54,7 +53,6 @@ async def update_job(job_id:str, job_update_model: JobUpdateDTO, db = Depends(ge
                           user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_model)
-        JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_model)
     except CarNotFoundError as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except ScenarioNotFoundError as e:

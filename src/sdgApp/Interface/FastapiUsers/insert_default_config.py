@@ -3,7 +3,7 @@ import shortuuid
 from uuid import UUID
 
 
-def insert_default(db_session, user):
+async def insert_default(db_session, user):
     from sdgApp.Application.sensor.usercase import SensorCommandUsercase, SensorQueryUsercase
     from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO
 
@@ -300,11 +300,13 @@ def insert_default(db_session, user):
         }
     }
 
-    SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**lidar))
-    lidar_dto = SensorQueryUsercase(db_session=db_session, user=user).list_sensor(0, {})[0]
+    await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**lidar))
+    lidar_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(0, {})
+    lidar_dto = lidar_dto[0]
 
-    SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**depth_cam))
-    depth_dto = SensorQueryUsercase(db_session=db_session, user=user).list_sensor(0, {})[1]
+    await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**depth_cam))
+    depth_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(0, {})
+    depth_dto = depth_dto[1]
 
     other_default_sensors = [rss,
                            radar,
@@ -319,7 +321,7 @@ def insert_default(db_session, user):
                            rgb_cam]
 
     for default_sensor in other_default_sensors:
-        SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**default_sensor))
+        await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**default_sensor))
 
     from sdgApp.Application.dynamics.usercase import DynamicsCommandUsercase, DynamicsQueryUsercase
     from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO
@@ -418,13 +420,14 @@ def insert_default(db_session, user):
         }
     }
 
-    DynamicsCommandUsercase(db_session=db_session, user=user).create_dynamics(DynamicsCreateDTO(**default_dynamic))
-    dynamic_dto = DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(0)[0]
+    await DynamicsCommandUsercase(db_session=db_session, user=user).create_dynamics(DynamicsCreateDTO(**default_dynamic))
+    dynamic_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(0)
+    dynamic_dto = dynamic_dto[0]
 
     from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarService
     from sdgApp.Application.CarFacadeService.CommandDTOs import AssembleCreateDTO
     from sdgApp.Application.car.usercase import CarQueryUsercase
-    
+
     assemble_car_dict = {
       "name": "基础车辆",
       "desc": "初始化预设车辆，所有配置使用简单匹配置，用于用户初次使用系统试用。",
@@ -437,8 +440,9 @@ def insert_default(db_session, user):
     "dynamics_id": dynamic_dto.id,
     "sensors": [{"id": lidar_dto.id, "position":["0.0","0.0","2.4"]},
                 {"id": depth_dto.id, "position":["2.0","0.0","2.0"]}]}
-    AssembleCarService(AssembleCreateDTO(**assemble_car_dict), db_session=db_session, user=user)
-    default_car_dto = CarQueryUsercase(db_session=db_session, user=user).list_car(0)[0]
+    await AssembleCarService(AssembleCreateDTO(**assemble_car_dict), db_session=db_session, user=user)
+    default_car_dto = await CarQueryUsercase(db_session=db_session, user=user).list_car(0)
+    default_car_dto = default_car_dto[0]
 
 
     from sdgApp.Application.environments.usercase import EnvCommandUsercase
@@ -463,7 +467,7 @@ def insert_default(db_session, user):
             "rayleigh_scattering_scale": "0.0"
         }
     }
-    EnvCommandUsercase(db_session=db_session, user=user).create_env(EnvCreateDTO(**default_env))
+    await EnvCommandUsercase(db_session=db_session, user=user).create_env(EnvCreateDTO(**default_env))
 
     from sdgApp.Application.dynamic_scenes.usercase import DynamicSceneCommandUsercase, DynamicSceneQueryUsercase
     from sdgApp.Application.dynamic_scenes.CommandDTOs import DynamicSceneCreateDTO
@@ -474,8 +478,9 @@ def insert_default(db_session, user):
         "scene_script": "// ego car\nego_init_position = (30,134); //default coordinate frame is ENU\nego_target_position = (140,134); //default coordinate frame is ENU\nego_init_state = (ego_init_position);\nego_target_state = (ego_target_position);\nego_vehicle = AV(ego_init_state, ego_target_state, vehicle_type);\n\n//npc1\nnpc_init_state = ((55,134),,2.7); // start\nnpc_target_state = ((120,134),,0.0); // target\nnpc1= Vehicle(npc_init_state,, npc_target_state);\n\nnpcs = {npc1};\n\n// pedestrian\npedestrian_type = (1.65, black);\npedestrian1 = Pedestrian(((-15.9, 110), ,0.5), , ((-56, 123), ,0), pedestrian_type);\npedestrian2 = Pedestrian(((101, 62), ,0.5), , ((120, 144), ,0), pedestrian_type);\npedestrians={pedestrian1, pedestrian2};\n\n\n//traffic requirements\nspeed_range = (0,20);\nspeed_limit = SpeedLimit(\"52.-1\", speed_range);\nintersection = Intersection(1, 1, 0, 1);\ntraffic = {intersection,speed_limit};\n\nscenario = CreateScenario{load(map);\n\t\t\t        ego_vehicle;\n\t\t\t        npcs;\n\t\t\t        {};\n\t\t\t        {};\n\t\t\t        env;\n\t\t\t        traffic;\n};",
         "type": "scenest"
     }
-    DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(DynamicSceneCreateDTO(**default_scene_1))
-    default_scene_dto = DynamicSceneQueryUsercase(db_session=db_session, user=user).find_all_scenarios(0)[0]
+    await DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(DynamicSceneCreateDTO(**default_scene_1))
+    default_scene_dto = await DynamicSceneQueryUsercase(db_session=db_session, user=user).find_all_scenarios(0)
+    default_scene_dto = default_scene_dto[0]
 
     scene_2 = {
         "name": "动态场景描述2",
@@ -499,7 +504,7 @@ def insert_default(db_session, user):
     }
 
     for scene in [scene_2, scene_3, scene_4_openscenario]:
-        DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(
+        await DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(
             DynamicSceneCreateDTO(**scene))
 
     from sdgApp.Application.ScenariosFacadeService.AssembleService import AssembleScenarioService
@@ -512,8 +517,9 @@ def insert_default(db_session, user):
                          "dynamic_scene_id": default_scene_dto.id,
                          "env_id": "MidRainSunset",
                          "tags": []}
-    AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
-    default_scenario_dto = ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(0)[0]
+    await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
+    default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(0)
+    default_scenario_dto = default_scenario_dto[0]
 
     from sdgApp.Application.job.CommandDTOs import JobCreateDTO
     from sdgApp.Application.job.usercase import JobCommandUsercase
@@ -527,5 +533,5 @@ def insert_default(db_session, user):
     default_job_dict = {"name": "基础测试样例",
                         "desc": "初始化预设作业，包含一个简单场景和一个车辆，用于用户初次试用体验。",
                         "task_list": [default_task_dict]}
-    JobCommandUsercase(db_session=db_session, user=user).create_job(JobCreateDTO(**default_job_dict))
+    await JobCommandUsercase(db_session=db_session, user=user).create_job(JobCreateDTO(**default_job_dict))
 

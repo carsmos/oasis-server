@@ -19,11 +19,11 @@ class JobRepoImpl(JobRepo):
         for task in job.task_list:
             # get scenario snapshot
             filter = {'id': task.scenario_id}
-            scen_dict = self.scen_collection.find_one(filter, {'_id': 0, 'scenario_param': 1})
+            scen_dict = await self.scen_collection.find_one(filter, {'_id': 0, 'scenario_param': 1})
             # get car and sensor snapshot
             filter = {'id': task.car_id}
-            car_snap = self.car_collection.find_one(filter, {'_id': 0, 'car_snap': 1})
-            sensors_snap = self.car_collection.find_one(filter, {'_id': 0, 'sensors_snap': 1})
+            car_snap = await self.car_collection.find_one(filter, {'_id': 0, 'car_snap': 1})
+            sensors_snap = await self.car_collection.find_one(filter, {'_id': 0, 'sensors_snap': 1})
 
             task_DO_list.append(TaskDO(id=task.id,
                                        name=task.name,
@@ -63,11 +63,11 @@ class JobRepoImpl(JobRepo):
         for task in update_job.task_list:
             # get scenario snapshot
             filter = {'id': task.scenario_id}
-            scen_dict = self.scen_collection.find_one(filter, {'_id': 0, 'scenario_param': 1})
+            scen_dict = await self.scen_collection.find_one(filter, {'_id': 0, 'scenario_param': 1})
             # get car and sensor snapshot
             filter = {'id': task.car_id}
-            car_snap = self.car_collection.find_one(filter, {'_id': 0, 'car_snap': 1})
-            sensors_snap = self.car_collection.find_one(filter, {'_id': 0, 'sensors_snap': 1})
+            car_snap = await self.car_collection.find_one(filter, {'_id': 0, 'car_snap': 1})
+            sensors_snap = await self.car_collection.find_one(filter, {'_id': 0, 'sensors_snap': 1})
 
             task_DO_list.append(TaskDO(id=task.id,
                                        name=task.name,

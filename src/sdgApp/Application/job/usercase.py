@@ -35,8 +35,8 @@ class JobCommandUsercase(object):
                                 desc=job_create_model.desc)
             for task_model in tasks_lst:
 
-                CarQueryUsercase(db_session=self.db_session, user=self.user).get_car(task_model.car_id)
-                ScenarioQueryUsercase(db_session=self.db_session, user=self.user).find_specified_scenario(task_model.scenario_id)
+                await CarQueryUsercase(db_session=self.db_session, user=self.user).get_car(task_model.car_id)
+                await ScenarioQueryUsercase(db_session=self.db_session, user=self.user).find_specified_scenario(task_model.scenario_id)
 
                 task = TaskEntity(id=shortuuid.uuid(),
                                    name=task_model.name,
@@ -47,7 +47,6 @@ class JobCommandUsercase(object):
                                    scenario_name=task_model.scenario_name)
                 job.add_task(task)
             await self.repo.create(job)
-            self.repo.create(job)
 
         except CarNotFoundError:
             raise
@@ -75,8 +74,8 @@ class JobCommandUsercase(object):
 
             for task_model in tasks_lst:
 
-                CarQueryUsercase(db_session=self.db_session, user=self.user).get_car(task_model.car_id)
-                ScenarioQueryUsercase(db_session=self.db_session, user=self.user).find_specified_scenario(
+                await CarQueryUsercase(db_session=self.db_session, user=self.user).get_car(task_model.car_id)
+                await ScenarioQueryUsercase(db_session=self.db_session, user=self.user).find_specified_scenario(
                     task_model.scenario_id)
 
                 if task_model.id:
@@ -93,7 +92,6 @@ class JobCommandUsercase(object):
                 job_retrieved.add_task(task)
 
             await self.repo.update(job_retrieved)
-            self.repo.update(job_retrieved)
 
         except CarNotFoundError:
             raise
