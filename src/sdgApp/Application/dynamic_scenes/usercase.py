@@ -35,7 +35,7 @@ class DynamicSceneCommandUsercase(object):
 
     async def update_scenario(self, dynamic_scene_id: str, dynamic_scene_update_model: DynamicSceneUpdateDTO):
         try:
-            scenario_retrieved = self.repo.get(dynamic_scene_id)
+            scenario_retrieved = await self.repo.get(dynamic_scene_id)
             scenario_retrieved.name = dynamic_scene_update_model.name
             scenario_retrieved.desc = dynamic_scene_update_model.desc
             scenario_retrieved.scene_script = dynamic_scene_update_model.scene_script

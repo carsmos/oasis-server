@@ -33,7 +33,7 @@ class EnvCommandUsercase(object):
 
     async def update_env(self, env_id: str, env_create_model: EnvUpdateDTO):
         try:
-            env_retrieved = self.repo.get(env_id)
+            env_retrieved = await self.repo.get(env_id)
             env_retrieved.name = env_create_model.name
             env_retrieved.desc = env_create_model.desc
             env_retrieved.weather_param = env_create_model.weather_param

@@ -36,7 +36,7 @@ class SensorCommandUsercase(object):
 
     async def update_sensor(self, sensor_id:str, sensor_update_model: SensorUpdateDTO):
         try:
-            sensor_retrieved = self.repo.get(sensor_id=sensor_id)
+            sensor_retrieved = await self.repo.get(sensor_id=sensor_id)
             sensor_retrieved.name = sensor_update_model.name
             sensor_retrieved.type = sensor_update_model.type
             sensor_retrieved.param = sensor_update_model.param

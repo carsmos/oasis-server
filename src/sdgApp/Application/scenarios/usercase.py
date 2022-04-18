@@ -35,7 +35,7 @@ class ScenarioCommandUsercase(object):
 
     async def update_scenario(self, scenario_id: str, scenario_update_model: ScenarioUpdateDTO):
         try:
-            scenario_retrieved = self.repo.get(scenario_id)
+            scenario_retrieved = await self.repo.get(scenario_id)
             scenario_retrieved.name = scenario_update_model.name
             scenario_retrieved.desc = scenario_update_model.desc
             scenario_retrieved.tags = scenario_update_model.tags

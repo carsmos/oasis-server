@@ -33,7 +33,7 @@ class DynamicsCommandUsercase(object):
 
     async def update_dynamics(self, dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO):
         try:
-            dynamics_retrieved = self.repo.get(dynamics_id=dynamics_id)
+            dynamics_retrieved = await self.repo.get(dynamics_id=dynamics_id)
             dynamics_retrieved.name = dynamics_update_model.name
             dynamics_retrieved.desc = dynamics_update_model.desc
             dynamics_retrieved.param = dynamics_update_model.param

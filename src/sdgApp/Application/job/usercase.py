@@ -66,7 +66,7 @@ class JobCommandUsercase(object):
     async def update_job(self, job_id:str, job_update_model: JobUpdateDTO):
         ## ! update finished job can cause status and replay url loss
         try:
-            job_retrieved = self.repo.get(job_id=job_id)
+            job_retrieved = await self.repo.get(job_id=job_id)
             tasks_lst = job_update_model.task_list
             job_retrieved.name = job_update_model.name
             job_retrieved.desc = job_update_model.desc

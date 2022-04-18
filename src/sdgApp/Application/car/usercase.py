@@ -43,7 +43,7 @@ class CarCommandUsercase(object):
 
     async def update_car(self, car_id:str, car_update_model: CarUpdateDTO):
         try:
-            car_retrieved = self.repo.get(car_id=car_id)
+            car_retrieved = await self.repo.get(car_id=car_id)
 
             car_retrieved.name = car_update_model.name
             car_retrieved.desc = car_update_model.desc
