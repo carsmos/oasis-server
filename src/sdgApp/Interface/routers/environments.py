@@ -19,7 +19,7 @@ router = APIRouter()
 async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db),
                     user: UserDB = Depends(current_active_user)):
     try:
-        EnvCommandUsercase(db_session=db, user=user).create_env(env_create_model)
+        await EnvCommandUsercase(db_session=db, user=user).create_env(env_create_model)
     except:
         raise
 
@@ -29,7 +29,7 @@ async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db),
                tags=["Envs"])
 async def delete_env(env_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        EnvCommandUsercase(db_session=db, user=user).delete_env(env_id)
+        await EnvCommandUsercase(db_session=db, user=user).delete_env(env_id)
     except:
         raise
 
@@ -43,7 +43,7 @@ async def delete_env(env_id: str, db=Depends(get_db), user: UserDB = Depends(cur
 async def update_env(env_id: str, env_update_model: EnvUpdateDTO, db=Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        EnvCommandUsercase(db_session=db, user=user).update_env(env_id, env_update_model)
+        await EnvCommandUsercase(db_session=db, user=user).update_env(env_id, env_update_model)
     except:
         raise
 
@@ -56,7 +56,7 @@ async def update_env(env_id: str, env_update_model: EnvUpdateDTO, db=Depends(get
 async def find_specified_env(env_id: str, db=Depends(get_db),
                              user: UserDB = Depends(current_active_user)):
     try:
-        return EnvQueryUsercase(db_session=db, user=user).find_specified_env(env_id)
+        return await EnvQueryUsercase(db_session=db, user=user).find_specified_env(env_id)
     except:
         raise
 
@@ -69,7 +69,7 @@ async def find_specified_env(env_id: str, db=Depends(get_db),
 )
 async def find_all_envs(skip: int = 0, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return EnvQueryUsercase(db_session=db, user=user).find_all_envs(skip)
+        return await EnvQueryUsercase(db_session=db, user=user).find_all_envs(skip)
     except:
         raise
 

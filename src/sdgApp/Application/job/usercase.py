@@ -25,7 +25,7 @@ class JobCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
         self.queue = queue
-    def create_job(self, job_create_model: JobCreateDTO):
+    async def create_job(self, job_create_model: JobCreateDTO):
         try:
             uuid = shortuuid.uuid()
 
@@ -46,6 +46,7 @@ class JobCommandUsercase(object):
                                    scenario_id=task_model.scenario_id,
                                    scenario_name=task_model.scenario_name)
                 job.add_task(task)
+            await self.repo.create(job)
             self.repo.create(job)
 
         except CarNotFoundError:
@@ -57,13 +58,13 @@ class JobCommandUsercase(object):
         except:
             raise
 
-    def delete_job(self, job_id: str):
+    async def delete_job(self, job_id: str):
         try:
-            self.repo.delete(job_id)
+            await self.repo.delete(job_id)
         except:
             raise
 
-    def update_job(self, job_id:str, job_update_model: JobUpdateDTO):
+    async def update_job(self, job_id:str, job_update_model: JobUpdateDTO):
         ## ! update finished job can cause status and replay url loss
         try:
             job_retrieved = self.repo.get(job_id=job_id)
@@ -91,6 +92,7 @@ class JobCommandUsercase(object):
                                    scenario_name=task_model.scenario_name)
                 job_retrieved.add_task(task)
 
+            await self.repo.update(job_retrieved)
             self.repo.update(job_retrieved)
 
         except CarNotFoundError:
@@ -102,11 +104,11 @@ class JobCommandUsercase(object):
         except:
             raise
 
-    def run_job(self, job_id:str, queue_sess):
+    async def run_job(self, job_id:str, queue_sess):
         try:
             filter = {'id': job_id}
             filter.update({"usr_id": self.user.id})
-            result_dict = self.job_collection.find_one(filter, {'_id': 0})
+            result_dict = await self.job_collection.find_one(filter, {'_id': 0})
             if result_dict:
                 self.queue = self.queue(queue_sess)
                 self.queue.publish(queue_name='tasks',
@@ -125,23 +127,23 @@ class JobQueryUsercase(object):
         self.user = user
         self.job_collection = self.db_session['job']
 
-    def get_job(self, job_id:str):
+    async def get_job(self, job_id:str):
         try:
             filter = {'id': job_id}
             filter.update({"usr_id": self.user.id})
 
-            result_dict = self.job_collection.find_one(filter, {'_id': 0, 'usr_id':0})
+            result_dict = await self.job_collection.find_one(filter, {'_id': 0, 'usr_id':0})
             return JobReadDTO(**result_dict)
         except:
             raise
 
-    def list_job(self, p_num):
+    async def list_job(self, p_num):
         try:
             response_dto_lst = []
             filter = {"usr_id": self.user.id}
             results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([('last_modified', -1)])
             if results_dict:
-                for one_result in results_dict:
+                async for one_result in results_dict:
                     response_dto_lst.append(JobReadDTO(**one_result))
 
                 response_dto_lst = split_page(p_num, response_dto_lst)

@@ -14,7 +14,7 @@ class JobRepoImpl(JobRepo):
         self.scen_collection = self.db_session['scenarios']
         self.car_collection = self.db_session['cars']
 
-    def create(self, job: JobAggregate):
+    async def create(self, job: JobAggregate):
         task_DO_list = []
         for task in job.task_list:
             # get scenario snapshot
@@ -50,15 +50,15 @@ class JobRepoImpl(JobRepo):
                        last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                        task_list=task_DO_list)
 
-        self.job_collection.insert_one(job_DO.dict())
+        await self.job_collection.insert_one(job_DO.dict())
 
-    def delete(self, job_id: str):
+    async def delete(self, job_id: str):
         filter = {'id': job_id}
         filter.update({"usr_id": self.user.id})
 
-        self.job_collection.delete_one(filter)
+        await self.job_collection.delete_one(filter)
 
-    def update(self, update_job: JobAggregate):
+    async def update(self, update_job: JobAggregate):
         task_DO_list = []
         for task in update_job.task_list:
             # get scenario snapshot
@@ -98,24 +98,24 @@ class JobRepoImpl(JobRepo):
                 'id': update_job.id
             }
         filter.update({"usr_id": self.user.id})
-        self.job_collection.update_one(filter
+        await self.job_collection.update_one(filter
                                        , {'$set': update_job_DO.dict(exclude={'usr_id','create_time'})})
 
-    def get(self, job_id: str):
+    async def get(self, job_id: str):
         filter = {'id': job_id}
         filter.update({"usr_id": self.user.id})
 
-        result_dict = self.job_collection.find_one(filter, {'_id': 0})
+        result_dict = await self.job_collection.find_one(filter, {'_id': 0})
         if result_dict:
             job = JobDO(**result_dict).to_entity()
             return job
 
-    def list(self):
+    async def list(self):
         filter = {"usr_id": self.user.id}
         job_aggregate_lst = []
         results_dict = self.job_collection.find(filter, {'_id': 0})
         if results_dict:
-            for one_result in results_dict:
+            async for one_result in results_dict:
                 one_job = JobDO(**one_result).to_entity()
                 job_aggregate_lst.append(one_job)
             return job_aggregate_lst

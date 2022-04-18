@@ -20,7 +20,7 @@ router = APIRouter()
 async def create_sensor(sensor_create_model: SensorCreateDTO, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        SensorCommandUsercase(db_session=db, user=user).create_sensor(sensor_create_model)
+        await SensorCommandUsercase(db_session=db, user=user).create_sensor(sensor_create_model)
     except:
         raise
 
@@ -33,7 +33,7 @@ async def create_sensor(sensor_create_model: SensorCreateDTO, db = Depends(get_d
 async def delete_sensor(sensor_id:str, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        SensorCommandUsercase(db_session=db, user=user).delete_sensor(sensor_id)
+        await SensorCommandUsercase(db_session=db, user=user).delete_sensor(sensor_id)
     except:
         raise
 
@@ -46,7 +46,7 @@ async def delete_sensor(sensor_id:str, db = Depends(get_db),
 async def update_sensor(sensor_id:str, sensor_update_model: SensorUpdateDTO, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        SensorCommandUsercase(db_session=db, user=user).update_sensor(sensor_id, sensor_update_model)
+        await SensorCommandUsercase(db_session=db, user=user).update_sensor(sensor_id, sensor_update_model)
     except:
         raise
 
@@ -60,7 +60,7 @@ async def update_sensor(sensor_id:str, sensor_update_model: SensorUpdateDTO, db 
 async def get_sensor(sensor_id:str, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
-        sensor_dto = SensorQueryUsercase(db_session=db, user=user).get_sensor(sensor_id)
+        sensor_dto = await SensorQueryUsercase(db_session=db, user=user).get_sensor(sensor_id)
         return sensor_dto
     except:
         raise
@@ -79,7 +79,7 @@ async def list_sensor(skip: int = 0, sensor_type: Optional[str] = None,
         query_param = {}
         if sensor_type: query_param.update({"type": sensor_type})
 
-        sensor_dto_lst = SensorQueryUsercase(db_session=db, user=user).list_sensor(skip, query_param=query_param)
+        sensor_dto_lst = await SensorQueryUsercase(db_session=db, user=user).list_sensor(skip, query_param=query_param)
         return sensor_dto_lst
     except:
         raise

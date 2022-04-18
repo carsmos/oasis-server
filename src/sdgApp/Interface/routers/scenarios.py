@@ -25,6 +25,7 @@ router = APIRouter()
 async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
+        await AssembleScenarioService(scenario_create_model, db, user)
         AssembleScenarioService(scenario_create_model, db, user)
     except DynamicScenesNotFoundError as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
@@ -38,7 +39,7 @@ async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
 async def delete_scenario(scenario_id: str, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        ScenarioCommandUsercase(db_session=db, user=user).delete_scenario(scenario_id)
+        await ScenarioCommandUsercase(db_session=db, user=user).delete_scenario(scenario_id)
     except:
         raise
 
@@ -53,10 +54,7 @@ async def update_scenario(scenario_id: str,
                           scenario_update_model: ScenarioUpdateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        result = ScenarioCommandUsercase(db_session=db, user=user).update_scenario(scenario_id,
-                                                                                   scenario_update_model)
-        if result:
-            return await find_specified_scenario(scenario_id, db)
+        await ScenarioCommandUsercase(db_session=db, user=user).update_scenario(scenario_id, scenario_update_model)
     except:
         raise
 
@@ -69,7 +67,7 @@ async def update_scenario(scenario_id: str,
 )
 async def find_all_scenarios(skip: int = 0, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
+        return await ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
     except:
         raise
 
@@ -83,6 +81,6 @@ async def find_all_scenarios(skip: int = 0, db=Depends(get_db), user: UserDB = D
 async def find_specified_scenario(scenario_id: str, db=Depends(get_db),
                                   user: UserDB = Depends(current_active_user)):
     try:
-        return ScenarioQueryUsercase(db_session=db, user=user).find_specified_scenario(scenario_id)
+        return await ScenarioQueryUsercase(db_session=db, user=user).find_specified_scenario(scenario_id)
     except:
         raise

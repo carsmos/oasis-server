@@ -19,7 +19,7 @@ router = APIRouter()
 async def create_dynamic_scene(dynamic_scene_create_model: DynamicSceneCreateDTO,
                                db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        DynamicSceneCommandUsercase(db_session=db, user=user).create_scenario(dynamic_scene_create_model)
+        await DynamicSceneCommandUsercase(db_session=db, user=user).create_scenario(dynamic_scene_create_model)
     except:
         raise
 
@@ -30,7 +30,7 @@ async def create_dynamic_scene(dynamic_scene_create_model: DynamicSceneCreateDTO
 async def delete_dynamic_scene(dynamic_scene_id: str, db=Depends(get_db),
                                user: UserDB = Depends(current_active_user)):
     try:
-        DynamicSceneCommandUsercase(db_session=db, user=user).delete_scenario(dynamic_scene_id)
+        await DynamicSceneCommandUsercase(db_session=db, user=user).delete_scenario(dynamic_scene_id)
     except:
         raise
 
@@ -45,7 +45,7 @@ async def update_dynamic_scene(dynamic_scene_id: str,
                                dynamic_scene_update_model: DynamicSceneUpdateDTO,
                                db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        DynamicSceneCommandUsercase(db_session=db, user=user).update_scenario(dynamic_scene_id,
+        await DynamicSceneCommandUsercase(db_session=db, user=user).update_scenario(dynamic_scene_id,
                                                                               dynamic_scene_update_model)
     except:
         raise
@@ -59,7 +59,7 @@ async def update_dynamic_scene(dynamic_scene_id: str,
 )
 async def find_all_dynamic_scenes(skip: int = 0,db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return DynamicSceneQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
+        return await DynamicSceneQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
     except:
         raise
 
@@ -73,6 +73,6 @@ async def find_all_dynamic_scenes(skip: int = 0,db=Depends(get_db), user: UserDB
 async def find_specified_scenario(dynamic_scene_id: str, db=Depends(get_db),
                                   user: UserDB = Depends(current_active_user)):
     try:
-        return DynamicSceneQueryUsercase(db_session=db, user=user).find_specified_scenario(dynamic_scene_id)
+        return await DynamicSceneQueryUsercase(db_session=db, user=user).find_specified_scenario(dynamic_scene_id)
     except:
         raise

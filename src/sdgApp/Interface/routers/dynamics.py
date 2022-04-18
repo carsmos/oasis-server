@@ -20,7 +20,7 @@ router = APIRouter()
 async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_model)
+        await DynamicsCommandUsercase(db_session=db, user=user).create_dynamics(dynamics_create_model)
     except:
         raise
 
@@ -33,7 +33,7 @@ async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends
 async def delete_dynamics(dynamics_id:str, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        DynamicsCommandUsercase(db_session=db, user=user).delete_dynamics(dynamics_id)
+        await DynamicsCommandUsercase(db_session=db, user=user).delete_dynamics(dynamics_id)
     except:
         raise
 
@@ -46,7 +46,7 @@ async def delete_dynamics(dynamics_id:str, db = Depends(get_db),
 async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
-        DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_model)
+        await DynamicsCommandUsercase(db_session=db, user=user).update_dynamics(dynamics_id, dynamics_update_model)
     except:
         raise
 
@@ -60,7 +60,7 @@ async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdate
 async def get_dynamics(dynamics_id:str, db = Depends(get_db),
                        user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_dto = DynamicsQueryUsercase(db_session=db, user=user).get_dynamics(dynamics_id)
+        dynamics_dto = await DynamicsQueryUsercase(db_session=db, user=user).get_dynamics(dynamics_id)
         return dynamics_dto
     except:
         raise
@@ -75,7 +75,7 @@ async def get_dynamics(dynamics_id:str, db = Depends(get_db),
 async def list_dynamics(skip: int = 0, db=Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_dto_lst = DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(skip)
+        dynamics_dto_lst = await DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(skip)
         return dynamics_dto_lst
     except:
         raise

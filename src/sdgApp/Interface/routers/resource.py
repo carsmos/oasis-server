@@ -17,7 +17,7 @@ router = APIRouter()
 )
 async def get_item_dic(db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return ResourceQueryUsercase(db_session=db, user=user).item_dic()
+        return await ResourceQueryUsercase(db_session=db, user=user).item_dic()
     except:
         raise
 
