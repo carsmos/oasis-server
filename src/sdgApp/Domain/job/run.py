@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class JobQueue(ABC):
+class Run(ABC):
 
     @abstractmethod
     def publish(self, job: dict):

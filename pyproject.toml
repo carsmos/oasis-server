@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "sdg2app"
-version = "0.1.0"
+name = "sdg-server"
+version = "0.4.1"
 description = ""
 authors = ["Cheng Fang"]
 
@@ -10,9 +10,9 @@ fastapi = "^0.70.1"
 uvicorn = {extras = ["standard"], version = "^0.17.6"}
 fastapi-users-db-mongodb = "^1.0.0"
 shortuuid = "^1.0.8"
-walrus = "^0.9.0"
 tenacity = "^8.0.1"
 gunicorn = "^20.1.0"
+aiohttp = "^3.8.1"
 
 [tool.poetry.dev-dependencies]
 

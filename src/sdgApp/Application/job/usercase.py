@@ -4,7 +4,7 @@ from sdgApp.Application.car.usercase import split_page
 from sdgApp.Domain.job.job import JobAggregate
 from sdgApp.Domain.job.task import TaskEntity
 from sdgApp.Infrastructure.MongoDB.job.job_repoImpl import JobRepoImpl
-from sdgApp.Infrastructure.Redis.job.job_queueImpl import JobQueueImpl
+from sdgApp.Infrastructure.Aiohttp.job.run_Impl import JobRunImpl
 from sdgApp.Application.job.CommandDTOs import JobCreateDTO, JobUpdateDTO
 from sdgApp.Application.job.RespondsDTOs import JobReadDTO
 
@@ -18,13 +18,13 @@ def dto_assembler(job: JobAggregate):
 
 class JobCommandUsercase(object):
 
-    def __init__(self, db_session, user, repo=JobRepoImpl, queue=JobQueueImpl):
+    def __init__(self, db_session, user, repo=JobRepoImpl, job_run_tool=JobRunImpl):
         self.db_session = db_session
         self.user = user
         self.job_collection = self.db_session['job']
         self.repo = repo
         self.repo = self.repo(db_session, user)
-        self.queue = queue
+        self.job_run_tool = job_run_tool
     async def create_job(self, job_create_model: JobCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -102,15 +102,14 @@ class JobCommandUsercase(object):
         except:
             raise
 
-    async def run_job(self, job_id:str, queue_sess):
+    async def run_job(self, job_id:str, aiohttp_sess):
         try:
             filter = {'id': job_id}
             filter.update({"usr_id": self.user.id})
             result_dict = await self.job_collection.find_one(filter, {'_id': 0})
             if result_dict:
-                self.queue = self.queue(queue_sess)
-                self.queue.publish(queue_name='tasks',
-                                   job=result_dict)
+                self.job_run_tool = self.job_run_tool(aiohttp_sess)
+                await self.job_run_tool.publish(job=result_dict)
         except:
             raise
 

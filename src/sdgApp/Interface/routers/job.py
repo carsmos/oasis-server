@@ -6,7 +6,7 @@ from sdgApp.Application.job.CommandDTOs import JobCreateDTO, JobUpdateDTO
 from sdgApp.Application.job.RespondsDTOs import JobReadDTO, JobStatusMsg
 from sdgApp.Application.job.usercase import JobCommandUsercase, JobQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
-from sdgApp.Infrastructure.Redis.session_maker import get_redis
+from sdgApp.Infrastructure.Aiohttp.session_maker import SingletonAiohttp
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
 from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
@@ -96,10 +96,10 @@ async def list_job(skip: int = 0, db=Depends(get_db),
     responses={200:{"model": JobStatusMsg}},
     tags=["Job"]
 )
-async def run_job(job_id:str, db = Depends(get_db), queue_sess = Depends(get_redis),
+async def run_job(job_id:str, db = Depends(get_db), aiohttp_sess = Depends(SingletonAiohttp),
                    user: UserDB = Depends(current_active_user)):
     try:
-        await JobCommandUsercase(db_session=db, user=user).run_job(job_id, queue_sess)
+        await JobCommandUsercase(db_session=db, user=user).run_job(job_id, aiohttp_sess)
         return {"status":"success"}
     except:
         raise

@@ -6,13 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from sdgApp.Interface import routers
 from sdgApp.Infrastructure.MongoDB.session_maker import database_connect, mongolog_connect
 
-conn_factory = {}
 
 
 def create_app() -> FastAPI:
 
     app = FastAPI(
-        debug=True,
+        debug=False,
         title="SDG Server",
         version="v0.4.0",
         description="",
