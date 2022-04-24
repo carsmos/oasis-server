@@ -14,6 +14,6 @@ class CarReadDTO(BaseModel):
 
 
 class CarsResponse(BaseModel):
-    total_num: str
-    total_page_num: str
+    total_num: int
+    total_page_num: int
     datas: List[CarReadDTO]
