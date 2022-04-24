@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends
 from pydantic.typing import List, Optional
 
 from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO, SensorUpdateDTO
-from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
+from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO, SensorsResponse
 from sdgApp.Application.sensor.usercase import SensorCommandUsercase, SensorQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
@@ -69,18 +69,18 @@ async def get_sensor(sensor_id:str, db = Depends(get_db),
 @router.get(
     "/sensors",
     status_code=status.HTTP_200_OK,
-    response_model= List[SensorReadDTO],
+    response_model=SensorsResponse,
     tags=["Sensors"]
 )
-async def list_sensor(skip: int = 0, sensor_type: Optional[str] = None,
+async def list_sensor(skip: int = 1, sensor_type: Optional[str] = None,
                       db= Depends(get_db),
                       user: UserDB = Depends(current_active_user)):
     try:
         query_param = {}
         if sensor_type: query_param.update({"type": sensor_type})
 
-        sensor_dto_lst = await SensorQueryUsercase(db_session=db, user=user).list_sensor(skip, query_param=query_param)
-        return sensor_dto_lst
+        sensor_dto_dic = await SensorQueryUsercase(db_session=db, user=user).list_sensor(skip, query_param=query_param)
+        return sensor_dto_dic
     except:
         raise
 

@@ -1,3 +1,5 @@
+import math
+
 import shortuuid
 
 from sdgApp.Application.car.usercase import split_page
@@ -60,17 +62,24 @@ class EnvQueryUsercase(object):
         except:
             raise
 
-    async def find_all_envs(self, p_num):
+    async def find_all_envs(self, p_num, limit: int = 15):
         try:
-            response_dto_lst = []
             filter = ({"usr_id": self.user.id})
-            results_dict = self.envs_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)])
+            total_num = await self.envs_collection.count_documents({"usr_id": self.user.id})
+            total_page_num = math.ceil(total_num / limit)
+            if p_num > total_page_num:
+                p_num = total_page_num
+            results_dict = self.envs_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
             if results_dict:
-                async for one_result in results_dict:
-                    response_dto_lst.append(EnvReadDTO(**one_result))
+                response_dic = {}
+                response_dto_lst = []
+                response_dic["total_num"] = total_num
+                response_dic["total_page_num"] = total_page_num
 
-                response_dto_lst = split_page(p_num, response_dto_lst)
-                return response_dto_lst
+                for doc in await results_dict:
+                    response_dto_lst.append(EnvReadDTO(**doc))
+                response_dic["datas"] = response_dto_lst
+                return response_dic
         except:
             raise
 

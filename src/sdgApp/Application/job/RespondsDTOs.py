@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from pydantic.typing import List, Optional
 
+
 class JobReadDTO(BaseModel):
     id: str
     name: str
@@ -9,6 +10,13 @@ class JobReadDTO(BaseModel):
     last_modified: str
     task_list: List[dict]
 
+
 class JobStatusMsg(BaseModel):
     status: str
     detail: Optional[str]
+
+
+class JobsResponse(BaseModel):
+    total_num: str
+    total_page_num: str
+    datas: List[JobReadDTO]

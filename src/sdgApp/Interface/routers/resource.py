@@ -25,7 +25,8 @@ async def get_item_dic(db=Depends(get_db), user: UserDB = Depends(current_active
 def cost_time(fun):
     def inner(*args, **kwargs):
         start_time = time.time()
-        fun(*args, **kwargs)
+        ret = fun(*args, **kwargs)
         end_time = time.time()
         print("The func=%s cost time =%s" % (fun.__name__, end_time-start_time))
+        return ret
     return inner

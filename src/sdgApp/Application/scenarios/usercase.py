@@ -1,6 +1,6 @@
-import shortuuid
+import math
 
-from sdgApp.Application.car.usercase import split_page
+import shortuuid
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
@@ -63,16 +63,27 @@ class ScenarioQueryUsercase(object):
         except:
             raise
 
-    async def find_all_scenarios(self, p_num):
+    async def find_all_scenarios(self, tags, p_num, limit: int = 15):
         try:
-            response_dto_list = []
             filter = {}
             filter.update({"usr_id": self.user.id})
-            scenario_list = self.scenarios_collection.find(filter).sort([('last_modified', -1)])
-            async for scenario in scenario_list:
-                response_dto_list.append(ScenariosReadDTO(**scenario))
+            if tags not in [""]:
+                tag_list = tags.split("+")
+                filter.update({"tags": tag_list})
+            total_num = await self.scenarios_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / limit)
+            if p_num > total_page_num and total_page_num > 0:
+                p_num = total_page_num
+            results_dict = self.scenarios_collection.find(filter).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+            if results_dict:
+                response_dic = {}
+                response_dto_lst = []
+                response_dic["total_num"] = total_num
+                response_dic["total_page_num"] = total_page_num
 
-            response_dto_list = split_page(p_num, response_dto_list)
-            return response_dto_list
+                for doc in await results_dict:
+                    response_dto_lst.append(ScenariosReadDTO(**doc))
+                response_dic["datas"] = response_dto_lst
+                return response_dic
         except:
             raise

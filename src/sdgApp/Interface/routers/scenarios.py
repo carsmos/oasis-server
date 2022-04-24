@@ -1,4 +1,4 @@
-from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
+from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO, ScenariosResponse
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioUpdateDTO
 from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase, ScenarioQueryUsercase
 from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
@@ -61,12 +61,12 @@ async def update_scenario(scenario_id: str,
 @router.get(
     "/scenarios",
     status_code=status.HTTP_200_OK,
-    response_model=List[ScenariosReadDTO],
+    response_model=ScenariosResponse,
     tags=["Scenarios"]
 )
-async def find_all_scenarios(skip: int = 0, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def find_all_scenarios(tags: str = "", skip: int = 1,  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return await ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
+        return await ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(tags, skip)
     except:
         raise
 

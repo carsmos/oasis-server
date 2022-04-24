@@ -1,3 +1,5 @@
+import math
+
 import shortuuid
 
 from sdgApp.Application.car.usercase import split_page
@@ -66,19 +68,25 @@ class SensorQueryUsercase(object):
         except:
             raise
 
-    async def list_sensor(self, p_num, query_param: dict):
+    async def list_sensor(self, p_num, query_param: dict, limit: int = 15):
         try:
-            response_dto_lst = []
             filter = {"usr_id": self.user.id}
             filter.update(query_param)
-
-            results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)])
+            total_num = await self.sensor_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / limit)
+            if p_num > total_page_num:
+                p_num = total_page_num
+            results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
             if results_dict:
-                async for one_result in results_dict:
-                    response_dto_lst.append(SensorReadDTO(**one_result))
+                response_dic = {}
+                response_dto_lst = []
+                response_dic["total_num"] = total_num
+                response_dic["total_page_num"] = total_page_num
 
-                response_dto_lst = split_page(p_num, response_dto_lst)
-                return response_dto_lst
+                for doc in await results_dict:
+                    response_dto_lst.append(SensorReadDTO(**doc))
+                response_dic["datas"] = response_dto_lst
+                return response_dic
         except:
             raise
 

@@ -1,3 +1,5 @@
+import math
+
 import shortuuid
 import copy
 
@@ -78,8 +80,6 @@ class CarCommandUsercase(object):
             raise
 
 
-
-
 class CarQueryUsercase(object):
 
     def __init__(self, db_session, user, repo=CarRepoImpl):
@@ -100,10 +100,13 @@ class CarQueryUsercase(object):
         except:
             raise
 
-    async def list_car(self, p_num):
+    async def list_car(self, p_num, limit: int = 15):
         try:
-            response_dto_lst = []
             filter = {"usr_id": self.user.id}
+            total_num = await self.car_collection.count_documents({"usr_id": self.user.id})
+            total_page_num = math.ceil(total_num / limit)
+            if p_num > total_page_num:
+                p_num = total_page_num
             results_dict = self.car_collection.find(filter, {'name': 1,
                                                            'id': 1,
                                                            'desc': 1,
@@ -122,31 +125,33 @@ class CarQueryUsercase(object):
                                                            'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_name': 1,
                                                            'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
                                                            'sensors_snap.sensors.sensor_name': 1,
-                                                           'sensors_snap.sensors.sensor_id': 1}).sort([('last_modified', -1)])
+                                                           'sensors_snap.sensors.sensor_id': 1}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
 
             if results_dict:
-                async for one_result in results_dict:
-                    response_dto_lst.append(CarReadDTO(**one_result))
+                response_dic = {}
+                response_dto_lst = []
+                response_dic["total_num"] = total_num
+                response_dic["total_page_num"] = total_page_num
 
-                response_dto_lst = split_page(p_num,  response_dto_lst)
-                return response_dto_lst
+                for doc in await results_dict:
+                    response_dto_lst.append(CarReadDTO(**doc))
+                response_dic["datas"] = response_dto_lst
+                return response_dic
         except:
             raise
 
 
-def split_page(p_num,  response_dto_lst, limit: int = 15):
-    if len(response_dto_lst) > 0:
-        max_page_num = len(response_dto_lst) // limit + 1
-        if p_num > 0:
-            if p_num <= max_page_num:
-                return response_dto_lst[(p_num - 1) * limit: p_num * limit]
-            else:
-                return response_dto_lst[(max_page_num - 1) * limit:]
-        elif p_num == 0:
-            return response_dto_lst
-        else:
-            return response_dto_lst[:limit]
-    else:
-        return response_dto_lst
+def split_page(total_num, p_num, results_dict, res_model, limit: int = 15):
+    total_page_num = math.ceil(total_num / limit)
+    response_dic = {}
+    response_dto_lst = []
+    response_dic["total_num"] = total_num
+    response_dic["total_page_num"] = total_page_num
+    if p_num > total_page_num:
+        p_num = total_page_num
+    for one_result in results_dict.skip((p_num-1) * limit).limit(limit).to_list(length=50):
+        response_dto_lst.append(res_model(**one_result))
+    response_dic["datas"] = response_dto_lst
+    return response_dic
 
 

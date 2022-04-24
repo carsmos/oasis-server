@@ -1,4 +1,4 @@
-from sdgApp.Application.dynamic_scenes.RespondsDTOs import DynamicSceneReadDTO
+from sdgApp.Application.dynamic_scenes.RespondsDTOs import DynamicSceneReadDTO, DynamicScenesResponse
 from sdgApp.Application.dynamic_scenes.CommandDTOs import DynamicSceneCreateDTO, DynamicSceneUpdateDTO
 from sdgApp.Application.dynamic_scenes.usercase import DynamicSceneCommandUsercase, DynamicSceneQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
@@ -54,10 +54,10 @@ async def update_dynamic_scene(dynamic_scene_id: str,
 @router.get(
     "/dynamic_scenes",
     status_code=status.HTTP_200_OK,
-    response_model=List[DynamicSceneReadDTO],
+    response_model=DynamicScenesResponse,
     tags=["DynamicScenes"]
 )
-async def find_all_dynamic_scenes(skip: int = 0,db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def find_all_dynamic_scenes(skip: int = 1, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         return await DynamicSceneQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
     except:

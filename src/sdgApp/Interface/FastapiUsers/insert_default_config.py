@@ -301,12 +301,12 @@ async def insert_default(db_session, user):
     }
 
     await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**lidar))
-    lidar_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(0, {})
-    lidar_dto = lidar_dto[0]
+    lidar_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, {})
+    lidar_dto = lidar_dto["datas"][0]
 
     await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**depth_cam))
-    depth_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(0, {})
-    depth_dto = depth_dto[1]
+    depth_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, {})
+    depth_dto = depth_dto["datas"][1]
 
     other_default_sensors = [rss,
                            radar,
@@ -421,8 +421,8 @@ async def insert_default(db_session, user):
     }
 
     await DynamicsCommandUsercase(db_session=db_session, user=user).create_dynamics(DynamicsCreateDTO(**default_dynamic))
-    dynamic_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(0)
-    dynamic_dto = dynamic_dto[0]
+    dynamic_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(1)
+    dynamic_dto = dynamic_dto["datas"][0]
 
     from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarService
     from sdgApp.Application.CarFacadeService.CommandDTOs import AssembleCreateDTO
@@ -441,8 +441,8 @@ async def insert_default(db_session, user):
     "sensors": [{"id": lidar_dto.id, "position":["0.0","0.0","2.4"]},
                 {"id": depth_dto.id, "position":["2.0","0.0","2.0"]}]}
     await AssembleCarService(AssembleCreateDTO(**assemble_car_dict), db_session=db_session, user=user)
-    default_car_dto = await CarQueryUsercase(db_session=db_session, user=user).list_car(0)
-    default_car_dto = default_car_dto[0]
+    default_car_dto = await CarQueryUsercase(db_session=db_session, user=user).list_car(1)
+    default_car_dto = default_car_dto["datas"][0]
 
 
     from sdgApp.Application.environments.usercase import EnvCommandUsercase
@@ -479,8 +479,8 @@ async def insert_default(db_session, user):
         "type": "scenest"
     }
     await DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(DynamicSceneCreateDTO(**default_scene_1))
-    default_scene_dto = await DynamicSceneQueryUsercase(db_session=db_session, user=user).find_all_scenarios(0)
-    default_scene_dto = default_scene_dto[0]
+    default_scene_dto = await DynamicSceneQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1)
+    default_scene_dto = default_scene_dto["datas"][0]
 
     scene_2 = {
         "name": "动态场景描述2",
@@ -518,8 +518,8 @@ async def insert_default(db_session, user):
                          "env_id": "MidRainSunset",
                          "tags": []}
     await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
-    default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(0)
-    default_scenario_dto = default_scenario_dto[0]
+    default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1)
+    default_scenario_dto = default_scenario_dto["datas"][0]
 
     from sdgApp.Application.job.CommandDTOs import JobCreateDTO
     from sdgApp.Application.job.usercase import JobCommandUsercase

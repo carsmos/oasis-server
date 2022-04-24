@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends
 from pydantic.typing import List
 
 from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO, DynamicsUpdateDTO
-from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO
+from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO, DynamicsResponse
 from sdgApp.Application.dynamics.usercase import DynamicsCommandUsercase, DynamicsQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
@@ -69,14 +69,14 @@ async def get_dynamics(dynamics_id:str, db = Depends(get_db),
 @router.get(
     "/dynamics",
     status_code=status.HTTP_200_OK,
-    response_model=List[DynamicsReadDTO],
+    response_model=DynamicsResponse,
     tags=["Dynamics"]
 )
-async def list_dynamics(skip: int = 0, db=Depends(get_db),
+async def list_dynamics(skip: int = 1, db=Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_dto_lst = await DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(skip)
-        return dynamics_dto_lst
+        dynamics_dto_dic = await DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(skip)
+        return dynamics_dto_dic
     except:
         raise
 

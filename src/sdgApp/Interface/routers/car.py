@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic.typing import List
 
 from sdgApp.Application.car.CommandDTOs import CarCreateDTO, CarUpdateDTO
-from sdgApp.Application.car.RespondsDTOs import CarReadDTO
+from sdgApp.Application.car.RespondsDTOs import CarReadDTO, CarsResponse
 from sdgApp.Application.car.usercase import CarCommandUsercase, CarQueryUsercase
 from sdgApp.Application.CarFacadeService.CommandDTOs import AssembleCreateDTO
 from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarService
@@ -77,14 +77,14 @@ async def get_car(car_id:str, db = Depends(get_db),
 @router.get(
     "/cars",
     status_code=status.HTTP_200_OK,
-    response_model= List[CarReadDTO],
+    response_model=CarsResponse,
     tags=["Cars"]
 )
-async def list_car(skip: int = 0,  db=Depends(get_db),
+async def list_car(skip: int = 1, db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        car_dto_lst = await CarQueryUsercase(db_session=db, user=user).list_car(skip)
-        return car_dto_lst
+        car_dto_dic = await CarQueryUsercase(db_session=db, user=user).list_car(skip)
+        return car_dto_dic
     except:
         raise
 

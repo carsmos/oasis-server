@@ -1,4 +1,4 @@
-from sdgApp.Application.environments.RespondsDTOs import EnvReadDTO
+from sdgApp.Application.environments.RespondsDTOs import EnvReadDTO, EnvsResponse
 from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO, EnvUpdateDTO
 from sdgApp.Application.environments.usercase import EnvCommandUsercase, EnvQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
@@ -64,10 +64,10 @@ async def find_specified_env(env_id: str, db=Depends(get_db),
 @router.get(
     "/environments",
     status_code=status.HTTP_200_OK,
-    response_model=List[EnvReadDTO],
+    response_model=EnvsResponse,
     tags=["Envs"]
 )
-async def find_all_envs(skip: int = 0, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def find_all_envs(skip: int = 1, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         return await EnvQueryUsercase(db_session=db, user=user).find_all_envs(skip)
     except:

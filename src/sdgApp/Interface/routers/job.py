@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic.typing import List
 
 from sdgApp.Application.job.CommandDTOs import JobCreateDTO, JobUpdateDTO
-from sdgApp.Application.job.RespondsDTOs import JobReadDTO, JobStatusMsg
+from sdgApp.Application.job.RespondsDTOs import JobReadDTO, JobStatusMsg, JobsResponse
 from sdgApp.Application.job.usercase import JobCommandUsercase, JobQueryUsercase
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Infrastructure.Redis.session_maker import get_redis
@@ -79,14 +79,14 @@ async def get_job(job_id:str, db = Depends(get_db),
 @router.get(
     "/job",
     status_code=status.HTTP_200_OK,
-    response_model= List[JobReadDTO],
+    response_model=JobsResponse,
     tags=["Job"]
 )
-async def list_job(skip: int = 0, db=Depends(get_db),
+async def list_job(skip: int = 1, db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_dto_lst = await JobQueryUsercase(db_session=db, user=user).list_job(skip)
-        return job_dto_lst
+        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).list_job(skip)
+        return job_dto_dic
     except:
         raise
 
