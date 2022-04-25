@@ -1,3 +1,4 @@
+import copy
 import math
 
 import shortuuid
@@ -63,13 +64,36 @@ class ScenarioQueryUsercase(object):
         except:
             raise
 
-    async def find_all_scenarios(self, tags, p_num, limit: int = 15):
+    async def find_all_scenarios(self, p_num, limit: int = 15):
         try:
             filter = {}
             filter.update({"usr_id": self.user.id})
-            if tags not in [""]:
-                tag_list = tags.split("+")
-                filter.update({"tags": tag_list})
+            total_num = await self.scenarios_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / limit)
+            if p_num > total_page_num and total_page_num > 0:
+                p_num = total_page_num
+            if p_num > 0:
+                results_dict = self.scenarios_collection.find(filter).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+            else:
+                results_dict = self.scenarios_collection.find(filter).sort([('last_modified', -1)]).to_list(length=total_num)
+            if results_dict:
+                response_dic = {}
+                response_dto_lst = []
+                response_dic["total_num"] = total_num
+                response_dic["total_page_num"] = total_page_num
+                for doc in await results_dict:
+                    response_dto_lst.append(ScenariosReadDTO(**doc))
+                response_dic["datas"] = response_dto_lst
+                return response_dic
+        except:
+            raise
+
+    async def find_scenarios_by_tags(self, tags, p_num, limit: int = 15):
+        try:
+            filter = {}
+            tag_list = tags.split("+")
+            tag_list.append(copy.deepcopy(tag_list)) if len(tag_list) > 1 else tag_list
+            filter.update({"usr_id": self.user.id, "tags": {"$all": tag_list}})
             total_num = await self.scenarios_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / limit)
             if p_num > total_page_num and total_page_num > 0:

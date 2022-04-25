@@ -64,9 +64,9 @@ async def update_scenario(scenario_id: str,
     response_model=ScenariosResponse,
     tags=["Scenarios"]
 )
-async def find_all_scenarios(tags: str = "", skip: int = 1,  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def find_all_scenarios(skip: int = 1,  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return await ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(tags, skip)
+        return await ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
     except:
         raise
 
@@ -81,5 +81,18 @@ async def find_specified_scenario(scenario_id: str, db=Depends(get_db),
                                   user: UserDB = Depends(current_active_user)):
     try:
         return await ScenarioQueryUsercase(db_session=db, user=user).find_specified_scenario(scenario_id)
+    except:
+        raise
+
+
+@router.get(
+    "/scenarios_by_tags",
+    status_code=status.HTTP_200_OK,
+    response_model=ScenariosResponse,
+    tags=["Scenarios"]
+)
+async def find_scenarios_by_tags(tags: str, skip: int = 1,  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioQueryUsercase(db_session=db, user=user).find_scenarios_by_tags(tags, skip)
     except:
         raise

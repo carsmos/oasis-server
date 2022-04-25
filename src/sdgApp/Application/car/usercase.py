@@ -105,9 +105,10 @@ class CarQueryUsercase(object):
             filter = {"usr_id": self.user.id}
             total_num = await self.car_collection.count_documents({"usr_id": self.user.id})
             total_page_num = math.ceil(total_num / limit)
-            if p_num > total_page_num:
+            if p_num > total_page_num and total_page_num > 0:
                 p_num = total_page_num
-            results_dict = self.car_collection.find(filter, {'name': 1,
+            if p_num > 0:
+                results_dict = self.car_collection.find(filter, {'name': 1,
                                                            'id': 1,
                                                            'desc': 1,
                                                            'param': 1,
@@ -126,7 +127,27 @@ class CarQueryUsercase(object):
                                                            'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
                                                            'sensors_snap.sensors.sensor_name': 1,
                                                            'sensors_snap.sensors.sensor_id': 1}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
-
+            else:
+                results_dict = self.car_collection.find(filter, {'name': 1,
+                                                                 'id': 1,
+                                                                 'desc': 1,
+                                                                 'param': 1,
+                                                                 'create_time': 1,
+                                                                 'last_modified': 1,
+                                                                 '_id': 0,
+                                                                 'car_snap.vehicle_physics_control.dynamics_name': 1,
+                                                                 'car_snap.vehicle_physics_control.dynamics_id': 1,
+                                                                 'car_snap.vehicle_physics_control.wheels.front_left_wheel.wheel_name': 1,
+                                                                 'car_snap.vehicle_physics_control.wheels.front_left_wheel.wheel_id': 1,
+                                                                 'car_snap.vehicle_physics_control.wheels.front_right_wheel.wheel_name': 1,
+                                                                 'car_snap.vehicle_physics_control.wheels.front_right_wheel.wheel_id': 1,
+                                                                 'car_snap.vehicle_physics_control.wheels.rear_left_wheel.wheel_name': 1,
+                                                                 'car_snap.vehicle_physics_control.wheels.rear_left_wheel.wheel_id': 1,
+                                                                 'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_name': 1,
+                                                                 'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
+                                                                 'sensors_snap.sensors.sensor_name': 1,
+                                                                 'sensors_snap.sensors.sensor_id': 1}).sort(
+                    [('last_modified', -1)]).to_list(length=total_num)
             if results_dict:
                 response_dic = {}
                 response_dto_lst = []
