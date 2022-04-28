@@ -93,7 +93,9 @@ class ScenarioQueryUsercase(object):
             filter = {}
             tag_list = tags.split("+")
             tag_list.append(copy.deepcopy(tag_list)) if len(tag_list) > 1 else tag_list
-            filter.update({"usr_id": self.user.id, "tags": {"$all": tag_list}})
+            tar_list = tags.split("+")[::-1]
+            tar_list.append(tags.split("+")[::-1]) if len(tar_list) > 1 else tar_list
+            filter.update({"usr_id": self.user.id, "$or": [{"tags": {"$all": tag_list}}, {"tags": {"$all": tar_list}}]})
             total_num = await self.scenarios_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / limit)
             if p_num > total_page_num and total_page_num > 0:
