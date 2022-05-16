@@ -100,7 +100,7 @@ async def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_sessio
     if sensors:
         for sensor_info_dict in sensors:
             sensor_id = sensor_info_dict["id"]
-            sensor_position = sensor_info_dict["position"]
+            sensor_position = sensor_info_dict.get("position")
             sensor_dto = await SensorQueryUsercase(db_session=db_session, user=user).get_sensor(sensor_id)
             if sensor_dto:
                 sensor_dto.param["sensor_id"] = sensor_id
