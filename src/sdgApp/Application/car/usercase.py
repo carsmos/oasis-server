@@ -100,14 +100,16 @@ class CarQueryUsercase(object):
         except:
             raise
 
-    async def list_car(self, p_num, limit: int = 15):
+    async def list_car(self, pagenum, pagesize, content):
         try:
             filter = {"usr_id": self.user.id}
-            total_num = await self.car_collection.count_documents({"usr_id": self.user.id})
-            total_page_num = math.ceil(total_num / limit)
-            if p_num > total_page_num and total_page_num > 0:
-                p_num = total_page_num
-            if p_num > 0:
+            if content:
+                filter.update({"$or": [{"name": {"$regex": content}}, {"desc":{"$regex": content}}]})
+            total_num = await self.car_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / pagesize)
+            if pagenum > total_page_num > 0:
+                pagenum = total_page_num
+            if pagenum > 0:
                 results_dict = self.car_collection.find(filter, {'name': 1,
                                                            'id': 1,
                                                            'desc': 1,
@@ -126,7 +128,7 @@ class CarQueryUsercase(object):
                                                            'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_name': 1,
                                                            'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
                                                            'sensors_snap.sensors.sensor_name': 1,
-                                                           'sensors_snap.sensors.sensor_id': 1}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                                                           'sensors_snap.sensors.sensor_id': 1}).sort([('last_modified', -1)]).skip((pagenum-1) * pagesize).limit(pagesize).to_list(length=50)
             else:
                 results_dict = self.car_collection.find(filter, {'name': 1,
                                                                  'id': 1,
