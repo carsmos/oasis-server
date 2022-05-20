@@ -159,6 +159,13 @@ class CarQueryUsercase(object):
                 response_dic["total_page_num"] = total_page_num
 
                 for doc in await results_dict:
+                    sensors = doc.get('sensors_snap').get('sensors')
+                    if sensors:
+                        sensors_new = []
+                        for sensor in sensors:
+                            if sensor['sensor_id'] != 'default':
+                                sensors_new.append(sensor)
+                        doc['sensors_snap']['sensors'] = sensors_new
                     response_dto_lst.append(CarReadDTO(**doc))
                 response_dic["datas"] = response_dto_lst
                 return response_dic
