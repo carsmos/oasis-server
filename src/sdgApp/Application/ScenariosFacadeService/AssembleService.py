@@ -23,10 +23,10 @@ async def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateD
                                                   desc=scenario_create_model.desc,
                                                   tags=scenario_create_model.tags,
                                                   scenario_param=scenario_param)
-        await ScenarioCommandUsercase(db, user).create_scenario(scenario_create_model)
+        return await ScenarioCommandUsercase(db, user).create_scenario(scenario_create_model)
     else:
         scenario_update_model = ScenarioUpdateDTO(name=scenario_create_model.name,
                                                   desc=scenario_create_model.desc,
                                                   tags=scenario_create_model.tags,
                                                   scenario_param=scenario_param)
-        await ScenarioCommandUsercase(db, user).update_scenario(scenario_create_model.id, scenario_update_model)
+        return await ScenarioCommandUsercase(db, user).update_scenario(scenario_create_model.id, scenario_update_model)

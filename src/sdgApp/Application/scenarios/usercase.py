@@ -1,5 +1,6 @@
 import copy
 import math
+from datetime import datetime
 
 import shortuuid
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
@@ -24,7 +25,9 @@ class ScenarioCommandUsercase(object):
                                           tags=scenario_create_model.tags,
                                           scenario_param=scenario_create_model.scenario_param
                                           )
-            await self.repo.create_scenario(scenario)
+            scenario = await self.repo.create_scenario(scenario)
+            if scenario:
+                return ScenariosReadDTO(**scenario)
         except:
             raise
 
@@ -41,7 +44,10 @@ class ScenarioCommandUsercase(object):
             scenario_retrieved.desc = scenario_update_model.desc
             scenario_retrieved.tags = scenario_update_model.tags
             scenario_retrieved.scenario_param = scenario_update_model.scenario_param
-            await self.repo.update_scenario(scenario_id, scenario_retrieved)
+            scenario = await self.repo.update_scenario(scenario_id, scenario_retrieved)
+            if scenario:
+                scenario.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+                return ScenariosReadDTO(**scenario)
         except:
             raise
 

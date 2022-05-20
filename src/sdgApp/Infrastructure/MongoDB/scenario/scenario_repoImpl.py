@@ -30,7 +30,9 @@ class ScenarioRepoImpl(ScenariosRepo):
                                  create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                  last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                                  )
-        await self.scenarios_collection.insert_one(scenario_DO.dict())
+        scenario = await self.scenarios_collection.insert_one(scenario_DO.dict())
+        if scenario:
+            return scenario_DO.dict()
 
     async def delete_scenario_by_id(self, scenario_id: str):
         filter = {"id": scenario_id}
@@ -50,6 +52,7 @@ class ScenarioRepoImpl(ScenariosRepo):
         filter = {'id': scenario_id}
         filter.update({"usr_id": self.user.id})
         await self.scenarios_collection.update_one(filter, {'$set': scenario_DO.dict(exclude={'usr_id', 'create_time'})})
+        return scenario_DO.dict()
 
     async def get(self, scenario_id: str):
         filter = {'id': scenario_id}
