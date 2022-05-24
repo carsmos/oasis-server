@@ -1,5 +1,6 @@
 from sdgApp.Domain.job.task import TaskEntity
 
+
 class JobAggregate(object):
 
     def __init__(self, id,

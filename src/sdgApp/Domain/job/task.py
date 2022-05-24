@@ -9,9 +9,11 @@ class TaskEntity(object):
                  scenario_name,
                  job_id="",
                  result="no result",
-                 status="Not running",
+                 status="notrun",
                  replay_url=None,
-                 cam_url=None):
+                 original_id=None,
+                 cam_url=None,
+                 last_modified=None):
         self.id = id
         self.name = name
         self.desc = desc
@@ -24,5 +26,7 @@ class TaskEntity(object):
         self.status = status
         self.replay_url = replay_url
         self.cam_url = cam_url
+        self.retry_id = original_id
+        self.last_modified = last_modified
 
 
