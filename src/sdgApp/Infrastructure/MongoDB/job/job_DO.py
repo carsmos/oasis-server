@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from pydantic.typing import Any, List
 from sdgApp.Domain.job.job import JobAggregate, TaskEntity
 
+
 class TaskDO(BaseModel):
     id: str
     name: str
@@ -14,10 +15,12 @@ class TaskDO(BaseModel):
     job_id: str
     status: str
     replay_url: str = None
+    retry_id: str = None
     cam_url: str = None
     scenario_param: dict = None
     car_snap: dict = None
     sensors_snap: dict = None
+
 
 class JobDO(BaseModel):
     id: str
@@ -43,6 +46,7 @@ class JobDO(BaseModel):
                               job_id=task_DO.job_id,
                               result=task_DO.result,
                               status=task_DO.status,
+                              retry_id=task_DO.retry_id,
                               replay_url=task_DO.replay_url)
             job_aggregate.add_task(task)
         return job_aggregate
