@@ -98,6 +98,13 @@ class CarQueryUsercase(object):
             result_dict = await self.car_collection.find_one(filter, {'_id': 0, 'usr_id':0})
             if result_dict is None:
                 raise CarNotFoundError
+            sensors = result_dict.get('sensors_snap').get('sensors')
+            if sensors:
+                sensors_new = []
+                for sensor in sensors:
+                    if sensor['sensor_id'] != 'default':
+                        sensors_new.append(sensor)
+                result_dict['sensors_snap']['sensors'] = sensors_new
             return CarReadDTO(**result_dict)
         except:
             raise
