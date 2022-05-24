@@ -39,7 +39,9 @@ class CarCommandUsercase(object):
 
     async def delete_car(self, car_id: str):
         try:
-            await self.repo.delete(car_id)
+            cars_ids = car_id.split(",")
+            for cars_id in cars_ids:
+                await self.repo.delete(cars_id)
         except:
             raise
 
