@@ -300,6 +300,4 @@ class JobQueryUsercase(object):
             last_time = datetime.datetime(now.year, now.month + 1, 1) - datetime.timedelta(days=1) + \
                         datetime.timedelta(hours=23, minutes=59, seconds=59)
             filter.update({"last_modified": {"gte": zero_time, "lte": last_time}})
-        else:
-            raise "cycle type=%s is wrong, pls check" % cycle
         return filter
