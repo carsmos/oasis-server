@@ -138,7 +138,8 @@ class CarQueryUsercase(object):
                                                            'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
                                                            'sensors_snap.sensors.sensor_name': 1,
                                                            'sensors_snap.sensors.sensor_id': 1,
-                                                           'sensors_snap.sensors.type': 1}).sort([('last_modified', -1)]).skip((pagenum-1) * pagesize).limit(pagesize).to_list(length=50)
+                                                           'sensors_snap.sensors.type': 1,
+                                                           'sensors_snap.sensors.position': 1}).sort([('last_modified', -1)]).skip((pagenum-1) * pagesize).limit(pagesize).to_list(length=50)
             else:
                 results_dict = self.car_collection.find(filter, {'name': 1,
                                                                  'id': 1,
@@ -159,7 +160,8 @@ class CarQueryUsercase(object):
                                                                  'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
                                                                  'sensors_snap.sensors.sensor_name': 1,
                                                                  'sensors_snap.sensors.sensor_id': 1,
-                                                                 'sensors_snap.sensors.type': 1}).sort(
+                                                                 'sensors_snap.sensors.type': 1,
+                                                                 'sensors_snap.sensors.position': 1}).sort(
                     [('last_modified', -1)]).to_list(length=total_num)
             if results_dict:
                 response_dic = {}
