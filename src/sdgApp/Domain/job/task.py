@@ -10,6 +10,7 @@ class TaskEntity(object):
                  job_id="",
                  result="no result",
                  status="notrun",
+                 index=None,
                  replay_url=None,
                  original_id=None,
                  cam_url=None,
@@ -28,5 +29,6 @@ class TaskEntity(object):
         self.cam_url = cam_url
         self.retry_id = original_id
         self.last_modified = last_modified
+        self.index = index
 
 

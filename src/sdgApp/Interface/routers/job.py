@@ -134,15 +134,15 @@ async def stop_jobs(job_ids: str, db=Depends(get_db), queue_sess=Depends(get_red
         raise
 
 
-@router.put(
-    "/job",
+@router.get(
+    "/retry_task",
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
-async def retry_task(job_id: str, task_id: str, db=Depends(get_db), queue_sess=Depends(get_redis),
+async def retry_task(job_id: str, task_ids: str, db=Depends(get_db), queue_sess=Depends(get_redis),
                    user: UserDB = Depends(current_active_user)):
     try:
-        await JobCommandUsercase(db_session=db, user=user).retry_task(job_id, task_id, queue_sess)
+        await JobCommandUsercase(db_session=db, user=user).retry_task(job_id, task_ids, queue_sess)
         return {"status": "success"}
     except:
         raise
@@ -156,7 +156,7 @@ async def retry_task(job_id: str, task_id: str, db=Depends(get_db), queue_sess=D
 async def get_job_infos(status: str = "all", cycle: str = "", name: str = "",  skip: int = 1, limit: int = 15, asc: int = -1, db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).get_jobs_by_name_or_desc(status, cycle, name, skip, limit, asc)
+        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).get_jobs_infos(status, cycle, name, skip, limit, asc)
         return job_dto_dic
     except:
         raise

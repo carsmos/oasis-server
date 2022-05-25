@@ -144,17 +144,15 @@ class JobCommandUsercase(object):
         except:
             raise
 
-    async def retry_task(self, job_id, task_id, queue_sess):
+    async def retry_task(self, job_id, task_ids, queue_sess):
         try:
             filter = {'id': job_id}
             filter.update({"usr_id": self.user.id})
             result_dict = await self.job_collection.find_one(filter, {'_id': 0})
             if result_dict:
                 self.queue = JobQueueImpl(queue_sess)
-                for task_id in task_id.split(","):
-                    job = self.queue.add(result_dict, task_id)
-                    self.job_collection.update_one(filter, {'$set': job})
-                # self.update_task_status(result_dict, filter, "inqueue", task_id)
+                job = self.queue.add(result_dict, task_ids)
+                self.job_collection.update_one(filter, {'$set': job})
         except:
             raise
 
@@ -208,18 +206,18 @@ class JobQueryUsercase(object):
         finished_status_list = ["Finish", "timeout"]
 
         for job in response_dto_lst:
-            for task in job.get("task_list"):
+            for task in job.task_list:
                 if task.get("status") == "inqueue":
                     running_job_list.append(job)
                     break
         for job in [job for job in response_dto_lst if job not in running_job_list]:
-            for task in job.get("task_list"):
+            for task in job.task_list:
                 if task.get("status") == 'notrun':
                     notrun_job_list.append(job)
                     break
         for job in [job for job in response_dto_lst if job not in running_job_list+notrun_job_list]:
-            all_length = len(job.get("task_list"))
-            finish_length = len([task for task in job.get("task_list") if task.get("status") in finished_status_list])
+            all_length = len(job.task_list)
+            finish_length = len([task for task in job.task_list if task.get("status") in finished_status_list])
             if all_length == finish_length:
                 finished_job_list.append(job)
 
@@ -252,12 +250,11 @@ class JobQueryUsercase(object):
         except:
             raise
 
-    async def get_jobs_by_name_or_desc(self, status, cycle, name, p_num, limit, asc):
+    async def get_jobs_infos(self, status, cycle, name, p_num, limit, asc):
         try:
             filter = {"usr_id": self.user.id}
             if name not in [""]:
-                filter.update({"name": name})
-                filter.update({"desc": name})
+                filter.update({"$or": [{"name": name}, {"desc": name}]})
             filter = self.get_times(cycle, filter)
             total_num = await self.job_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / limit)

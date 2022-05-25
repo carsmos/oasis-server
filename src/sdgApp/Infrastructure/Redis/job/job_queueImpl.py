@@ -35,23 +35,77 @@ class JobQueueImpl(JobQueue):
                 self.sess.lrem(queue_name, 0, task['id'])
             self.log.info_log({"msg": "Job id={} has stopped".format(job.get('id'))})
 
-    def add(self, job: dict, task_id):
+    def add(self, job: dict, task_ids):
         conf = get_conf()
         queue_name = conf['DB_REDIS']['USER_ID']
-        add_task_list = [task for task in job.get("task_list") if task_id == task.get("id")]
-        if job and len(add_task_list) > 0:
-            task = add_task_list[0]
-            retry_task = copy.deepcopy(task)
-            retry_task["original_id"] = task_id
-            retry_task["id"] = shortuuid.uuid()
-            retry_task["status"] = "inqueue"
-            retry_task["last_modified"] = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')
-            job.get("task_list").append(retry_task)
-            self.sess.set(task_id, json.dumps(task))
-            self.sess.lpush(queue_name, task_id)
-            self.log.info_log({"msg": "Task in queue, waiting to be processed. task_id:{}".format(task_id),
-                           "task_id": task_id})
+        task_list = job.get("task_list")
+
+        for task_id in task_ids.split(","):
+            add_task_list = [task for task in task_list if task_id == task.get("id")]
+            if job and len(add_task_list) > 0:
+
+                ori_idx = [task.get("id") for task in task_list].index(task_id)
+                task = add_task_list[0]
+                retry_task = copy.deepcopy(task)
+                retry_task["original_id"] = task_id
+                retry_task['result'] = ""
+                retry_task["id"] = shortuuid.uuid()
+                retry_task["status"] = "inqueue"
+                retry_task["last_modified"] = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')
+
+                handle_index_for_task(task, ori_idx, task_list, retry_task)
+
+                self.sess.set(task_id, json.dumps(task))
+                self.sess.lpush(queue_name, task_id)
+                self.log.info_log({"msg": "Task in queue, waiting to be processed. task_id:{}".format(task_id),
+                               "task_id": task_id})
         return job
 
     def get_length(self, queue_name="sdg"):
         return len(self.sess.lrange(queue_name, 0, -1))
+
+
+def find_parent_task(add_task, task_list):
+    if add_task.get("original_id") is None:
+        return add_task
+    else:
+        forward_task = [task for task in task_list if task.get("id") == add_task.get("original_id")]
+    if len(forward_task) > 0:
+        return find_parent_task(forward_task[0], task_list)
+
+
+def handle_index_for_task(task, ori_idx, task_list, retry_task):
+    for idx, task in enumerate(task_list):
+        if task.get("index") is None:
+            if idx <= 9:
+                task["index"] = "0" + str(idx+1)
+            else:
+                task["index"] = str(idx+1)
+    parent_task = find_parent_task(task, task_list)
+    if ori_idx + 1 < len(task_list):
+        for i in range(ori_idx+1, len(task_list)):
+            if task_list[i].get("original_id") is None:
+                if ori_idx + 1 <= 9:
+                    retry_task["index"] = parent_task.get("index") + ".%s" % i
+                else:
+                    retry_task["index"] = parent_task.get("index") + ".%s" % i
+                task_list.insert(i, retry_task)
+                break
+        if retry_task not in task_list:
+            if ori_idx + 1 <= 9:
+                retry_task["index"] = parent_task.get("index") + ".%s" % (len(task_list))
+            else:
+                retry_task["index"] = parent_task.get("index") + ".%s" % (len(task_list))
+            task_list.insert(len(task_list), retry_task)
+    else:
+        parent_task_index = task_list[ori_idx].get("index")
+        if "." not in parent_task_index:
+            if ori_idx + 1 <= 9:
+                retry_task["index"] = parent_task.get("index") + ".%s" % 1
+            else:
+                retry_task["index"] = parent_task.get("index") + ".%s" % 1
+            task_list.insert(ori_idx + 1, retry_task)
+        else:
+            retry_task["index"] = parent_task_index.split(".")[0] + "." + str(int(parent_task_index.split(".")[1]) + 1)
+            task_list.insert(ori_idx + 1, retry_task)
+
