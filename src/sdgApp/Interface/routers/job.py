@@ -21,7 +21,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     tags=["Job"]
 )
-async def create_job(job_create_model: JobCreateDTO, db= Depends(get_db),
+async def create_job(job_create_model: JobCreateDTO, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).create_job(job_create_model)
@@ -38,7 +38,7 @@ async def create_job(job_create_model: JobCreateDTO, db= Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
-async def delete_job(job_id:str, db = Depends(get_db),
+async def delete_job(job_id: str, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).delete_job(job_id)
@@ -51,7 +51,7 @@ async def delete_job(job_id:str, db = Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
-async def update_job(job_id:str, job_update_model: JobUpdateDTO, db = Depends(get_db),
+async def update_job(job_id:str, job_update_model: JobUpdateDTO, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_model)
@@ -110,7 +110,7 @@ async def get_total_task_info(db=Depends(get_db), user: UserDB = Depends(current
     responses={200: {"model": JobStatusMsg}},
     tags=["Job"]
 )
-async def run_job(job_id:str, db = Depends(get_db), queue_sess = Depends(get_redis),
+async def run_job(job_id: str, db=Depends(get_db), queue_sess=Depends(get_redis),
                    user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).run_job(job_id, queue_sess)
@@ -146,6 +146,7 @@ async def retry_task(job_id: str, task_ids: str, db=Depends(get_db), queue_sess=
         return {"status": "success"}
     except:
         raise
+
 
 @router.get(
     "/job_infos",
