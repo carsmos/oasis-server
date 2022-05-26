@@ -46,7 +46,6 @@ class JobDO(BaseModel):
                               job_id=task_DO.job_id,
                               result=task_DO.result,
                               status=task_DO.status,
-                              retry_id=task_DO.retry_id,
                               replay_url=task_DO.replay_url)
             job_aggregate.add_task(task)
         return job_aggregate

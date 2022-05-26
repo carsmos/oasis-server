@@ -8,7 +8,7 @@ class TaskEntity(object):
                  scenario_id,
                  scenario_name,
                  job_id="",
-                 result="no result",
+                 result="",
                  status="notrun",
                  index=None,
                  replay_url=None,

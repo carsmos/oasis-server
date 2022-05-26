@@ -21,7 +21,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     tags=["Job"]
 )
-async def create_job(job_create_model: JobCreateDTO, db = Depends(get_db),
+async def create_job(job_create_model: JobCreateDTO, db= Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).create_job(job_create_model)
@@ -153,8 +153,8 @@ async def retry_task(job_id: str, task_ids: str, db=Depends(get_db), queue_sess=
     response_model=JobsResponse,
     tags=["Job"]
 )
-async def get_job_infos(status: str = "all", cycle: str = "", name: str = "",  skip: int = 1, limit: int = 15, asc: int = -1, db=Depends(get_db),
-                   user: UserDB = Depends(current_active_user)):
+async def get_job_infos(status: str = "all", cycle: str = "", name: str = "",  skip: int = 1, limit: int = 15,
+                        asc: int = -1, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         job_dto_dic = await JobQueryUsercase(db_session=db, user=user).get_jobs_infos(status, cycle, name, skip, limit, asc)
         return job_dto_dic

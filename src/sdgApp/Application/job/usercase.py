@@ -267,14 +267,16 @@ class JobQueryUsercase(object):
             if results_dict:
                 response_dic = {}
                 response_dto_lst = []
-                response_dic["total_num"] = total_num
-                response_dic["total_page_num"] = total_page_num
 
                 for doc in await results_dict:
                     response_dto_lst.append(JobReadDTO(**doc))
                 if status not in ["all"]:
                     response_dto_lst = self.handle_job_status(status, response_dto_lst)
+                    total_num = len(response_dto_lst)
+                    total_page_num = math.ceil(total_num / limit)
                 response_dic["datas"] = response_dto_lst
+                response_dic["total_num"] = total_num
+                response_dic["total_page_num"] = total_page_num
                 return response_dic
         except:
             raise
