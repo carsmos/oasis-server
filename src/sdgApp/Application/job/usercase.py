@@ -254,21 +254,23 @@ class JobQueryUsercase(object):
         try:
             filter = {"usr_id": self.user.id}
             if name not in [""]:
-                filter.update({"$or": [{"name": {"$regex": name}}, {"desc": {"$regex": name}}]})
+                filter.update({"$or": [{"name": {"$regex": name, "$option": "s"}}, {"desc": {"$regex": name, "$option": "s"}}]})
             filter = self.get_times(cycle, filter)
             total_num = await self.job_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / limit)
             if p_num > total_page_num and total_page_num > 0:
                 p_num = total_page_num
             if p_num > 0:
-                results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([('last_modified', int(asc))]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                results = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).\
+                    sort([('last_modified', int(asc))]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
             else:
-                results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([('last_modified', int(asc))]).to_list(length=total_num)
-            if results_dict:
+                results = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).\
+                    sort([('last_modified', int(asc))]).to_list(length=total_num)
+            if results:
                 response_dic = {}
                 response_dto_lst = []
 
-                for doc in await results_dict:
+                for doc in await results:
                     response_dto_lst.append(JobReadDTO(**doc))
                 if status not in ["all"]:
                     response_dto_lst = self.handle_job_status(status, response_dto_lst)
