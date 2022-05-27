@@ -254,7 +254,7 @@ class JobQueryUsercase(object):
         try:
             filter = {"usr_id": self.user.id}
             if name not in [""]:
-                filter.update({"$or": [{"name": name}, {"desc": name}]})
+                filter.update({"$or": [{"name": {"$regex": name}}, {"desc": {"$regex": name}}]})
             filter = self.get_times(cycle, filter)
             total_num = await self.job_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / limit)
