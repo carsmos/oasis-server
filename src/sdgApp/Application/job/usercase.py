@@ -223,7 +223,7 @@ class JobQueryUsercase(object):
 
         for job in response_dto_lst:
             for task in job.task_list:
-                if task.get("status") == "inqueue":
+                if task.get("status") in ["inqueue", "isRunning"]:
                     running_job_list.append(job)
                     break
         for job in [job for job in response_dto_lst if job not in running_job_list]:

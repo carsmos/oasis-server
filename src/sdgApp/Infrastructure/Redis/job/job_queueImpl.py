@@ -40,7 +40,7 @@ class JobQueueImpl(JobQueue):
         queue_name = conf['DB_REDIS']['USER_ID']
         task_list = job.get("task_list")
 
-        for task_id in task_ids.split(","):
+        for task_id in task_ids.split(",")[::-1]:
             add_task_list = [task for task in task_list if task_id == task.get("id")]
             if job and len(add_task_list) > 0:
 
@@ -56,7 +56,7 @@ class JobQueueImpl(JobQueue):
                 handle_index_for_task(task, ori_idx, task_list, retry_task)
 
                 self.sess.set(task_id, json.dumps(task))
-                self.sess.lpush(queue_name, task_id)
+                self.sess.rpush(queue_name, task_id)
                 self.log.info_log({"msg": "Task in queue, waiting to be processed. task_id:{}".format(task_id),
                                "task_id": task_id})
         return job
