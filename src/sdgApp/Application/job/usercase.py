@@ -67,6 +67,22 @@ class JobCommandUsercase(object):
         except:
             raise
 
+    async def delete_task(self, job_id: str, task_ids: str):
+        try:
+            filter = {'id': job_id}
+            filter.update({"usr_id": self.user.id})
+            job = await self.job_collection.find_one(filter, {'_id': 0, 'usr_id': 0})
+            task_list = job.get("task_list")
+            task_id_list = task_ids.split(",")
+            for task_id in task_id_list:
+                for task in task_list[::-1]:
+                    if task.get("id") == task_id:
+                        task_list.remove(task)
+            self.job_collection.update_one(filter, {'$set': job})
+            return job
+        except:
+            raise
+
     async def update_job(self, job_id:str, job_update_model: JobUpdateDTO):
         ## ! update finished job can cause status and replay url loss
         try:
@@ -253,9 +269,10 @@ class JobQueryUsercase(object):
     async def get_jobs_infos(self, status, cycle, name, p_num, limit, asc):
         try:
             filter = {"usr_id": self.user.id}
+            if cycle in ["day", "week", "month"]:
+                filter = self.get_times(cycle, filter)
             if name not in [""]:
-                filter.update({"$or": [{"name": {"$regex": name, "$option": "s"}}, {"desc": {"$regex": name, "$option": "s"}}]})
-            filter = self.get_times(cycle, filter)
+                filter.update({"$or": [{"name": {"$regex": name}}, {"desc": {"$regex": name}}]})
             total_num = await self.job_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / limit)
             if p_num > total_page_num and total_page_num > 0:
@@ -286,19 +303,26 @@ class JobQueryUsercase(object):
     def get_times(self, cycle, filter):
         now = datetime.datetime.now()
         if cycle == "day":
-            zero_time = now - datetime.timedelta(hours=now.hour, minutes=now.minute, seconds=now.minute,
+            zero = now - datetime.timedelta(hours=now.hour, minutes=now.minute, seconds=now.minute,
                                                  microseconds=now.microsecond)
-            last_time = now + datetime.timedelta(hours=23, minutes=59, seconds=59)
-            filter.update({"last_modified": {"gte": zero_time, "lte": last_time}})
+            zero_time = datetime.datetime.strftime(zero, '%Y-%m-%d %H:%M:%S')
+            last = zero + datetime.timedelta(hours=23, minutes=59, seconds=59)
+            last_time = datetime.datetime.strftime(last, '%Y-%m-%d %H:%M:%S')
+            # {"last_modified": {"$gte":"2022-05-30 00:00:40", "$lte":"2022-05-31 00:00:39"}}
+            filter.update({"last_modified": {"$gte": zero_time, "$lte": last_time}})
         elif cycle == "week":
-            zero_time = now - datetime.timedelta(days=now.weekday(), hours=now.hour, minutes=now.minute,
+            zero = now - datetime.timedelta(days=now.weekday(), hours=now.hour, minutes=now.minute,
                                                  seconds=now.minute, microseconds=now.microsecond)
-            last_time = now + datetime.timedelta(days=6 - now.weekday(), hours=23 - now.hour, minutes=59 - now.minute,
+            zero_time = datetime.datetime.strftime(zero, '%Y-%m-%d %H:%M:%S')
+            last = now + datetime.timedelta(days=6 - now.weekday(), hours=23 - now.hour, minutes=59 - now.minute,
                                                  seconds=59 - now.minute)
-            filter.update({"last_modified": {"gte": zero_time, "lte": last_time}})
+            last_time = datetime.datetime.strftime(last, '%Y-%m-%d %H:%M:%S')
+            filter.update({"last_modified": {"$gte": zero_time, "$lte": last_time}})
         elif cycle == "month":
-            zero_time = datetime.datetime(now.year, now.month, 1)
-            last_time = datetime.datetime(now.year, now.month + 1, 1) - datetime.timedelta(days=1) + \
+            zero = datetime.datetime(now.year, now.month, 1)
+            zero_time = datetime.datetime.strftime(zero, '%Y-%m-%d %H:%M:%S')
+            last = datetime.datetime(now.year, now.month + 1, 1) - datetime.timedelta(days=1) + \
                         datetime.timedelta(hours=23, minutes=59, seconds=59)
-            filter.update({"last_modified": {"gte": zero_time, "lte": last_time}})
+            last_time = datetime.datetime.strftime(last, '%Y-%m-%d %H:%M:%S')
+            filter.update({"last_modified": {"$gte": zero_time, "$lte": last_time}})
         return filter

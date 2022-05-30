@@ -38,10 +38,21 @@ async def create_job(job_create_model: JobCreateDTO, db=Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
-async def delete_job(job_id: str, db=Depends(get_db),
-                          user: UserDB = Depends(current_active_user)):
+async def delete_job(job_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).delete_job(job_id)
+    except:
+        raise
+
+
+@router.delete(
+    "/task/{job_id}/{task_ids}",
+    status_code=status.HTTP_202_ACCEPTED,
+    tags=["Job"]
+)
+async def delete_task(job_id: str, task_ids: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+    try:
+        return await JobCommandUsercase(db_session=db, user=user).delete_task(job_id, task_ids)
     except:
         raise
 
@@ -51,7 +62,7 @@ async def delete_job(job_id: str, db=Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
-async def update_job(job_id:str, job_update_model: JobUpdateDTO, db=Depends(get_db),
+async def update_job(job_id: str, job_update_model: JobUpdateDTO, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).update_job(job_id, job_update_model)
