@@ -61,7 +61,9 @@ class JobQueueImpl(JobQueue):
                                "task_id": task_id})
         return job
 
-    def get_length(self, queue_name="sdg"):
+    def get_length(self):
+        conf = get_conf()
+        queue_name = conf['DB_REDIS']['USER_ID']
         return len(self.sess.lrange(queue_name, 0, -1))
 
 
