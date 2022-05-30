@@ -222,20 +222,26 @@ class JobQueryUsercase(object):
         finished_status_list = ["Finish", "timeout"]
 
         for job in response_dto_lst:
-            for task in job.task_list:
-                if task.get("status") in ["inqueue", "isRunning"]:
-                    running_job_list.append(job)
-                    break
+            isruning = any([task.get("status") in ["inqueue", "isRunning"] for task in job.task_list])
+            if isruning:
+                running_job_list.append(job)
+            # for task in job.task_list:
+            #     if task.get("status") in ["inqueue", "isRunning"]:
+            #         running_job_list.append(job)
+            #         break
         for job in [job for job in response_dto_lst if job not in running_job_list]:
-            for task in job.task_list:
-                if task.get("status") == 'notrun':
-                    notrun_job_list.append(job)
-                    break
+            not_run = all([task.get("status") == 'notrun' for task in job.task_list])
+            if not_run:
+                notrun_job_list.append(job)
+
         for job in [job for job in response_dto_lst if job not in running_job_list+notrun_job_list]:
-            all_length = len(job.task_list)
-            finish_length = len([task for task in job.task_list if task.get("status") in finished_status_list])
-            if all_length == finish_length:
+            hasfinished = all([task.get("status") in finished_status_list for task in job.task_list])
+            if hasfinished:
                 finished_job_list.append(job)
+            # all_length = len(job.task_list)
+            # finish_length = len([task for task in job.task_list if task.get("status") in finished_status_list])
+            # if all_length == finish_length:
+            #     finished_job_list.append(job)
 
         if status == "finished":
             return finished_job_list

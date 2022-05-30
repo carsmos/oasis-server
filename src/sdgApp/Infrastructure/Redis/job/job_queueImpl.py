@@ -55,8 +55,8 @@ class JobQueueImpl(JobQueue):
 
                 handle_index_for_task(task, ori_idx, task_list, retry_task)
 
-                self.sess.set(task_id, json.dumps(task))
-                self.sess.rpush(queue_name, task_id)
+                self.sess.set(retry_task["id"], json.dumps(task))
+                self.sess.rpush(queue_name, retry_task["id"])
                 self.log.info_log({"msg": "Task in queue, waiting to be processed. task_id:{}".format(task_id),
                                "task_id": task_id})
         return job
