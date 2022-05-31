@@ -52,6 +52,8 @@ class JobQueueImpl(JobQueue):
                 retry_task["id"] = shortuuid.uuid()
                 retry_task["status"] = "inqueue"
                 retry_task["last_modified"] = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')
+                retry_task['replay_url'] = ""
+                retry_task['cam_url'] = ""
 
                 handle_index_for_task(task, ori_idx, task_list, retry_task)
 
