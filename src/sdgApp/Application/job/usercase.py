@@ -230,7 +230,7 @@ class JobQueryUsercase(object):
             #         running_job_list.append(job)
             #         break
         for job in [job for job in response_dto_lst if job not in running_job_list]:
-            not_run = all([task.get("status") == ['notrun', "Not running"] for task in job.task_list])
+            not_run = all([task.get("status") in ['notrun', "Not running"] for task in job.task_list])
             if not_run:
                 notrun_job_list.append(job)
 
