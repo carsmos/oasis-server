@@ -25,7 +25,7 @@ router = APIRouter()
 async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        await AssembleScenarioService(scenario_create_model, db, user)
+        return await AssembleScenarioService(scenario_create_model, db, user)
     except DynamicScenesNotFoundError as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except EnvNotFoundError as e:
@@ -64,9 +64,9 @@ async def update_scenario(scenario_id: str,
     response_model=ScenariosResponse,
     tags=["Scenarios"]
 )
-async def find_all_scenarios(skip: int = 1,  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def find_all_scenarios(pagenum: int = 1, pagesize: int = 10, content: str = "", tags: str = "",  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return await ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(skip)
+        return await ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(pagenum, pagesize, content, tags)
     except:
         raise
 

@@ -1,5 +1,6 @@
 import copy
 import math
+from datetime import datetime
 
 import shortuuid
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
@@ -24,7 +25,9 @@ class ScenarioCommandUsercase(object):
                                           tags=scenario_create_model.tags,
                                           scenario_param=scenario_create_model.scenario_param
                                           )
-            await self.repo.create_scenario(scenario)
+            scenario = await self.repo.create_scenario(scenario)
+            if scenario:
+                return ScenariosReadDTO(**scenario)
         except:
             raise
 
@@ -41,7 +44,10 @@ class ScenarioCommandUsercase(object):
             scenario_retrieved.desc = scenario_update_model.desc
             scenario_retrieved.tags = scenario_update_model.tags
             scenario_retrieved.scenario_param = scenario_update_model.scenario_param
-            await self.repo.update_scenario(scenario_id, scenario_retrieved)
+            scenario = await self.repo.update_scenario(scenario_id, scenario_retrieved)
+            if scenario:
+                scenario.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+                return ScenariosReadDTO(**scenario)
         except:
             raise
 
@@ -64,16 +70,21 @@ class ScenarioQueryUsercase(object):
         except:
             raise
 
-    async def find_all_scenarios(self, p_num, limit: int = 15):
+    async def find_all_scenarios(self, pagenum, pagesize, content, tags):
         try:
             filter = {}
             filter.update({"usr_id": self.user.id})
+            if tags:
+                tag_list = tags.split("+")
+                filter.update({"tags": {"$all": tag_list}})
+            if content:
+                filter.update({"$or": [{"name": {"$regex": content}}, {"desc": {"$regex": content}}]})
             total_num = await self.scenarios_collection.count_documents(filter)
-            total_page_num = math.ceil(total_num / limit)
-            if p_num > total_page_num and total_page_num > 0:
-                p_num = total_page_num
-            if p_num > 0:
-                results_dict = self.scenarios_collection.find(filter).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+            total_page_num = math.ceil(total_num / pagesize)
+            if pagenum > total_page_num > 0:
+                pagenum = total_page_num
+            if pagenum > 0:
+                results_dict = self.scenarios_collection.find(filter).sort([('last_modified', -1)]).skip((pagenum-1) * pagesize).limit(pagesize).to_list(length=50)
             else:
                 results_dict = self.scenarios_collection.find(filter).sort([('last_modified', -1)]).to_list(length=total_num)
             if results_dict:

@@ -39,7 +39,9 @@ class CarCommandUsercase(object):
 
     async def delete_car(self, car_id: str):
         try:
-            await self.repo.delete(car_id)
+            cars_ids = car_id.split(",")
+            for cars_id in cars_ids:
+                await self.repo.delete(cars_id)
         except:
             raise
 
@@ -96,18 +98,27 @@ class CarQueryUsercase(object):
             result_dict = await self.car_collection.find_one(filter, {'_id': 0, 'usr_id':0})
             if result_dict is None:
                 raise CarNotFoundError
+            sensors = result_dict.get('sensors_snap').get('sensors')
+            if sensors:
+                sensors_new = []
+                for sensor in sensors:
+                    if sensor['sensor_id'] != 'default':
+                        sensors_new.append(sensor)
+                result_dict['sensors_snap']['sensors'] = sensors_new
             return CarReadDTO(**result_dict)
         except:
             raise
 
-    async def list_car(self, p_num, limit: int = 15):
+    async def list_car(self, pagenum, pagesize, content):
         try:
             filter = {"usr_id": self.user.id}
-            total_num = await self.car_collection.count_documents({"usr_id": self.user.id})
-            total_page_num = math.ceil(total_num / limit)
-            if p_num > total_page_num and total_page_num > 0:
-                p_num = total_page_num
-            if p_num > 0:
+            if content:
+                filter.update({"$or": [{"name": {"$regex": content}}, {"desc":{"$regex": content}}]})
+            total_num = await self.car_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / pagesize)
+            if pagenum > total_page_num > 0:
+                pagenum = total_page_num
+            if pagenum > 0:
                 results_dict = self.car_collection.find(filter, {'name': 1,
                                                            'id': 1,
                                                            'desc': 1,
@@ -126,7 +137,9 @@ class CarQueryUsercase(object):
                                                            'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_name': 1,
                                                            'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
                                                            'sensors_snap.sensors.sensor_name': 1,
-                                                           'sensors_snap.sensors.sensor_id': 1}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                                                           'sensors_snap.sensors.sensor_id': 1,
+                                                           'sensors_snap.sensors.type': 1,
+                                                           'sensors_snap.sensors.position': 1}).sort([('last_modified', -1)]).skip((pagenum-1) * pagesize).limit(pagesize).to_list(length=50)
             else:
                 results_dict = self.car_collection.find(filter, {'name': 1,
                                                                  'id': 1,
@@ -146,7 +159,9 @@ class CarQueryUsercase(object):
                                                                  'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_name': 1,
                                                                  'car_snap.vehicle_physics_control.wheels.rear_right_wheel.wheel_id': 1,
                                                                  'sensors_snap.sensors.sensor_name': 1,
-                                                                 'sensors_snap.sensors.sensor_id': 1}).sort(
+                                                                 'sensors_snap.sensors.sensor_id': 1,
+                                                                 'sensors_snap.sensors.type': 1,
+                                                                 'sensors_snap.sensors.position': 1}).sort(
                     [('last_modified', -1)]).to_list(length=total_num)
             if results_dict:
                 response_dic = {}
@@ -155,6 +170,13 @@ class CarQueryUsercase(object):
                 response_dic["total_page_num"] = total_page_num
 
                 for doc in await results_dict:
+                    sensors = doc.get('sensors_snap').get('sensors')
+                    if sensors:
+                        sensors_new = []
+                        for sensor in sensors:
+                            if sensor['sensor_id'] != 'default':
+                                sensors_new.append(sensor)
+                        doc['sensors_snap']['sensors'] = sensors_new
                     response_dto_lst.append(CarReadDTO(**doc))
                 response_dic["datas"] = response_dto_lst
                 return response_dic

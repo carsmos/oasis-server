@@ -80,10 +80,10 @@ async def get_car(car_id:str, db = Depends(get_db),
     response_model=CarsResponse,
     tags=["Cars"]
 )
-async def list_car(skip: int = 1, db=Depends(get_db),
+async def list_car(pagenum: int = 1, pagesize: int = 10, content: str = "", db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        car_dto_dic = await CarQueryUsercase(db_session=db, user=user).list_car(skip)
+        car_dto_dic = await CarQueryUsercase(db_session=db, user=user).list_car(pagenum, pagesize, content)
         return car_dto_dic
     except:
         raise

@@ -13,7 +13,7 @@ DEFAULT_SENSORS_SNAP = {'car_id': '',
                             {
                                 "type": "sensor.camera.rgb",
                                 "id": "view",
-                                "position": ["-4.5", "0", "2.8"],
+                                "position": {"x": "-4.5", "y": "0", "z": "2.8"},
                                 "roll": 0,
                                 "pitch": -20,
                                 "yaw": 0,
@@ -63,7 +63,7 @@ DEFAULT_SENSORS_SNAP = {'car_id': '',
                             }, {
                                 "type": "sensor.lidar.ray_cast",
                                 "id": "lidar1",
-                                "position": ["0", "0", "2.4"],
+                                "position": {"x": "0", "y": "0", "z": "2.4"},
                                 "roll": 0,
                                 "pitch": 0,
                                 "yaw": 0,
@@ -100,7 +100,7 @@ async def AssembleCarService(assemble_create_model: AssembleCreateDTO, db_sessio
     if sensors:
         for sensor_info_dict in sensors:
             sensor_id = sensor_info_dict["id"]
-            sensor_position = sensor_info_dict["position"]
+            sensor_position = sensor_info_dict.get("position")
             sensor_dto = await SensorQueryUsercase(db_session=db_session, user=user).get_sensor(sensor_id)
             if sensor_dto:
                 sensor_dto.param["sensor_id"] = sensor_id

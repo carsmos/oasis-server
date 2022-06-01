@@ -99,7 +99,7 @@ class JobRepoImpl(JobRepo):
             }
         filter.update({"usr_id": self.user.id})
         await self.job_collection.update_one(filter
-                                       , {'$set': update_job_DO.dict(exclude={'usr_id','create_time'})})
+                                       , {'$set': update_job_DO.dict(exclude={'usr_id', 'create_time'})})
 
     async def get(self, job_id: str):
         filter = {'id': job_id}

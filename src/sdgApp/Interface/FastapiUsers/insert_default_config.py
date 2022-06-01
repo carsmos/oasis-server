@@ -436,12 +436,14 @@ async def insert_default(db_session, user):
         "light_state": "LowBeam",
         "vehicle_color": "242, 234, 78",
         "controller": "autoware"
-      },
-    "dynamics_id": dynamic_dto.id,
-    "sensors": [{"id": lidar_dto.id, "position":["0.0","0.0","2.4"]},
-                {"id": depth_dto.id, "position":["2.0","0.0","2.0"]}]}
+         },
+        "dynamics_id": dynamic_dto.id,
+        "sensors": [
+                {"id": lidar_dto.id, "position": {"x": "0.0", "y": "0.0", "z": "2.4"}},
+                {"id": depth_dto.id, "position": {"x": "2.0", "y": "0.0", "z": "2.0"}}
+                ]}
     await AssembleCarService(AssembleCreateDTO(**assemble_car_dict), db_session=db_session, user=user)
-    default_car_dto = await CarQueryUsercase(db_session=db_session, user=user).list_car(1)
+    default_car_dto = await CarQueryUsercase(db_session=db_session, user=user).list_car(1, 15, None)
     default_car_dto = default_car_dto["datas"][0]
 
 
@@ -518,7 +520,7 @@ async def insert_default(db_session, user):
                          "env_id": "MidRainSunset",
                          "tags": []}
     await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
-    default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1)
+    default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "", "")
     default_scenario_dto = default_scenario_dto["datas"][0]
 
     from sdgApp.Application.job.CommandDTOs import JobCreateDTO
