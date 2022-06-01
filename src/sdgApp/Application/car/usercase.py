@@ -113,7 +113,7 @@ class CarQueryUsercase(object):
         try:
             filter = {"usr_id": self.user.id}
             if content:
-                filter.update({"$or": [{"name": {"$regex": content}}, {"desc":{"$regex": content}}]})
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
             total_num = await self.car_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / pagesize)
             if pagenum > total_page_num > 0:
