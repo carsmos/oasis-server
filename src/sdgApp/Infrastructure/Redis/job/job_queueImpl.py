@@ -80,29 +80,34 @@ def find_parent_task(add_task, task_list):
 
 
 def handle_index_for_task(ori_task, ori_idx, task_list, retry_task):
-    for idx, task in enumerate([task for task in task_list if "." not in task.get("index")]):
+    has_index_task_list = [task for task in task_list if "index" in task and "." not in task.get("index")]
+    no_index_task_list = [task for task in task_list if "index" not in task]
+    for idx, task in enumerate(has_index_task_list+no_index_task_list):
         if task.get("index") is None:
             if idx <= 9:
                 task["index"] = "0" + str(idx+1)
             else:
                 task["index"] = str(idx+1)
     parent_task = find_parent_task(ori_task, task_list)
+    parent_task_index = task_list.index(parent_task)
     if ori_idx + 1 < len(task_list):
         for i in range(ori_idx+1, len(task_list)):
             if task_list[i].get("original_id") is None:
+                length = len(task_list[parent_task_index:i])
                 if ori_idx + 1 <= 9:
-                    retry_task["index"] = parent_task.get("index") + ".%s" % i
+                    retry_task["index"] = parent_task.get("index") + ".%s" % length
                 else:
-                    retry_task["index"] = parent_task.get("index") + ".%s" % i
+                    retry_task["index"] = parent_task.get("index") + ".%s" % length
                 task_list.insert(i, retry_task)
                 break
         if retry_task not in task_list:
             if ori_idx + 1 <= 9:
-                retry_task["index"] = parent_task.get("index") + ".%s" % (len(task_list))
+                retry_task["index"] = parent_task.get("index") + ".%s" % (len(task_list[parent_task_index:]))
             else:
-                retry_task["index"] = parent_task.get("index") + ".%s" % (len(task_list))
+                retry_task["index"] = parent_task.get("index") + ".%s" % (len(task_list[parent_task_index:]))
             task_list.insert(len(task_list), retry_task)
     else:
+        # 在列表最后添加任务
         parent_task_index = task_list[ori_idx].get("index")
         if "." not in parent_task_index:
             if ori_idx + 1 <= 9:
