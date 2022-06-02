@@ -80,7 +80,9 @@ def find_parent_task(add_task, task_list):
 
 
 def handle_index_for_task(ori_task, ori_idx, task_list, retry_task):
-    for idx, task in enumerate([task for task in task_list if "." not in task.get("index")]):
+    has_index_task_list = [task for task in task_list if "index" in task and "." not in task.get("index")]
+    no_index_task_list = [task for task in task_list if "index" not in task]
+    for idx, task in enumerate(has_index_task_list+no_index_task_list):
         if task.get("index") is None:
             if idx <= 9:
                 task["index"] = "0" + str(idx+1)
