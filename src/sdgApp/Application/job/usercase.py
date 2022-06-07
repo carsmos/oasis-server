@@ -15,6 +15,8 @@ from sdgApp.Domain.car.car_exceptions import CarNotFoundError
 from sdgApp.Application.scenarios.usercase import ScenarioQueryUsercase
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 
+from sdgApp.Application.job.utils import handle_finish_pass_job
+
 
 def dto_assembler(job: JobAggregate):
     return job.shortcut_DO
@@ -36,7 +38,8 @@ class JobCommandUsercase(object):
             tasks_lst = job_create_model.task_list
             job = JobAggregate(id=uuid,
                                 name=job_create_model.name,
-                                desc=job_create_model.desc)
+                                desc=job_create_model.desc,
+                                status='waiting')
             for task_model in tasks_lst:
 
                 await CarQueryUsercase(db_session=self.db_session, user=self.user).get_car(task_model.car_id)
@@ -130,11 +133,12 @@ class JobCommandUsercase(object):
             if result_dict:
                 self.queue = JobQueueImpl(queue_sess)
                 self.queue.publish(result_dict)
-                self.update_task_status(result_dict, filter, "inqueue")
+                self.update_task_status(result_dict, filter, "inqueue", 'start')
+                self.update_job_status_inqueue(filter)
         except:
             raise
 
-    def update_task_status(self, result_dict, filter, status, task_id=None):
+    def update_task_status(self, result_dict, filter, status, start_or_end, task_id=None):
         try:
             if task_id:
                 for task in result_dict.get('task_list'):
@@ -143,7 +147,17 @@ class JobCommandUsercase(object):
             else:
                 for task in result_dict.get('task_list'):
                     task['status'] = status
+            if start_or_end == 'start':
+                result_dict['start_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            if start_or_end == 'end':
+                result_dict['end_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             self.job_collection.update_one(filter, {'$set': result_dict})
+        except:
+            raise
+
+    def update_job_status_inqueue(self, filter):
+        try:
+            self.job_collection.update_one(filter, {'$set': {'status': 'inqueue'}})
         except:
             raise
 
@@ -156,7 +170,7 @@ class JobCommandUsercase(object):
                 if result_dict:
                     self.queue = JobQueueImpl(queue_sess)
                     self.queue.delete(job=result_dict)
-                    self.update_task_status(result_dict, filter, "notrun")
+                    self.update_task_status(result_dict, filter, "notrun", "end")
         except:
             raise
 
@@ -186,7 +200,9 @@ class JobQueryUsercase(object):
             filter.update({"usr_id": self.user.id})
 
             result_dict = await self.job_collection.find_one(filter, {'_id': 0, 'usr_id': 0})
-            return JobReadDTO(**result_dict)
+            jobReadDTO = JobReadDTO(**result_dict)
+            jobReadDTO = handle_finish_pass_job(jobReadDTO)
+            return jobReadDTO
         except:
             raise
 
