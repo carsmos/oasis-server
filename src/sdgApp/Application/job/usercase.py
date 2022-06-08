@@ -210,7 +210,10 @@ class JobQueryUsercase(object):
         try:
             filter = {"usr_id": self.user.id}
             if status:
-                filter.update({"status": status})
+                if status == "running":
+                    filter.update({"$or": [{"status": "running"}, {"status": "inqueue"}]})
+                else:
+                    filter.update({"status": status})
             if content:
                 filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
 
