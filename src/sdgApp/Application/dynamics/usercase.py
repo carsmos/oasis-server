@@ -27,9 +27,10 @@ class DynamicsCommandUsercase(object):
         except:
             raise
 
-    async def delete_dynamics(self, dynamics_id: str):
+    async def delete_dynamics(self, dynamics_ids: str):
         try:
-            await self.repo.delete(dynamics_id)
+            for dynamics_id in dynamics_ids.split("+"):
+                await self.repo.delete(dynamics_id)
         except:
             raise
 
@@ -63,15 +64,19 @@ class DynamicsQueryUsercase(object):
         except:
             raise
 
-    async def list_dynamics(self, p_num, limit: int = 15):
+    async def list_dynamics(self, p_num, p_size, content):
         try:
             filter = {"usr_id": self.user.id}
-            total_num = await self.dynamics_collection.count_documents({"usr_id": self.user.id})
-            total_page_num = math.ceil(total_num / limit)
+            if content not in [""]:
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "i"}},
+                                       {"desc": {"$regex": content, "$options": "i"}}]})
+            total_num = await self.dynamics_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / p_size)
             if p_num > total_page_num and total_page_num > 0:
                 p_num = total_page_num
             if p_num > 0:
-                results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id':0}).sort(
+                    [('last_modified', -1)]).skip((p_num-1) * p_size).limit(p_size).to_list(length=50)
             else:
                 results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort(
                     [('last_modified', -1)]).to_list(length=total_num)

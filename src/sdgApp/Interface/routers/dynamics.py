@@ -72,10 +72,10 @@ async def get_dynamics(dynamics_id:str, db = Depends(get_db),
     response_model=DynamicsResponse,
     tags=["Dynamics"]
 )
-async def list_dynamics(skip: int = 1, db=Depends(get_db),
+async def list_dynamics(content: str = "", p_size: int = 15, p_num: int = 1, db=Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        dynamics_dto_dic = await DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(skip)
+        dynamics_dto_dic = await DynamicsQueryUsercase(db_session=db, user=user).list_dynamics(p_num, p_size, content)
         return dynamics_dto_dic
     except:
         raise

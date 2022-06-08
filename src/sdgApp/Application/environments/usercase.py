@@ -62,17 +62,21 @@ class EnvQueryUsercase(object):
         except:
             raise
 
-    async def find_all_envs(self, p_num, limit: int = 15):
+    async def find_all_envs(self, p_num, p_size, content):
         try:
             filter = ({"usr_id": self.user.id})
-            total_num = await self.envs_collection.count_documents({"usr_id": self.user.id})
-            total_page_num = math.ceil(total_num / limit)
+            if content not in [""]:
+                filter.update({"$or": [{"name": {"$regex": content}}, {"desc": {"$regex": content}}]})
+            total_num = await self.envs_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / p_size)
             if p_num > total_page_num and total_page_num > 0:
                 p_num = total_page_num
             if p_num > 0:
-                results_dict = self.envs_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                results_dict = self.envs_collection.find(filter, {'_id': 0}).sort(
+                    [('last_modified', -1)]).skip((p_num-1) * p_size).limit(p_size).to_list(length=50)
             else:
-                results_dict = self.envs_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)]).to_list(length=total_num)
+                results_dict = self.envs_collection.find(filter, {'_id': 0}).sort(
+                    [('last_modified', -1)]).to_list(length=total_num)
             if results_dict:
                 response_dic = {}
                 response_dto_lst = []
