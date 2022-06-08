@@ -206,15 +206,20 @@ class JobQueryUsercase(object):
         except:
             raise
 
-    async def list_job(self, p_num, limit, asc):
+    async def list_job(self, pagenum, pagesize, asc, status, content):
         try:
             filter = {"usr_id": self.user.id}
-            total_num = await self.job_collection.count_documents({"usr_id": self.user.id})
-            total_page_num = math.ceil(total_num / limit)
-            if p_num > total_page_num and total_page_num > 0:
-                p_num = total_page_num
-            if p_num > 0:
-                results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([('last_modified', int(asc))]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+            if status:
+                filter.update({"status": status})
+            if content:
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
+
+            total_num = await self.job_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / pagesize)
+            if pagenum > total_page_num > 0:
+                pagenum = total_page_num
+            if pagenum > 0:
+                results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([('last_modified', int(asc))]).skip((pagenum-1) * pagesize).limit(pagesize).to_list(length=50)
             else:
                 results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([('last_modified', int(asc))]).to_list(length=total_num)
             if results_dict:
@@ -224,7 +229,9 @@ class JobQueryUsercase(object):
                 response_dic["total_page_num"] = total_page_num
 
                 for doc in await results_dict:
-                    response_dto_lst.append(JobReadDTO(**doc))
+                    jobReadDTO = JobReadDTO(**doc)
+                    jobReadDTO = handle_finish_pass_job(jobReadDTO)
+                    response_dto_lst.append(jobReadDTO)
                 response_dic["datas"] = response_dto_lst
                 return response_dic
         except:

@@ -90,13 +90,12 @@ async def get_job(job_id:str, db=Depends(get_db), user: UserDB = Depends(current
 @router.get(
     "/job",
     status_code=status.HTTP_200_OK,
-    response_model=JobsResponse,
     tags=["Job"]
 )
-async def list_job(skip: int = 1, limit: int = 15, asc: int = -1, db=Depends(get_db),
+async def list_job(pagenum: int = 1, pagesize: int = 15, asc: int = -1, status: str = "",  content: str = "", db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).list_job(skip, limit, asc)
+        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).list_job(pagenum, pagesize, asc, status, content)
         return job_dto_dic
     except:
         raise
