@@ -72,14 +72,15 @@ async def get_sensor(sensor_id:str, db = Depends(get_db),
     response_model=SensorsResponse,
     tags=["Sensors"]
 )
-async def list_sensor(skip: int = 1, sensor_type: Optional[str] = None,
+async def list_sensor(skip: int = 1, limit: int = 15, content: str = "",sensor_type: Optional[str] = None,
                       db= Depends(get_db),
                       user: UserDB = Depends(current_active_user)):
     try:
         query_param = {}
         if sensor_type: query_param.update({"type": sensor_type})
+        if content: query_param.update({"content": content})
 
-        sensor_dto_dic = await SensorQueryUsercase(db_session=db, user=user).list_sensor(skip, query_param=query_param)
+        sensor_dto_dic = await SensorQueryUsercase(db_session=db, user=user).list_sensor(skip, limit, query_param=query_param)
         return sensor_dto_dic
     except:
         raise
