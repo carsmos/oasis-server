@@ -8,6 +8,9 @@ class JobReadDTO(BaseModel):
     desc: str
     create_time: str
     last_modified: str
+    status: Optional[str]
+    start_time: Optional[str]
+    end_time: Optional[str]
     task_list: List[dict]
 
 

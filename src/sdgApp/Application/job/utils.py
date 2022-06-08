@@ -1,5 +1,6 @@
 
 def handle_finish_pass_job(jobReadDTO):
+    jobReadDTO = dict(jobReadDTO)
     finish_count = 0
     pass_count = 0
 

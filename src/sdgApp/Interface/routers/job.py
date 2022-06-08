@@ -77,7 +77,6 @@ async def update_job(job_id: str, job_update_model: JobUpdateDTO, db=Depends(get
 @router.get(
     "/job/{job_id}",
     status_code=status.HTTP_200_OK,
-    response_model=JobReadDTO,
     tags=["Job"]
 )
 async def get_job(job_id:str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
