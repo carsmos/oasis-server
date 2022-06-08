@@ -1,6 +1,5 @@
 
 import shortuuid
-from uuid import UUID
 
 
 async def insert_default(db_session, user):
@@ -85,6 +84,7 @@ async def insert_default(db_session, user):
         "type": "sensor.camera.semantic_segmentation",
         "desc": "初始化语义分割摄像机模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。",
         "param": {
+            "id": "front",
             "roll": 0,
             "pitch": 0,
             "yaw": 0,
@@ -106,6 +106,7 @@ async def insert_default(db_session, user):
         "type": "sensor.camera.dvs",
         "desc": "初始化DVS摄像机模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。",
         "param": {
+            "id": "front",
             "roll": 0,
             "pitch": 0,
             "yaw": 0,
@@ -369,7 +370,7 @@ async def insert_default(db_session, user):
             "damping_rate_zero_throttle_clutch_disengaged": 0.35,
             "wheels": {
                 "front_left_wheel": {
-                    "position": "0.0,0.0,0.0",
+                    "position": {"x": 0, "y": 0, "z": 0},
                     "tire_friction": "2.0",
                     "damping_rate": "0.25",
                     "max_steer_angle": "70.0",
@@ -381,7 +382,7 @@ async def insert_default(db_session, user):
                     "lat_stiff_value": ""
                 },
                 "front_right_wheel": {
-                    "position": "0.0,0.0,0.0",
+                    "position": {"x": 0, "y": 0, "z": 0},
                     "tire_friction": "2.0",
                     "damping_rate": "0.25",
                     "max_steer_angle": "70.0",
@@ -393,7 +394,7 @@ async def insert_default(db_session, user):
                     "lat_stiff_value": ""
                 },
                 "rear_left_wheel": {
-                    "position": "0.0,0.0,0.0",
+                    "position": {"x": 0, "y": 0, "z": 0},
                     "tire_friction": "2.0",
                     "damping_rate": "0.25",
                     "max_steer_angle": "70.0",
@@ -405,7 +406,7 @@ async def insert_default(db_session, user):
                     "lat_stiff_value": ""
                 },
                 "rear_right_wheel": {
-                    "position": "0.0,0.0,0.0",
+                    "position": {"x": 0, "y": 0, "z": 0},
                     "tire_friction": "2.0",
                     "damping_rate": "0.25",
                     "max_steer_angle": "70.0",
@@ -421,7 +422,7 @@ async def insert_default(db_session, user):
     }
 
     await DynamicsCommandUsercase(db_session=db_session, user=user).create_dynamics(DynamicsCreateDTO(**default_dynamic))
-    dynamic_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(1)
+    dynamic_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(0, 15, "")
     dynamic_dto = dynamic_dto["datas"][0]
 
     from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarService
