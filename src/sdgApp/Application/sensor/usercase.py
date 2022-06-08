@@ -68,10 +68,16 @@ class SensorQueryUsercase(object):
         except:
             raise
 
-    async def list_sensor(self, p_num, query_param: dict, limit: int = 15):
+    async def list_sensor(self, p_num, limit, query_param: dict):
         try:
             filter = {"usr_id": self.user.id}
+            content = query_param.get("content")
+            if content:
+                filter.update({"$or": [{"name": {"$regex": content}}, {"desc": {"$regex": content}}]})
+                query_param.pop("content")
+
             filter.update(query_param)
+
             total_num = await self.sensor_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / limit)
             if p_num > total_page_num and total_page_num > 0:
