@@ -27,9 +27,10 @@ class EnvCommandUsercase(object):
         except:
             raise
 
-    async def delete_env(self, env_id: str):
+    async def delete_env(self, env_ids: str):
         try:
-            await self.repo.delete_env(env_id)
+            for env_id in env_ids.split("+"):
+                await self.repo.delete_env(env_id)
         except:
             raise
 
@@ -66,7 +67,8 @@ class EnvQueryUsercase(object):
         try:
             filter = ({"usr_id": self.user.id})
             if content not in [""]:
-                filter.update({"$or": [{"name": {"$regex": content}}, {"desc": {"$regex": content}}]})
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "i"}},
+                                       {"desc": {"$regex": content, "$options": "i"}}]})
             total_num = await self.envs_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / p_size)
             if p_num > total_page_num and total_page_num > 0:

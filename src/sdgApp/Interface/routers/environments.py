@@ -27,9 +27,9 @@ async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db),
 @router.delete("/environments/{env_id}",
                status_code=status.HTTP_202_ACCEPTED,
                tags=["Envs"])
-async def delete_env(env_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def delete_env(env_ids: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        await EnvCommandUsercase(db_session=db, user=user).delete_env(env_id)
+        await EnvCommandUsercase(db_session=db, user=user).delete_env(env_ids)
     except:
         raise
 
