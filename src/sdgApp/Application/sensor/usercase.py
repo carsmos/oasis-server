@@ -83,9 +83,11 @@ class SensorQueryUsercase(object):
             if p_num > total_page_num and total_page_num > 0:
                 p_num = total_page_num
             if p_num > 0:
-                results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort(
+                    [('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
             else:
-                results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)]).to_list(length=total_num)
+                results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort(
+                    [('last_modified', -1)]).to_list(length=total_num)
             if results_dict:
                 response_dic = {}
                 response_dto_lst = []
