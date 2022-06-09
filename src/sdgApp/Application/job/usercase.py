@@ -38,8 +38,8 @@ class JobCommandUsercase(object):
             tasks_lst = job_create_model.task_list
             job = JobAggregate(id=uuid,
                                 name=job_create_model.name,
-                                desc=job_create_model.desc,
-                                status='waiting')
+                                desc=job_create_model.desc)
+            job.status = "waiting"
             for task_model in tasks_lst:
 
                 await CarQueryUsercase(db_session=self.db_session, user=self.user).get_car(task_model.car_id)

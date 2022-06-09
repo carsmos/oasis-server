@@ -45,6 +45,7 @@ class JobRepoImpl(JobRepo):
         job_DO = JobDO(id=job.id,
                        name=job.name,
                        desc=job.desc,
+                       status=job.status,
                        usr_id=self.user.id,
                        create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                        last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
