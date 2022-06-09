@@ -92,10 +92,11 @@ async def get_job(job_id:str, db=Depends(get_db), user: UserDB = Depends(current
     status_code=status.HTTP_200_OK,
     tags=["Job"]
 )
-async def list_job(pagenum: int = 1, pagesize: int = 15, asc: int = -1, status: str = "",  content: str = "", db=Depends(get_db),
+async def list_job(pagenum: int = 1, pagesize: int = 15, asc: int = -1, status: str = "",  content: str = "",
+                   recent: str = "", db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).list_job(pagenum, pagesize, asc, status, content)
+        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).list_job(pagenum, pagesize, asc, status, content, recent)
         return job_dto_dic
     except:
         raise

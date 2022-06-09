@@ -206,7 +206,7 @@ class JobQueryUsercase(object):
         except:
             raise
 
-    async def list_job(self, pagenum, pagesize, asc, status, content):
+    async def list_job(self, pagenum, pagesize, asc, status, content, recent):
         try:
             filter = {"usr_id": self.user.id}
             if status:
@@ -214,6 +214,8 @@ class JobQueryUsercase(object):
                     filter.update({"$or": [{"status": "running"}, {"status": "inqueue"}]})
                 else:
                     filter.update({"status": status})
+            if recent:
+                filter = self.filter_recent(recent, filter)
             if content:
                 filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
 
@@ -239,6 +241,25 @@ class JobQueryUsercase(object):
                 return response_dic
         except:
             raise
+
+    def filter_recent(self, recent, filter):
+        now = datetime.datetime.now()
+        if recent == "day":
+            day_start = datetime.datetime(now.year, now.month, now.day)
+            day_start_str = datetime.datetime.strftime(day_start, '%Y-%m-%d %H:%M:%S')
+            filter.update({"last_modified": {"$gte": day_start_str}})
+        elif recent == "week":
+            day_start = datetime.datetime(now.year, now.month, now.day)
+            week_start = day_start - datetime.timedelta(days=now.weekday())
+            week_start_str = datetime.datetime.strftime(week_start, '%Y-%m-%d %H:%M:%S')
+            filter.update({"last_modified": {"$gte": week_start_str}})
+        elif recent == "month":
+            month_start = datetime.datetime(now.year, now.month, 1)
+            month_start_str = datetime.datetime.strftime(month_start, '%Y-%m-%d %H:%M:%S')
+            filter.update({"last_modified": {"$gte": month_start_str}})
+        else:
+            pass
+        return filter
 
     @staticmethod
     def handle_job_status(status, response_dto_lst):
