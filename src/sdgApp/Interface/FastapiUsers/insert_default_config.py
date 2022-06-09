@@ -302,11 +302,11 @@ async def insert_default(db_session, user):
     }
 
     await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**lidar))
-    lidar_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, {})
+    lidar_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, 15, {})
     lidar_dto = lidar_dto["datas"][0]
 
     await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**depth_cam))
-    depth_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, {})
+    depth_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, 15, {})
     depth_dto = depth_dto["datas"][1]
 
     other_default_sensors = [rss,
