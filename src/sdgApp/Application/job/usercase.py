@@ -279,10 +279,11 @@ class JobQueryUsercase(object):
     async def get_total_task_info(self, queue_sess):
         try:
             filter = {"usr_id": self.user.id}
-            results_dict = self.job_collection.find(filter).to_list(length=50)
+            results_dict = self.job_collection.find(filter).to_list(length=1000000)
             ret_dic = {}
             failure_num = 0
             success_num = 0
+
             for job_dic in await results_dict:
                 success_num += len([task for task in job_dic.get('task_list') if task.get("status") == "Finish"])
                 failure_num += len([task for task in job_dic.get('task_list') if task.get("status") in ["timeout"]])
