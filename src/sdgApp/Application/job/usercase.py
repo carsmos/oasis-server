@@ -193,6 +193,7 @@ class JobQueryUsercase(object):
         self.db_session = db_session
         self.user = user
         self.job_collection = self.db_session['job']
+        self.scenarios_collection = self.db_session['scenarios']
 
     async def get_job(self, job_id:str):
         try:
@@ -202,6 +203,10 @@ class JobQueryUsercase(object):
             result_dict = await self.job_collection.find_one(filter, {'_id': 0, 'usr_id': 0})
             jobReadDTO = JobReadDTO(**result_dict)
             jobReadDTO = handle_finish_pass_job(jobReadDTO)
+            for task in jobReadDTO['task_list']:
+                scenario_id = task['scenario_id']
+                scenario_info = await self.scenarios_collection.find_one({'id': scenario_id}, {'_id': 0, 'scenario_param.dynamic_scene.scene_script': 0})
+                task['scenario_info'] = scenario_info
             return jobReadDTO
         except:
             raise
