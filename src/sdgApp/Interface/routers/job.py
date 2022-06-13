@@ -130,6 +130,21 @@ async def run_job(job_id: str, db=Depends(get_db), queue_sess=Depends(get_redis)
 
 
 @router.post(
+    "/create_and_run_job",
+    status_code=status.HTTP_200_OK,
+    responses={200: {"model": JobStatusMsg}},
+    tags=["Job"]
+)
+async def create_and_run(job_create_model: JobCreateDTO, db=Depends(get_db), queue_sess=Depends(get_redis),
+                   user: UserDB = Depends(current_active_user)):
+    try:
+        await JobCommandUsercase(db_session=db, user=user).create_and_run_job(job_create_model, queue_sess)
+        return {"status":"success"}
+    except:
+        raise
+
+
+@router.post(
     "/stop-jobs/{job_ids}",
     status_code=status.HTTP_200_OK,
     responses={200: {"model": JobStatusMsg}},

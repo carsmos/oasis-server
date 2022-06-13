@@ -32,7 +32,7 @@ class JobCommandUsercase(object):
         self.repo = self.repo(db_session, user)
         self.queue = None
 
-    async def create_job(self, job_create_model: JobCreateDTO):
+    async def create_job(self, job_create_model: JobCreateDTO, for_run: bool = False):
         try:
             uuid = shortuuid.uuid()
             tasks_lst = job_create_model.task_list
@@ -54,13 +54,13 @@ class JobCommandUsercase(object):
                                    scenario_name=task_model.scenario_name)
                 job.add_task(task)
             await self.repo.create(job)
-
+            if for_run:
+                return uuid
         except CarNotFoundError:
             raise
 
         except ScenarioNotFoundError:
             raise
-
         except:
             raise
 
@@ -127,6 +127,20 @@ class JobCommandUsercase(object):
 
     async def run_job(self, job_id: str, queue_sess):
         try:
+            filter = {'id': job_id}
+            filter.update({"usr_id": self.user.id})
+            result_dict = await self.job_collection.find_one(filter, {'_id': 0})
+            if result_dict:
+                self.queue = JobQueueImpl(queue_sess)
+                self.queue.publish(result_dict)
+                self.update_task_status(result_dict, filter, "inqueue", 'start')
+                self.update_job_status_inqueue(filter)
+        except:
+            raise
+
+    async def create_and_run_job(self, job_create_model, queue_sess):
+        try:
+            job_id = await self.create_job(job_create_model, True)
             filter = {'id': job_id}
             filter.update({"usr_id": self.user.id})
             result_dict = await self.job_collection.find_one(filter, {'_id': 0})

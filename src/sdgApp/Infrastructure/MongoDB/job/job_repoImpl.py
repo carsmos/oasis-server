@@ -53,6 +53,7 @@ class JobRepoImpl(JobRepo):
 
         await self.job_collection.insert_one(job_DO.dict())
 
+
     async def delete(self, job_id: str):
         filter = {'id': job_id}
         filter.update({"usr_id": self.user.id})
