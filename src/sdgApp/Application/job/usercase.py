@@ -228,11 +228,20 @@ class JobQueryUsercase(object):
     async def list_job(self, pagenum, pagesize, asc, status, content, recent):
         try:
             filter = {"usr_id": self.user.id}
+            filter_time = "last_modified"
             if status:
                 if status == "running":
                     filter.update({"$or": [{"status": "running"}, {"status": "inqueue"}]})
                 else:
                     filter.update({"status": status})
+
+                if status == "finish":
+                    filter_time = "end_time"
+                elif status == "waiting":
+                    filter_time = "last_modified"
+                else:
+                    filter_time = "start_time"
+
             if recent:
                 filter = self.filter_recent(recent, filter)
             if content:
@@ -243,9 +252,9 @@ class JobQueryUsercase(object):
             if pagenum > total_page_num > 0:
                 pagenum = total_page_num
             if pagenum > 0:
-                results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([('last_modified', int(asc))]).skip((pagenum-1) * pagesize).limit(pagesize).to_list(length=50)
+                results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([(filter_time, int(asc))]).skip((pagenum-1) * pagesize).limit(pagesize).to_list(length=50)
             else:
-                results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([('last_modified', int(asc))]).to_list(length=total_num)
+                results_dict = self.job_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort([(filter_time, int(asc))]).to_list(length=total_num)
             if results_dict:
                 response_dic = {}
                 response_dto_lst = []
