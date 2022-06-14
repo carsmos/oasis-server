@@ -7,7 +7,7 @@ from sdgApp.Interface.FastapiUsers.manager import current_active_user
 from sdgApp.Application.job.usercase import JobQueryUsercase
 import json
 from sdgApp.Application.job.RespondsDTOs import JobReadDTO, JobStatusMsg, JobsResponse
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 

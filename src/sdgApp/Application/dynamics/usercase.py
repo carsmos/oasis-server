@@ -8,7 +8,7 @@ from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO
 from sdgApp.Domain.dynamics.dynamics import DynamicsAggregate
 from sdgApp.Domain.dynamics.dynamics_exceptions import DynamicsNotFoundError
 from sdgApp.Infrastructure.MongoDB.dynamics.dynamics_repoImpl import DynamicsRepoImpl
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 
 class DynamicsCommandUsercase(object):
 

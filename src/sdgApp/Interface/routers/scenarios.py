@@ -12,7 +12,7 @@ from typing import List
 
 from sdgApp.Domain.environments.envs_exceptions import EnvNotFoundError
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes_exceptions import DynamicScenesNotFoundError
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 

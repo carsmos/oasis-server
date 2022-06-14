@@ -5,7 +5,7 @@ from typing import Tuple
 from pymongo import MongoClient
 from sdgApp.Infrastructure.conf_parser import get_conf
 from sdgApp.Infrastructure.MongoDB.MongoLog import MongoLog
-from src.sdgApp.Application.log.usercase import loggerd,except_logger
+from sdgApp.Application.log.usercase import loggerd,except_logger
 
 '''mongo log'''
 class Database_log:

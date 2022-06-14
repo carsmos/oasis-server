@@ -12,7 +12,7 @@ from fastapi_users.db import MongoDBUserDatabase
 from sdgApp.Infrastructure.MongoDB.session_maker import mongo_db
 from .users_model import User, UserCreate, UserDB, UserUpdate
 from .insert_default_config import insert_default
-from src.sdgApp.Application.log.usercase import loggerd
+from sdgApp.Application.log.usercase import loggerd
 
 SECRET = "7165bf1355c0bddf29d0b6326af2ac9b6e876ee8514c93ae887796c540e33ddf"
 

@@ -8,7 +8,7 @@ from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO, EnvUpdateD
 from sdgApp.Domain.environments.envs import EnvsAggregate
 from sdgApp.Domain.environments.envs_exceptions import EnvNotFoundError
 from sdgApp.Infrastructure.MongoDB.environment.env_repoImpl import EnvRepoImpl
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 
 class EnvCommandUsercase(object):
 

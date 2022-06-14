@@ -8,7 +8,7 @@ from sdgApp.Application.dynamic_scenes.RespondsDTOs import DynamicSceneReadDTO
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes import DynamicScenesAggregate
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes_exceptions import DynamicScenesNotFoundError
 from sdgApp.Infrastructure.MongoDB.dynamic_scene.dynamic_scene_repoImpl import DynamicSceneRepoImpl
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 
 class DynamicSceneCommandUsercase(object):
 

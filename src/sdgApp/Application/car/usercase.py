@@ -9,7 +9,7 @@ from sdgApp.Domain.car.car import CarAggregate
 from sdgApp.Domain.car.car_exceptions import CarNotFoundError
 from sdgApp.Infrastructure.MongoDB.car.car_repoImpl import CarRepoImpl
 
-from src.sdgApp.Application.log.usercase import loggerd,except_logger
+from sdgApp.Application.log.usercase import loggerd,except_logger
 
 
 class CarCommandUsercase(object):
@@ -17,7 +17,6 @@ class CarCommandUsercase(object):
     def __init__(self, db_session, user, repo=CarRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
-
     @except_logger("create_car  failed............")
     async def create_car(self, car_create_model: CarCreateDTO):
         try:

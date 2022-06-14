@@ -8,7 +8,7 @@ from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, Scenario
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 
 class ScenarioCommandUsercase(object):
 

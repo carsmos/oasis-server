@@ -13,7 +13,7 @@ from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
 from sdgApp.Domain.dynamics.dynamics_exceptions import DynamicsNotFoundError
 from sdgApp.Domain.sensor.sensor_exceptions import SensorNotFoundError
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 ##TODO: 整理 try except 包括去重

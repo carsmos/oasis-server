@@ -12,7 +12,7 @@ from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
 from sdgApp.Domain.car.car_exceptions import CarNotFoundError
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 

@@ -1,6 +1,6 @@
 
 import shortuuid
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 
 
 @except_logger("insert_defaultfailed............")

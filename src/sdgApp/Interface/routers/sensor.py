@@ -7,7 +7,7 @@ from sdgApp.Application.sensor.usercase import SensorCommandUsercase, SensorQuer
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
 from sdgApp.Interface.FastapiUsers.manager import current_active_user
-from src.sdgApp.Application.log.usercase import loggerd,except_logger
+from sdgApp.Application.log.usercase import loggerd,except_logger
 router = APIRouter()
 
 

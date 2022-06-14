@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from enum import Enum
 from tenacity import retry, wait_fixed, stop_after_delay
 
-from src.sdgApp.Application.log.usercase import loggerd,except_logger
+from sdgApp.Application.log.usercase import loggerd,except_logger
 
 RETRY_DELAY = 60 * 5
 RETRY_INTERVAL = 3

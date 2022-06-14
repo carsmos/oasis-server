@@ -4,7 +4,7 @@ from sdgApp.Application.log.usercase import LogQueryUsercase
 
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 

@@ -1,5 +1,5 @@
 
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 class ResourceQueryUsercase(object):
     def __init__(self, db_session, user):
         self.db_session = db_session

@@ -6,7 +6,7 @@ from fastapi import APIRouter, status, Depends
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
 from sdgApp.Interface.FastapiUsers.manager import current_active_user
 from typing import List
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 

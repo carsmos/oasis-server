@@ -8,7 +8,7 @@ from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
 from sdgApp.Domain.sensor.sensor import SensorAggregate
 from sdgApp.Domain.sensor.sensor_exceptions import SensorNotFoundError
 from sdgApp.Infrastructure.MongoDB.sensor.sensor_repoImpl import SensorRepoImpl
-from src.sdgApp.Application.log.usercase import except_logger
+from sdgApp.Application.log.usercase import except_logger
 
 class SensorCommandUsercase(object):
 
