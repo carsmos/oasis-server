@@ -300,10 +300,6 @@ class JobQueryUsercase(object):
             isruning = any([task.get("status") in ["inqueue", "isRunning"] for task in job.task_list])
             if isruning:
                 running_job_list.append(job)
-            # for task in job.task_list:
-            #     if task.get("status") in ["inqueue", "isRunning"]:
-            #         running_job_list.append(job)
-            #         break
         for job in [job for job in response_dto_lst if job not in running_job_list]:
             not_run = all([task.get("status") in ['notrun', "Not running"] for task in job.task_list])
             if not_run:
@@ -313,10 +309,6 @@ class JobQueryUsercase(object):
             hasfinished = all([task.get("status") in finished_status_list for task in job.task_list])
             if hasfinished:
                 finished_job_list.append(job)
-            # all_length = len(job.task_list)
-            # finish_length = len([task for task in job.task_list if task.get("status") in finished_status_list])
-            # if all_length == finish_length:
-            #     finished_job_list.append(job)
 
         if status == "finished":
             return finished_job_list
