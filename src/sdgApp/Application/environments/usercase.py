@@ -8,7 +8,7 @@ from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO, EnvUpdateD
 from sdgApp.Domain.environments.envs import EnvsAggregate
 from sdgApp.Domain.environments.envs_exceptions import EnvNotFoundError
 from sdgApp.Infrastructure.MongoDB.environment.env_repoImpl import EnvRepoImpl
-
+from src.sdgApp.Application.log.usercase import except_logger
 
 class EnvCommandUsercase(object):
 
@@ -16,6 +16,7 @@ class EnvCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
+    @except_logger("create_env failed .....................")
     async def create_env(self, env_create_model: EnvCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -26,14 +27,14 @@ class EnvCommandUsercase(object):
             await self.repo.create_env(env)
         except:
             raise
-
+    @except_logger("delete_env failed .....................")
     async def delete_env(self, env_ids: str):
         try:
             for env_id in env_ids.split("+"):
                 await self.repo.delete_env(env_id)
         except:
             raise
-
+    @except_logger("update_env failed .....................")
     async def update_env(self, env_id: str, env_create_model: EnvUpdateDTO):
         try:
             env_retrieved = await self.repo.get(env_id)
@@ -51,7 +52,7 @@ class EnvQueryUsercase(object):
         self.db_session = db_session
         self.user = user
         self.envs_collection = self.db_session['environments']
-
+    @except_logger("find_specified_env failed .....................")
     async def find_specified_env(self, env_id: str):
         try:
             filter = {'id': env_id}
@@ -62,7 +63,7 @@ class EnvQueryUsercase(object):
             return EnvReadDTO(**result_dict)
         except:
             raise
-
+    @except_logger("find_all_envs failed .....................")
     async def find_all_envs(self, p_num, p_size, content):
         try:
             filter = ({"usr_id": self.user.id})

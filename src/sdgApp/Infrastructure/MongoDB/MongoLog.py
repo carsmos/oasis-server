@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 from enum import Enum
 from tenacity import retry, wait_fixed, stop_after_delay
 
+from src.sdgApp.Application.log.usercase import loggerd,except_logger
+
 RETRY_DELAY = 60 * 5
 RETRY_INTERVAL = 3
 
@@ -32,15 +34,15 @@ class MongoLog(object):
     @retry(stop=stop_after_delay(RETRY_DELAY),
            wait=wait_fixed(RETRY_INTERVAL), reraise=True)
     def __connect(self):
-        print("connecting MongoDB ...")
+        loggerd.info("connecting MongoDB ...")
         self.client = MongoClient(self.mongo_uri)
         self.client.server_info()
-        print("MongoDB connected")
+        loggerd.info("MongoDB connected")
 
     def __disconnect(self):
         if self.client:
             self.client.close()
-            print("MongoDB disconnected")
+            loggerd.info("MongoDB disconnected")
 
     def debug_log(self, msg_dict):
         validated_logdict = LogMsg(logger=self.logger_name, msg_dict=msg_dict, log_level="DEBUG").dict()

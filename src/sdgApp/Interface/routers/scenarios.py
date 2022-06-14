@@ -12,7 +12,7 @@ from typing import List
 
 from sdgApp.Domain.environments.envs_exceptions import EnvNotFoundError
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes_exceptions import DynamicScenesNotFoundError
-
+from src.sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 
@@ -22,6 +22,7 @@ router = APIRouter()
     response_model=ScenariosReadDTO,
     tags=["Scenarios"]
 )
+@except_logger("create_scenario failed .....................")
 async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
@@ -35,6 +36,7 @@ async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
 
 
 @router.delete("/scenarios/{scenario_id}", status_code=status.HTTP_202_ACCEPTED, tags=["Scenarios"])
+@except_logger("delete_scenario failed .....................")
 async def delete_scenario(scenario_id: str, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
@@ -49,6 +51,7 @@ async def delete_scenario(scenario_id: str, db=Depends(get_db),
     response_model=ScenariosReadDTO,
     tags=["Scenarios"]
 )
+@except_logger("update_scenario failed .....................")
 async def update_scenario(scenario_id: str,
                           scenario_update_model: ScenarioUpdateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
@@ -64,6 +67,7 @@ async def update_scenario(scenario_id: str,
     response_model=ScenariosResponse,
     tags=["Scenarios"]
 )
+@except_logger("find_all_scenarios failed .....................")
 async def find_all_scenarios(pagenum: int = 1, pagesize: int = 10, content: str = "", tags: str = "",  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         return await ScenarioQueryUsercase(db_session=db, user=user).find_all_scenarios(pagenum, pagesize, content, tags)
@@ -77,6 +81,7 @@ async def find_all_scenarios(pagenum: int = 1, pagesize: int = 10, content: str 
     response_model=ScenariosReadDTO,
     tags=["Scenarios"]
 )
+@except_logger("find_specified_scenario failed .....................")
 async def find_specified_scenario(scenario_id: str, db=Depends(get_db),
                                   user: UserDB = Depends(current_active_user)):
     try:
@@ -91,6 +96,7 @@ async def find_specified_scenario(scenario_id: str, db=Depends(get_db),
     response_model=ScenariosResponse,
     tags=["Scenarios"]
 )
+@except_logger("find_scenarios_by_tags failed .....................")
 async def find_scenarios_by_tags(tags: str, skip: int = 1,  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         return await ScenarioQueryUsercase(db_session=db, user=user).find_scenarios_by_tags(tags, skip)

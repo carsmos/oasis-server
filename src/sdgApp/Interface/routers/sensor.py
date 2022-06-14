@@ -7,7 +7,7 @@ from sdgApp.Application.sensor.usercase import SensorCommandUsercase, SensorQuer
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
 from sdgApp.Interface.FastapiUsers.manager import current_active_user
-
+from src.sdgApp.Application.log.usercase import loggerd,except_logger
 router = APIRouter()
 
 
@@ -17,6 +17,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     tags=["Sensors"]
 )
+@except_logger("create_sensor failed .....................")
 async def create_sensor(sensor_create_model: SensorCreateDTO, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
@@ -30,6 +31,7 @@ async def create_sensor(sensor_create_model: SensorCreateDTO, db = Depends(get_d
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Sensors"]
 )
+@except_logger("delete_sensor failed .....................")
 async def delete_sensor(sensor_id:str, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
@@ -43,6 +45,7 @@ async def delete_sensor(sensor_id:str, db = Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Sensors"]
 )
+@except_logger("update_sensor failed .....................")
 async def update_sensor(sensor_id:str, sensor_update_model: SensorUpdateDTO, db = Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
@@ -57,6 +60,7 @@ async def update_sensor(sensor_id:str, sensor_update_model: SensorUpdateDTO, db 
     response_model= SensorReadDTO,
     tags=["Sensors"]
 )
+@except_logger("get_sensor failed .....................")
 async def get_sensor(sensor_id:str, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
@@ -72,6 +76,7 @@ async def get_sensor(sensor_id:str, db = Depends(get_db),
     response_model=SensorsResponse,
     tags=["Sensors"]
 )
+@except_logger("list_sensor failed .....................")
 async def list_sensor(skip: int = 1, limit: int = 15, content: str = "",sensor_type: Optional[str] = None,
                       db= Depends(get_db),
                       user: UserDB = Depends(current_active_user)):
@@ -79,7 +84,6 @@ async def list_sensor(skip: int = 1, limit: int = 15, content: str = "",sensor_t
         query_param = {}
         if sensor_type: query_param.update({"type": sensor_type})
         if content: query_param.update({"content": content})
-
         sensor_dto_dic = await SensorQueryUsercase(db_session=db, user=user).list_sensor(skip, limit, query_param=query_param)
         return sensor_dto_dic
     except:

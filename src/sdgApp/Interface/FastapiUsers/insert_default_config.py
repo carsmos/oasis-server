@@ -1,7 +1,9 @@
 
 import shortuuid
+from src.sdgApp.Application.log.usercase import except_logger
 
 
+@except_logger("insert_defaultfailed............")
 async def insert_default(db_session, user):
     from sdgApp.Application.sensor.usercase import SensorCommandUsercase, SensorQueryUsercase
     from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO

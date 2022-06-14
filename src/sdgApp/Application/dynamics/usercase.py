@@ -8,14 +8,14 @@ from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO
 from sdgApp.Domain.dynamics.dynamics import DynamicsAggregate
 from sdgApp.Domain.dynamics.dynamics_exceptions import DynamicsNotFoundError
 from sdgApp.Infrastructure.MongoDB.dynamics.dynamics_repoImpl import DynamicsRepoImpl
-
+from src.sdgApp.Application.log.usercase import except_logger
 
 class DynamicsCommandUsercase(object):
 
     def __init__(self, db_session, user, repo=DynamicsRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
-
+    @except_logger("create_dynamics failed .....................")
     async def create_dynamics(self, dynamics_create_model: DynamicsCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -26,14 +26,14 @@ class DynamicsCommandUsercase(object):
             await self.repo.create(dynamics)
         except:
             raise
-
+    @except_logger("delete_dynamics failed .....................")
     async def delete_dynamics(self, dynamics_ids: str):
         try:
             for dynamics_id in dynamics_ids.split("+"):
                 await self.repo.delete(dynamics_id)
         except:
             raise
-
+    @except_logger("update_dynamics failed .....................")
     async def update_dynamics(self, dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO):
         try:
             dynamics_retrieved = await self.repo.get(dynamics_id=dynamics_id)
@@ -52,6 +52,7 @@ class DynamicsQueryUsercase(object):
         self.user = user
         self.dynamics_collection = self.db_session['dynamics']
 
+    @except_logger("get_dynamics failed .....................")
     async def get_dynamics(self, dynamics_id:str):
         try:
             filter = {'id': dynamics_id}
@@ -64,6 +65,7 @@ class DynamicsQueryUsercase(object):
         except:
             raise
 
+    @except_logger("list_dynamics failed .....................")
     async def list_dynamics(self, p_num, p_size, content):
         try:
             filter = {"usr_id": self.user.id}

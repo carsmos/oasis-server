@@ -7,7 +7,7 @@ from sdgApp.Application.dynamics.usercase import DynamicsCommandUsercase, Dynami
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
 from sdgApp.Interface.FastapiUsers.users_model import UserDB
 from sdgApp.Interface.FastapiUsers.manager import current_active_user
-
+from src.sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 
@@ -17,6 +17,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     tags=["Dynamics"]
 )
+@except_logger("create_dynamics failed .....................")
 async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
@@ -30,6 +31,7 @@ async def create_dynamics(dynamics_create_model: DynamicsCreateDTO, db = Depends
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Dynamics"]
 )
+@except_logger("delete_dynamics failed .....................")
 async def delete_dynamics(dynamics_id:str, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
@@ -43,6 +45,7 @@ async def delete_dynamics(dynamics_id:str, db = Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Dynamics"]
 )
+@except_logger("update_dynamics failed .....................")
 async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO, db = Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
@@ -57,6 +60,7 @@ async def update_dynamics(dynamics_id:str, dynamics_update_model: DynamicsUpdate
     response_model= DynamicsReadDTO,
     tags=["Dynamics"]
 )
+@except_logger("get_dynamics failed .....................")
 async def get_dynamics(dynamics_id:str, db = Depends(get_db),
                        user: UserDB = Depends(current_active_user)):
     try:
@@ -72,6 +76,7 @@ async def get_dynamics(dynamics_id:str, db = Depends(get_db),
     response_model=DynamicsResponse,
     tags=["Dynamics"]
 )
+@except_logger("list_dynamics failed .....................")
 async def list_dynamics(content: str = "", p_size: int = 15, p_num: int = 1, db=Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:

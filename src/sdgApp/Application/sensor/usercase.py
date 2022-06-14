@@ -8,14 +8,14 @@ from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
 from sdgApp.Domain.sensor.sensor import SensorAggregate
 from sdgApp.Domain.sensor.sensor_exceptions import SensorNotFoundError
 from sdgApp.Infrastructure.MongoDB.sensor.sensor_repoImpl import SensorRepoImpl
-
+from src.sdgApp.Application.log.usercase import except_logger
 
 class SensorCommandUsercase(object):
 
     def __init__(self, db_session, user, repo=SensorRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
-
+    @except_logger("create_sensor failed .....................")
     async def create_sensor(self, sensor_create_model: SensorCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -29,13 +29,13 @@ class SensorCommandUsercase(object):
 
         except:
             raise
-
+    @except_logger("delete_sensor failed .....................")
     async def delete_sensor(self, sensor_id: str):
         try:
             await self.repo.delete(sensor_id)
         except:
             raise
-
+    @except_logger("update_sensor failed .....................")
     async def update_sensor(self, sensor_id:str, sensor_update_model: SensorUpdateDTO):
         try:
             sensor_retrieved = await self.repo.get(sensor_id=sensor_id)
@@ -56,7 +56,7 @@ class SensorQueryUsercase(object):
         self.db_session = db_session
         self.user = user
         self.sensor_collection = self.db_session['sensors']
-
+    @except_logger("get_sensor failed .....................")
     async def get_sensor(self, sensor_id:str):
         try:
             filter = {'id': sensor_id}
@@ -67,7 +67,7 @@ class SensorQueryUsercase(object):
             return SensorReadDTO(**result_dict)
         except:
             raise
-
+    @except_logger("list_sensor failed .....................")
     async def list_sensor(self, p_num, limit, query_param: dict):
         try:
             filter = {"usr_id": self.user.id}
