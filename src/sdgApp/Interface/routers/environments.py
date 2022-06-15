@@ -25,7 +25,7 @@ async def creat_env(env_create_model: EnvCreateDTO, db=Depends(get_db),
         raise
 
 
-@router.delete("/environments/{env_id}",
+@router.delete("/environments/{env_ids}",
                status_code=status.HTTP_202_ACCEPTED,
                tags=["Envs"])
 @except_logger("delete_env failed .....................")
