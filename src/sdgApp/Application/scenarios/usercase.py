@@ -79,7 +79,7 @@ class ScenarioQueryUsercase(object):
                 tag_list = tags.split("+")
                 filter.update({"tags": {"$all": tag_list}})
             if content:
-                filter.update({"$or": [{"name": {"$regex": content}}, {"desc": {"$regex": content}}]})
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
             total_num = await self.scenarios_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / pagesize)
             if pagenum > total_page_num > 0:

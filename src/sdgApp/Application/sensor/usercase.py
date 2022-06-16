@@ -73,7 +73,7 @@ class SensorQueryUsercase(object):
             filter = {"usr_id": self.user.id}
             content = query_param.get("content")
             if content:
-                filter.update({"$or": [{"name": {"$regex": content}}, {"desc": {"$regex": content}}]})
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
                 query_param.pop("content")
 
             filter.update(query_param)
