@@ -54,7 +54,7 @@ class JobCommandUsercase(object):
                                    scenario_id=task_model.scenario_id,
                                    scenario_name=task_model.scenario_name)
 
-                loggerd.info("JobCommandUsercase create_job add task id=%s, name=%s" %(task.id, task.name))
+                #loggerd.info("JobCommandUsercase create_job add task id=%s, name=%s" %(task.id, task.name))
                 job.add_task(task)
             await self.repo.create(job)
             if for_run:
@@ -117,7 +117,7 @@ class JobCommandUsercase(object):
                                    scenario_id=task_model.scenario_id,
                                    scenario_name=task_model.scenario_name)
                 job_retrieved.add_task(task)
-                loggerd.info("JobCommandUsercase update_job update task %s, %s" % (task.id, task.name))
+                #loggerd.info("JobCommandUsercase update_job update task %s, %s" % (task.id, task.name))
             await self.repo.update(job_retrieved)
 
         except CarNotFoundError:
@@ -139,7 +139,7 @@ class JobCommandUsercase(object):
                 self.queue.publish(result_dict)
                 self.update_task_status(result_dict, filter, "inqueue", 'start')
                 self.update_job_status_inqueue(filter)
-                loggerd.info("JobCommandUsercase run_job run task %s" % (job_id))
+                #loggerd.info("JobCommandUsercase run_job run task %s" % (job_id))
         except:
             raise
     @except_logger("JobCommandUsercase create_and_run_job failed .....................")
@@ -154,7 +154,7 @@ class JobCommandUsercase(object):
                 self.queue.publish(result_dict)
                 self.update_task_status(result_dict, filter, "inqueue", 'start')
                 self.update_job_status_inqueue(filter)
-                loggerd.info("JobCommandUsercase create_and_run_job run task %s" % (job_id))
+                #loggerd.info("JobCommandUsercase create_and_run_job run task %s" % (job_id))
         except:
             raise
     @except_logger("JobCommandUsercase update_task_status failed .....................")
