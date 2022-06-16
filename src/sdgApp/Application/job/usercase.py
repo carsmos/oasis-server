@@ -180,6 +180,12 @@ class JobCommandUsercase(object):
             self.job_collection.update_one(filter, {'$set': {'status': 'inqueue'}})
         except:
             raise
+    @except_logger("JobCommandUsercase update_job_status_waiting failed .....................")
+    def update_job_status_waiting(self, filter):
+        try:
+            self.job_collection.update_one(filter, {'$set': {'status': 'waiting', 'start_time': ''}})
+        except:
+            raise
     @except_logger("JobCommandUsercase stop_jobs failed .....................")
     async def stop_jobs(self, job_ids: str, queue_sess):
         try:
@@ -191,6 +197,7 @@ class JobCommandUsercase(object):
                     self.queue = JobQueueImpl(queue_sess)
                     self.queue.delete(job=result_dict)
                     self.update_task_status(result_dict, filter, "notrun", "end")
+                    self.update_job_status_waiting(filter)
         except:
             raise
     @except_logger("JobCommandUsercase retry_task failed .....................")
@@ -202,6 +209,9 @@ class JobCommandUsercase(object):
             if result_dict:
                 self.queue = JobQueueImpl(queue_sess)
                 job = self.queue.add(result_dict, task_ids)
+                if task_ids:
+                    job['status'] = "running"
+                    job['end_time'] = ""
                 self.job_collection.update_one(filter, {'$set': job})
         except:
             raise
