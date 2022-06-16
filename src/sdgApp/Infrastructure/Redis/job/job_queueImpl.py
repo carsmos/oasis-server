@@ -55,6 +55,8 @@ class JobQueueImpl(JobQueue):
                 retry_task['replay_url'] = ""
                 retry_task['cam_url'] = ""
                 retry_task['process_rate'] = 0
+                retry_task['start_time'] = ""
+                retry_task['end_time'] = ""
 
                 handle_index_for_task(task, ori_idx, task_list, retry_task)
 
