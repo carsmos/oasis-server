@@ -32,7 +32,7 @@ class JobCommandUsercase(object):
         self.repo = self.repo(db_session, user)
         self.queue = None
 
-    #@except_logger("JobCommandUsercase create_job failed .....................")
+    @except_logger("JobCommandUsercase create_job failed .....................")
     async def create_job(self, job_create_model: JobCreateDTO, for_run: bool = False):
         try:
             uuid = shortuuid.uuid()
@@ -54,7 +54,7 @@ class JobCommandUsercase(object):
                                    scenario_id=task_model.scenario_id,
                                    scenario_name=task_model.scenario_name)
 
-                #loggerd.info("JobCommandUsercase create_job add task id=%s " ,task.id )
+                loggerd.info("JobCommandUsercase create_job add task id=%s " ,task.id )
                 job.add_task(task)
             await self.repo.create(job)
             if for_run:
@@ -66,14 +66,14 @@ class JobCommandUsercase(object):
             raise
         except:
             raise
-    #@except_logger("JobCommandUsercase delete_job failed .....................")
+    @except_logger("JobCommandUsercase delete_job failed .....................")
     async def delete_job(self, job_id: str):
         try:
-            #loggerd.info("JobCommandUsercase delete_job job_id=%s", job_id)
+            loggerd.info("JobCommandUsercase delete_job job_id=%s", job_id)
             await self.repo.delete(job_id)
         except:
             raise
-    #@except_logger("JobCommandUsercase delete_task failed .....................")
+    @except_logger("JobCommandUsercase delete_task failed .....................")
     async def delete_task(self, job_id: str, task_ids: str):
         try:
             filter = {'id': job_id}
@@ -85,12 +85,12 @@ class JobCommandUsercase(object):
                 for task in task_list[::-1]:
                     if task.get("id") == task_id:
                         task_list.remove(task)
-            #loggerd.info("JobCommandUsercase delete_task task_ids=%s", task_ids)
+            loggerd.info("JobCommandUsercase delete_task task_ids=%s", task_ids)
             self.job_collection.update_one(filter, {'$set': job})
             return job
         except:
             raise
-    #@except_logger("JobCommandUsercase update_job failed .....................")
+    @except_logger("JobCommandUsercase update_job failed .....................")
     async def update_job(self, job_id:str, job_update_model: JobUpdateDTO):
         ## ! update finished job can cause status and replay url loss
         try:
@@ -117,7 +117,7 @@ class JobCommandUsercase(object):
                                    car_name=task_model.car_name,
                                    scenario_id=task_model.scenario_id,
                                    scenario_name=task_model.scenario_name)
-                #loggerd.info("JobCommandUsercase update_job update taskid=%s" , task.id)
+                loggerd.info("JobCommandUsercase update_job update taskid=%s" , task.id)
                 job_retrieved.add_task(task)
             await self.repo.update(job_retrieved)
 
@@ -129,7 +129,7 @@ class JobCommandUsercase(object):
 
         except:
             raise
-    #@except_logger("JobCommandUsercase run_job failed .....................")
+    @except_logger("JobCommandUsercase run_job failed .....................")
     async def run_job(self, job_id: str, queue_sess):
         try:
             filter = {'id': job_id}
@@ -140,10 +140,10 @@ class JobCommandUsercase(object):
                 self.queue.publish(result_dict)
                 self.update_task_status(result_dict, filter, "inqueue", 'start')
                 self.update_job_status_inqueue(filter)
-                #loggerd.info("JobCommandUsercase run_job run jobid=%s" ,job_id )
+                loggerd.info("JobCommandUsercase run_job run jobid=%s" ,job_id )
         except:
             raise
-    #@except_logger("JobCommandUsercase create_and_run_job failed .....................")
+    @except_logger("JobCommandUsercase create_and_run_job failed .....................")
     async def create_and_run_job(self, job_create_model, queue_sess):
         try:
             job_id = await self.create_job(job_create_model, True)
@@ -155,7 +155,7 @@ class JobCommandUsercase(object):
                 self.queue.publish(result_dict)
                 self.update_task_status(result_dict, filter, "inqueue", 'start')
                 self.update_job_status_inqueue(filter)
-                #loggerd.info("JobCommandUsercase create_and_run_job run jobid=%s" , job_id)
+                loggerd.info("JobCommandUsercase create_and_run_job run jobid=%s" , job_id)
         except:
             raise
     def update_task_status(self, result_dict, filter, status, start_or_end, task_id=None):
@@ -181,13 +181,12 @@ class JobCommandUsercase(object):
         except:
             raise
 
-    #@except_logger("JobCommandUsercase update_job_status_waiting failed .....................")
     def update_job_status_waiting(self, filter):
         try:
             self.job_collection.update_one(filter, {'$set': {'status': 'waiting', 'start_time': ''}})
         except:
             raise
-    #@except_logger("JobCommandUsercase stop_jobs failed .....................")
+    @except_logger("JobCommandUsercase stop_jobs failed .....................")
     async def stop_jobs(self, job_ids: str, queue_sess):
         try:
             for job_id in job_ids.split("+"):
@@ -199,9 +198,10 @@ class JobCommandUsercase(object):
                     self.queue.delete(job=result_dict)
                     self.update_task_status(result_dict, filter, "notrun", "end")
                     self.update_job_status_waiting(filter)
+                    loggerd.info("JobCommandUsercase stop_jobs stop job_id=%s", job_id)
         except:
             raise
-    #@except_logger("JobCommandUsercase retry_task failed .....................")
+    @except_logger("JobCommandUsercase retry_task failed .....................")
     async def retry_task(self, job_id, task_ids, queue_sess):
         try:
             filter = {'id': job_id}
@@ -213,6 +213,7 @@ class JobCommandUsercase(object):
                 if task_ids:
                     job['status'] = "running"
                     job['end_time'] = ""
+                loggerd.info("JobCommandUsercase retry_task retry job_id=%s", job_id)
                 self.job_collection.update_one(filter, {'$set': job})
         except:
             raise
@@ -226,7 +227,6 @@ class JobQueryUsercase(object):
         self.job_collection = self.db_session['job']
         self.scenarios_collection = self.db_session['scenarios']
 
-    #@except_logger("JobQueryUsercase get_job failed .....................")
     async def get_job(self, job_id:str):
         try:
             filter = {'id': job_id}
@@ -242,7 +242,7 @@ class JobQueryUsercase(object):
             return jobReadDTO
         except:
             raise
-    #@except_logger("JobQueryUsercase list_job failed .....................")
+
     async def list_job(self, pagenum, pagesize, asc, status, content, recent):
         try:
             filter = {"usr_id": self.user.id}
@@ -334,7 +334,7 @@ class JobQueryUsercase(object):
             return notrun_job_list
         elif status == "running":
             return running_job_list
-    #@except_logger("JobQueryUsercase get_total_task_info failed .....................")
+
     async def get_total_task_info(self, queue_sess):
         try:
             filter = {"usr_id": self.user.id}
@@ -357,7 +357,7 @@ class JobQueryUsercase(object):
             return ret_dic
         except:
             raise
-    #@except_logger("JobQueryUsercase get_jobs_infos failed .....................")
+
     async def get_jobs_infos(self, status, cycle, name, p_num, limit, asc):
         try:
             filter = {"usr_id": self.user.id}
