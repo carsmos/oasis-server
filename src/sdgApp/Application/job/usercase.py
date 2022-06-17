@@ -154,12 +154,22 @@ class JobCommandUsercase(object):
             if result_dict:
                 self.queue = JobQueueImpl(queue_sess)
                 self.queue.publish(result_dict)
-                self.update_task_status(result_dict, filter, "inqueue", 'start')
-                self.update_job_status_inqueue(filter)
+                self.update_status(result_dict, filter, "inqueue")
                 loggerd.info("JobCommandUsercase create_and_run_job run jobid=%s" , job_id)
-            return job_id
+                return job_id
         except:
             raise
+
+    def update_status(self, result_dict, filter, status):
+        try:
+            for task in result_dict.get('task_list'):
+                task['status'] = status
+            result_dict['start_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            result_dict['status'] = status
+            self.job_collection.update_one(filter, {'$set': result_dict})
+        except:
+            raise
+
     def update_task_status(self, result_dict, filter, status, start_or_end, task_id=None):
         try:
             if task_id:

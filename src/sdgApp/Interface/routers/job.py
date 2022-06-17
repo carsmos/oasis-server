@@ -144,10 +144,10 @@ async def run_job(job_id: str, db=Depends(get_db), queue_sess=Depends(get_redis)
     tags=["Job"]
 )
 @except_logger("create_and_run failed .....................")
-async def create_and_run(job_create_model: JobCreateDTO, db=Depends(get_db), queue_sess=Depends(get_redis),
+def create_and_run(job_create_model: JobCreateDTO, db=Depends(get_db), queue_sess=Depends(get_redis),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_id = await JobCommandUsercase(db_session=db, user=user).create_and_run_job(job_create_model, queue_sess)
+        job_id = JobCommandUsercase(db_session=db, user=user).create_and_run_job(job_create_model, queue_sess)
         return job_id
     except:
         raise

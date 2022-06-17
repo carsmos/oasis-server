@@ -16,7 +16,7 @@ COPY --from=requirements-stage /tmp/requirements.txt /sdgapp_code/requirements.t
 
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U && \
     pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
-    pip install --no-cache-dir --upgrade -r /sdgapp_code/requirements.txt && \
+    pip install --no-cache-dir --upgrade -r /sdgapp_code/requirements.txt && \add
     apt-get install git && \
     pip install git+https://gitclone.com/github.com/guardstrikelab/oasis-log.git
 COPY ./src /sdgapp_code/src
