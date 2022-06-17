@@ -91,6 +91,7 @@ class JobRepoImpl(JobRepo):
         update_job_DO = JobDO(id=update_job.id,
                        name=update_job.name,
                        desc=update_job.desc,
+                       status=update_job.status,
                        usr_id=None,
                        create_time=None,
                        last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
