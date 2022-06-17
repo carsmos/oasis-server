@@ -156,6 +156,7 @@ class JobCommandUsercase(object):
                 self.update_task_status(result_dict, filter, "inqueue", 'start')
                 self.update_job_status_inqueue(filter)
                 loggerd.info("JobCommandUsercase create_and_run_job run jobid=%s" , job_id)
+            return job_id
         except:
             raise
     def update_task_status(self, result_dict, filter, status, start_or_end, task_id=None):
