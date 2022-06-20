@@ -12,6 +12,7 @@ from fastapi_users.db import MongoDBUserDatabase
 from sdgApp.Infrastructure.MongoDB.session_maker import mongo_db
 from .users_model import User, UserCreate, UserDB, UserUpdate
 from .insert_default_config import insert_default
+from sdgApp.Application.log.usercase import loggerd
 
 SECRET = "7165bf1355c0bddf29d0b6326af2ac9b6e876ee8514c93ae887796c540e33ddf"
 
@@ -25,16 +26,16 @@ class UserManager(BaseUserManager[UserCreate, UserDB]):
   verification_token_secret = SECRET
 
   async def on_after_register(self, user: UserDB, request: Optional[Request] = None):
-    print(f"User {user.id} has registered.")
+    loggerd.info(f"User {user.id} has registered.")
     await insert_default(db, user)
 
 
   async def on_after_forgot_password(self, user: UserDB, token: str, request: Optional[Request] = None):
-    print(f"User {user.id} has forgot their password. Reset token: {token}")
+    loggerd.info(f"User {user.id} has forgot their password. Reset token: {token}")
 
 
   async def on_after_request_verify(self, user: UserDB, token: str, request: Optional[Request] = None):
-    print(f"Verification requested for user {user.id}. Verification token: {token}")
+    loggerd.info(f"Verification requested for user {user.id}. Verification token: {token}")
 
 
 async def get_user_db():

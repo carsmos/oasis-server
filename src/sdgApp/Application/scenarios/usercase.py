@@ -8,7 +8,7 @@ from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, Scenario
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
-
+from sdgApp.Application.log.usercase import except_logger
 
 class ScenarioCommandUsercase(object):
 
@@ -16,6 +16,7 @@ class ScenarioCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
+    @except_logger("Scenario create_scenario failed .....................")
     async def create_scenario(self, scenario_create_model: ScenarioCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -30,13 +31,13 @@ class ScenarioCommandUsercase(object):
                 return ScenariosReadDTO(**scenario)
         except:
             raise
-
+    @except_logger("Scenario delete_scenario failed .....................")
     async def delete_scenario(self, scenario_id: str):
         try:
             await self.repo.delete_scenario_by_id(scenario_id)
         except:
             raise
-
+    @except_logger("Scenario update_scenario failed .....................")
     async def update_scenario(self, scenario_id: str, scenario_update_model: ScenarioUpdateDTO):
         try:
             scenario_retrieved = await self.repo.get(scenario_id)
@@ -58,7 +59,7 @@ class ScenarioQueryUsercase(object):
         self.db_session = db_session
         self.scenarios_collection = self.db_session['scenarios']
         self.user = user
-
+    @except_logger("Scenario find_specified_scenario failed .....................")
     async def find_specified_scenario(self, scenario_id: str):
         try:
             filter = {"id": scenario_id}
@@ -69,7 +70,7 @@ class ScenarioQueryUsercase(object):
             return ScenariosReadDTO(**result_dict)
         except:
             raise
-
+    @except_logger("Scenario find_all_scenarios failed .....................")
     async def find_all_scenarios(self, pagenum, pagesize, content, tags):
         try:
             filter = {}
@@ -78,7 +79,7 @@ class ScenarioQueryUsercase(object):
                 tag_list = tags.split("+")
                 filter.update({"tags": {"$all": tag_list}})
             if content:
-                filter.update({"$or": [{"name": {"$regex": content}}, {"desc": {"$regex": content}}]})
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
             total_num = await self.scenarios_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / pagesize)
             if pagenum > total_page_num > 0:
@@ -98,7 +99,7 @@ class ScenarioQueryUsercase(object):
                 return response_dic
         except:
             raise
-
+    @except_logger("Scenario find_scenarios_by_tags failed .....................")
     async def find_scenarios_by_tags(self, tags, p_num, limit: int = 15):
         try:
             filter = {}

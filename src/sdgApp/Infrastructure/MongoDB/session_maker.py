@@ -5,6 +5,7 @@ from typing import Tuple
 from pymongo import MongoClient
 from sdgApp.Infrastructure.conf_parser import get_conf
 from sdgApp.Infrastructure.MongoDB.MongoLog import MongoLog
+from sdgApp.Application.log.usercase import loggerd,except_logger
 
 '''mongo log'''
 class Database_log:
@@ -21,7 +22,7 @@ def mongolog_connect():
                         db=db_name,
                         logger_name=logger)
     mongo_log.log_sess = mongolog
-    print("Mongo Log initialized")
+    loggerd.info("Mongo Log initialized")
 
 
 '''mongo session'''
@@ -41,8 +42,8 @@ def database_connect():
     db_name = str(conf['DB_MONGO']['MONGO_DB_NAME'])
     mongo_db.client = AsyncIOMotorClient(uri, uuidRepresentation="standard")
     mongo_db.db = mongo_db.client[db_name]
-    print("MongoDB connected")
+    loggerd.info("MongoDB connected")
 
 def close():
     mongo_db.client.close()
-    print("mongoDB disconnected")
+    loggerd.info("mongoDB disconnected")

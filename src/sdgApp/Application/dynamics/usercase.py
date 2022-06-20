@@ -8,14 +8,14 @@ from sdgApp.Application.dynamics.RespondsDTOs import DynamicsReadDTO
 from sdgApp.Domain.dynamics.dynamics import DynamicsAggregate
 from sdgApp.Domain.dynamics.dynamics_exceptions import DynamicsNotFoundError
 from sdgApp.Infrastructure.MongoDB.dynamics.dynamics_repoImpl import DynamicsRepoImpl
-
+from sdgApp.Application.log.usercase import except_logger
 
 class DynamicsCommandUsercase(object):
 
     def __init__(self, db_session, user, repo=DynamicsRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
-
+    @except_logger("create_dynamics failed .....................")
     async def create_dynamics(self, dynamics_create_model: DynamicsCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -26,13 +26,14 @@ class DynamicsCommandUsercase(object):
             await self.repo.create(dynamics)
         except:
             raise
-
-    async def delete_dynamics(self, dynamics_id: str):
+    @except_logger("delete_dynamics failed .....................")
+    async def delete_dynamics(self, dynamics_ids: str):
         try:
-            await self.repo.delete(dynamics_id)
+            for dynamics_id in dynamics_ids.split("+"):
+                await self.repo.delete(dynamics_id)
         except:
             raise
-
+    @except_logger("update_dynamics failed .....................")
     async def update_dynamics(self, dynamics_id:str, dynamics_update_model: DynamicsUpdateDTO):
         try:
             dynamics_retrieved = await self.repo.get(dynamics_id=dynamics_id)
@@ -51,6 +52,7 @@ class DynamicsQueryUsercase(object):
         self.user = user
         self.dynamics_collection = self.db_session['dynamics']
 
+    @except_logger("get_dynamics failed .....................")
     async def get_dynamics(self, dynamics_id:str):
         try:
             filter = {'id': dynamics_id}
@@ -63,15 +65,20 @@ class DynamicsQueryUsercase(object):
         except:
             raise
 
-    async def list_dynamics(self, p_num, limit: int = 15):
+    @except_logger("list_dynamics failed .....................")
+    async def list_dynamics(self, p_num, p_size, content):
         try:
             filter = {"usr_id": self.user.id}
-            total_num = await self.dynamics_collection.count_documents({"usr_id": self.user.id})
-            total_page_num = math.ceil(total_num / limit)
+            if content not in [""]:
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "i"}},
+                                       {"desc": {"$regex": content, "$options": "i"}}]})
+            total_num = await self.dynamics_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / p_size)
             if p_num > total_page_num and total_page_num > 0:
                 p_num = total_page_num
             if p_num > 0:
-                results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id':0}).sort(
+                    [('last_modified', -1)]).skip((p_num-1) * p_size).limit(p_size).to_list(length=50)
             else:
                 results_dict = self.dynamics_collection.find(filter, {'_id': 0, 'usr_id': 0}).sort(
                     [('last_modified', -1)]).to_list(length=total_num)

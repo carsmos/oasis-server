@@ -8,14 +8,14 @@ from sdgApp.Application.sensor.RespondsDTOs import SensorReadDTO
 from sdgApp.Domain.sensor.sensor import SensorAggregate
 from sdgApp.Domain.sensor.sensor_exceptions import SensorNotFoundError
 from sdgApp.Infrastructure.MongoDB.sensor.sensor_repoImpl import SensorRepoImpl
-
+from sdgApp.Application.log.usercase import except_logger
 
 class SensorCommandUsercase(object):
 
     def __init__(self, db_session, user, repo=SensorRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
-
+    @except_logger("create_sensor failed .....................")
     async def create_sensor(self, sensor_create_model: SensorCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -29,13 +29,13 @@ class SensorCommandUsercase(object):
 
         except:
             raise
-
+    @except_logger("delete_sensor failed .....................")
     async def delete_sensor(self, sensor_id: str):
         try:
             await self.repo.delete(sensor_id)
         except:
             raise
-
+    @except_logger("update_sensor failed .....................")
     async def update_sensor(self, sensor_id:str, sensor_update_model: SensorUpdateDTO):
         try:
             sensor_retrieved = await self.repo.get(sensor_id=sensor_id)
@@ -56,7 +56,7 @@ class SensorQueryUsercase(object):
         self.db_session = db_session
         self.user = user
         self.sensor_collection = self.db_session['sensors']
-
+    @except_logger("get_sensor failed .....................")
     async def get_sensor(self, sensor_id:str):
         try:
             filter = {'id': sensor_id}
@@ -67,19 +67,27 @@ class SensorQueryUsercase(object):
             return SensorReadDTO(**result_dict)
         except:
             raise
-
-    async def list_sensor(self, p_num, query_param: dict, limit: int = 15):
+    @except_logger("list_sensor failed .....................")
+    async def list_sensor(self, p_num, limit, query_param: dict):
         try:
             filter = {"usr_id": self.user.id}
+            content = query_param.get("content")
+            if content:
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
+                query_param.pop("content")
+
             filter.update(query_param)
+
             total_num = await self.sensor_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / limit)
             if p_num > total_page_num and total_page_num > 0:
                 p_num = total_page_num
             if p_num > 0:
-                results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort(
+                    [('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
             else:
-                results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort([('last_modified', -1)]).to_list(length=total_num)
+                results_dict = self.sensor_collection.find(filter, {'_id': 0, 'usr_id':0}).sort(
+                    [('last_modified', -1)]).to_list(length=total_num)
             if results_dict:
                 response_dic = {}
                 response_dto_lst = []

@@ -9,6 +9,7 @@ from sdgApp.Domain.car.car import CarAggregate
 from sdgApp.Domain.car.car_exceptions import CarNotFoundError
 from sdgApp.Infrastructure.MongoDB.car.car_repoImpl import CarRepoImpl
 
+from sdgApp.Application.log.usercase import loggerd,except_logger
 
 
 class CarCommandUsercase(object):
@@ -16,7 +17,7 @@ class CarCommandUsercase(object):
     def __init__(self, db_session, user, repo=CarRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
-
+    @except_logger("create_car  failed............")
     async def create_car(self, car_create_model: CarCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -37,6 +38,7 @@ class CarCommandUsercase(object):
         except:
             raise
 
+    @except_logger("delete_car  failed............")
     async def delete_car(self, car_id: str):
         try:
             cars_ids = car_id.split(",")
@@ -45,6 +47,7 @@ class CarCommandUsercase(object):
         except:
             raise
 
+    @except_logger("update_car  failed............")
     async def update_car(self, car_id:str, car_update_model: CarUpdateDTO):
         try:
             car_retrieved = await self.repo.get(car_id=car_id)
@@ -62,6 +65,7 @@ class CarCommandUsercase(object):
         except:
             raise
 
+    @except_logger("update_car_snap  failed............")
     async def update_car_snap(self, car_id:str, dto: dict):
         try:
             car_snap_dict = dto
@@ -89,6 +93,7 @@ class CarQueryUsercase(object):
         self.user = user
         self.car_collection = self.db_session['cars']
 
+    @except_logger("get_car  failed............")
     async def get_car(self, car_id:str):
         try:
             filter = {'id': car_id}
@@ -109,11 +114,12 @@ class CarQueryUsercase(object):
         except:
             raise
 
+    @except_logger("list_car  failed............")
     async def list_car(self, pagenum, pagesize, content):
         try:
             filter = {"usr_id": self.user.id}
             if content:
-                filter.update({"$or": [{"name": {"$regex": content}}, {"desc":{"$regex": content}}]})
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}}, {"desc": {"$regex": content, "$options": "$i"}}]})
             total_num = await self.car_collection.count_documents(filter)
             total_page_num = math.ceil(total_num / pagesize)
             if pagenum > total_page_num > 0:

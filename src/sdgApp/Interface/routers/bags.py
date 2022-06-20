@@ -7,7 +7,7 @@ from sdgApp.Interface.FastapiUsers.manager import current_active_user
 from sdgApp.Application.job.usercase import JobQueryUsercase
 import json
 from sdgApp.Application.job.RespondsDTOs import JobReadDTO, JobStatusMsg, JobsResponse
-
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 
@@ -17,6 +17,7 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     tags=["Bags"]
 )
+@except_logger("bags upload failed .....................")
 async def upload(job_id: str, task_id: str, redis=Depends(get_redis), mongo=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:

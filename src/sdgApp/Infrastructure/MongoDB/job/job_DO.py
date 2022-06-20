@@ -20,12 +20,17 @@ class TaskDO(BaseModel):
     scenario_param: dict = None
     car_snap: dict = None
     sensors_snap: dict = None
+    start_time: str = None
+    end_time: str = None
 
 
 class JobDO(BaseModel):
     id: str
     name: str
     desc: str
+    status: str = None
+    start_time: str = None
+    end_time: str = None
     usr_id: Any
     create_time: str = None
     last_modified: str
@@ -34,7 +39,10 @@ class JobDO(BaseModel):
     def to_entity(self) -> JobAggregate:
         job_aggregate = JobAggregate(id=self.id,
                                      name=self.name,
-                                     desc=self.desc)
+                                     desc=self.desc,
+                                     status=self.status,
+                                     start_time=self.start_time,
+                                     end_time=self.end_time)
         for task_DO in self.task_list:
             task = TaskEntity(id=task_DO.id,
                               name=task_DO.name,
@@ -46,7 +54,9 @@ class JobDO(BaseModel):
                               job_id=task_DO.job_id,
                               result=task_DO.result,
                               status=task_DO.status,
-                              replay_url=task_DO.replay_url)
+                              replay_url=task_DO.replay_url,
+                              start_time=task_DO.start_time,
+                              end_time=task_DO.end_time)
             job_aggregate.add_task(task)
         return job_aggregate
 

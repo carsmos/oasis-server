@@ -12,7 +12,7 @@ from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
 from sdgApp.Domain.car.car_exceptions import CarNotFoundError
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
-
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 
@@ -21,6 +21,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     tags=["Job"]
 )
+@except_logger("create_job failed .....................")
 async def create_job(job_create_model: JobCreateDTO, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
@@ -38,6 +39,7 @@ async def create_job(job_create_model: JobCreateDTO, db=Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
+@except_logger("delete_job failed .....................")
 async def delete_job(job_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         await JobCommandUsercase(db_session=db, user=user).delete_job(job_id)
@@ -50,6 +52,7 @@ async def delete_job(job_id: str, db=Depends(get_db), user: UserDB = Depends(cur
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
+@except_logger("delete_task failed .....................")
 async def delete_task(job_id: str, task_ids: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         return await JobCommandUsercase(db_session=db, user=user).delete_task(job_id, task_ids)
@@ -62,6 +65,7 @@ async def delete_task(job_id: str, task_ids: str, db=Depends(get_db), user: User
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
+@except_logger("update_job failed .....................")
 async def update_job(job_id: str, job_update_model: JobUpdateDTO, db=Depends(get_db),
                           user: UserDB = Depends(current_active_user)):
     try:
@@ -77,9 +81,9 @@ async def update_job(job_id: str, job_update_model: JobUpdateDTO, db=Depends(get
 @router.get(
     "/job/{job_id}",
     status_code=status.HTTP_200_OK,
-    response_model=JobReadDTO,
     tags=["Job"]
 )
+@except_logger("get_job failed .....................")
 async def get_job(job_id:str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         job_dto = await JobQueryUsercase(db_session=db, user=user).get_job(job_id)
@@ -91,13 +95,14 @@ async def get_job(job_id:str, db=Depends(get_db), user: UserDB = Depends(current
 @router.get(
     "/job",
     status_code=status.HTTP_200_OK,
-    response_model=JobsResponse,
     tags=["Job"]
 )
-async def list_job(skip: int = 1, limit: int = 15, asc: int = -1, db=Depends(get_db),
+@except_logger("list_job failed .....................")
+async def list_job(pagenum: int = 1, pagesize: int = 15, asc: int = -1, status: str = "",  content: str = "",
+                   recent: str = "", db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
-        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).list_job(skip, limit, asc)
+        job_dto_dic = await JobQueryUsercase(db_session=db, user=user).list_job(pagenum, pagesize, asc, status, content, recent)
         return job_dto_dic
     except:
         raise
@@ -108,6 +113,7 @@ async def list_job(skip: int = 1, limit: int = 15, asc: int = -1, db=Depends(get
     status_code=status.HTTP_200_OK,
     tags=["Job"]
 )
+@except_logger("get_total_task_info failed .....................")
 async def get_total_task_info(db=Depends(get_db), user: UserDB = Depends(current_active_user), queue_sess=Depends(get_redis)):
     try:
         return await JobQueryUsercase(db_session=db, user=user).get_total_task_info(queue_sess)
@@ -121,6 +127,7 @@ async def get_total_task_info(db=Depends(get_db), user: UserDB = Depends(current
     responses={200: {"model": JobStatusMsg}},
     tags=["Job"]
 )
+@except_logger("run_job failed .....................")
 async def run_job(job_id: str, db=Depends(get_db), queue_sess=Depends(get_redis),
                    user: UserDB = Depends(current_active_user)):
     try:
@@ -131,11 +138,28 @@ async def run_job(job_id: str, db=Depends(get_db), queue_sess=Depends(get_redis)
 
 
 @router.post(
+    "/create_and_run_job",
+    status_code=status.HTTP_200_OK,
+    responses={200: {"model": JobStatusMsg}},
+    tags=["Job"]
+)
+@except_logger("create_and_run failed .....................")
+def create_and_run(job_create_model: JobCreateDTO, db=Depends(get_db), queue_sess=Depends(get_redis),
+                   user: UserDB = Depends(current_active_user)):
+    try:
+        job_id = JobCommandUsercase(db_session=db, user=user).create_and_run_job(job_create_model, queue_sess)
+        return job_id
+    except:
+        raise
+
+
+@router.post(
     "/stop-jobs/{job_ids}",
     status_code=status.HTTP_200_OK,
     responses={200: {"model": JobStatusMsg}},
     tags=["Job"]
 )
+@except_logger("stop_jobs failed .....................")
 async def stop_jobs(job_ids: str, db=Depends(get_db), queue_sess=Depends(get_redis),
                     user: UserDB = Depends(current_active_user)):
     try:
@@ -150,6 +174,7 @@ async def stop_jobs(job_ids: str, db=Depends(get_db), queue_sess=Depends(get_red
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Job"]
 )
+@except_logger("retry_task failed .....................")
 async def retry_task(job_id: str, task_ids: str, db=Depends(get_db), queue_sess=Depends(get_redis),
                    user: UserDB = Depends(current_active_user)):
     try:
@@ -165,6 +190,7 @@ async def retry_task(job_id: str, task_ids: str, db=Depends(get_db), queue_sess=
     response_model=JobsResponse,
     tags=["Job"]
 )
+@except_logger("get_job_infos failed .....................")
 async def get_job_infos(status: str = "all", cycle: str = "", name: str = "",  skip: int = 1, limit: int = 15,
                         asc: int = -1, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:

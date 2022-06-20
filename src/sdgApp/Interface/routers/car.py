@@ -13,7 +13,7 @@ from sdgApp.Interface.FastapiUsers.manager import current_active_user
 
 from sdgApp.Domain.dynamics.dynamics_exceptions import DynamicsNotFoundError
 from sdgApp.Domain.sensor.sensor_exceptions import SensorNotFoundError
-
+from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
 
 ##TODO: 整理 try except 包括去重
@@ -25,6 +25,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     tags=["Cars"]
 )
+@except_logger("create_car failed .....................")
 async def create_car(car_create_model: CarCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
@@ -38,6 +39,7 @@ async def create_car(car_create_model: CarCreateDTO, db = Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Cars"]
 )
+@except_logger("delete_car failed .....................")
 async def delete_car(car_id:str, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
@@ -51,6 +53,7 @@ async def delete_car(car_id:str, db = Depends(get_db),
     status_code=status.HTTP_202_ACCEPTED,
     tags=["Cars"]
 )
+@except_logger("update_car failed .....................")
 async def update_car(car_id:str, car_update_model: CarUpdateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
@@ -65,6 +68,7 @@ async def update_car(car_id:str, car_update_model: CarUpdateDTO, db = Depends(ge
     response_model= CarReadDTO,
     tags=["Cars"]
 )
+@except_logger("get_car failed .....................")
 async def get_car(car_id:str, db = Depends(get_db),
                   user: UserDB = Depends(current_active_user)):
     try:
@@ -80,6 +84,7 @@ async def get_car(car_id:str, db = Depends(get_db),
     response_model=CarsResponse,
     tags=["Cars"]
 )
+@except_logger("list_car failed .....................")
 async def list_car(pagenum: int = 1, pagesize: int = 10, content: str = "", db=Depends(get_db),
                    user: UserDB = Depends(current_active_user)):
     try:
@@ -93,6 +98,7 @@ async def list_car(pagenum: int = 1, pagesize: int = 10, content: str = "", db=D
     status_code=status.HTTP_201_CREATED,
     tags=["Cars"]
 )
+@except_logger("assemble_car failed .....................")
 async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:
@@ -110,6 +116,7 @@ async def assemble_car(assemble_create_model: AssembleCreateDTO, db = Depends(ge
     response_model=CarReadDTO,
     tags=["Cars"]
 )
+@except_logger("overview failed .....................")
 async def overview(assemble_create_model: AssembleCreateDTO, db = Depends(get_db),
                      user: UserDB = Depends(current_active_user)):
     try:

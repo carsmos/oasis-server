@@ -8,7 +8,7 @@ from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO, EnvUpdateD
 from sdgApp.Domain.environments.envs import EnvsAggregate
 from sdgApp.Domain.environments.envs_exceptions import EnvNotFoundError
 from sdgApp.Infrastructure.MongoDB.environment.env_repoImpl import EnvRepoImpl
-
+from sdgApp.Application.log.usercase import except_logger
 
 class EnvCommandUsercase(object):
 
@@ -16,6 +16,7 @@ class EnvCommandUsercase(object):
         self.repo = repo
         self.repo = self.repo(db_session, user)
 
+    @except_logger("create_env failed .....................")
     async def create_env(self, env_create_model: EnvCreateDTO):
         try:
             uuid = shortuuid.uuid()
@@ -26,13 +27,14 @@ class EnvCommandUsercase(object):
             await self.repo.create_env(env)
         except:
             raise
-
-    async def delete_env(self, env_id: str):
+    @except_logger("delete_env failed .....................")
+    async def delete_env(self, env_ids: str):
         try:
-            await self.repo.delete_env(env_id)
+            for env_id in env_ids.split("+"):
+                await self.repo.delete_env(env_id)
         except:
             raise
-
+    @except_logger("update_env failed .....................")
     async def update_env(self, env_id: str, env_create_model: EnvUpdateDTO):
         try:
             env_retrieved = await self.repo.get(env_id)
@@ -50,7 +52,7 @@ class EnvQueryUsercase(object):
         self.db_session = db_session
         self.user = user
         self.envs_collection = self.db_session['environments']
-
+    @except_logger("find_specified_env failed .....................")
     async def find_specified_env(self, env_id: str):
         try:
             filter = {'id': env_id}
@@ -61,18 +63,23 @@ class EnvQueryUsercase(object):
             return EnvReadDTO(**result_dict)
         except:
             raise
-
-    async def find_all_envs(self, p_num, limit: int = 15):
+    @except_logger("find_all_envs failed .....................")
+    async def find_all_envs(self, p_num, p_size, content):
         try:
             filter = ({"usr_id": self.user.id})
-            total_num = await self.envs_collection.count_documents({"usr_id": self.user.id})
-            total_page_num = math.ceil(total_num / limit)
+            if content not in [""]:
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "i"}},
+                                       {"desc": {"$regex": content, "$options": "i"}}]})
+            total_num = await self.envs_collection.count_documents(filter)
+            total_page_num = math.ceil(total_num / p_size)
             if p_num > total_page_num and total_page_num > 0:
                 p_num = total_page_num
             if p_num > 0:
-                results_dict = self.envs_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)]).skip((p_num-1) * limit).limit(limit).to_list(length=50)
+                results_dict = self.envs_collection.find(filter, {'_id': 0}).sort(
+                    [('last_modified', -1)]).skip((p_num-1) * p_size).limit(p_size).to_list(length=50)
             else:
-                results_dict = self.envs_collection.find(filter, {'_id': 0}).sort([('last_modified', -1)]).to_list(length=total_num)
+                results_dict = self.envs_collection.find(filter, {'_id': 0}).sort(
+                    [('last_modified', -1)]).to_list(length=total_num)
             if results_dict:
                 response_dic = {}
                 response_dto_lst = []

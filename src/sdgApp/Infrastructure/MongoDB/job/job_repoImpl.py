@@ -45,12 +45,14 @@ class JobRepoImpl(JobRepo):
         job_DO = JobDO(id=job.id,
                        name=job.name,
                        desc=job.desc,
+                       status=job.status,
                        usr_id=self.user.id,
                        create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                        last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                        task_list=task_DO_list)
 
         await self.job_collection.insert_one(job_DO.dict())
+
 
     async def delete(self, job_id: str):
         filter = {'id': job_id}
@@ -89,6 +91,7 @@ class JobRepoImpl(JobRepo):
         update_job_DO = JobDO(id=update_job.id,
                        name=update_job.name,
                        desc=update_job.desc,
+                       status=update_job.status,
                        usr_id=None,
                        create_time=None,
                        last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),

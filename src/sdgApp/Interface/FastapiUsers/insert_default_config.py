@@ -1,8 +1,11 @@
 
 import shortuuid
-from uuid import UUID
+
+from sdgApp.Application.environments.usercase import EnvQueryUsercase
+from sdgApp.Application.log.usercase import except_logger
 
 
+@except_logger("insert_defaultfailed............")
 async def insert_default(db_session, user):
     from sdgApp.Application.sensor.usercase import SensorCommandUsercase, SensorQueryUsercase
     from sdgApp.Application.sensor.CommandDTOs import SensorCreateDTO
@@ -85,6 +88,7 @@ async def insert_default(db_session, user):
         "type": "sensor.camera.semantic_segmentation",
         "desc": "初始化语义分割摄像机模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。",
         "param": {
+            "id": "front",
             "roll": 0,
             "pitch": 0,
             "yaw": 0,
@@ -106,6 +110,7 @@ async def insert_default(db_session, user):
         "type": "sensor.camera.dvs",
         "desc": "初始化DVS摄像机模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。",
         "param": {
+            "id": "front",
             "roll": 0,
             "pitch": 0,
             "yaw": 0,
@@ -301,11 +306,11 @@ async def insert_default(db_session, user):
     }
 
     await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**lidar))
-    lidar_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, {})
+    lidar_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, 15, {})
     lidar_dto = lidar_dto["datas"][0]
 
     await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**depth_cam))
-    depth_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, {})
+    depth_dto = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, 15, {})
     depth_dto = depth_dto["datas"][1]
 
     other_default_sensors = [rss,
@@ -369,7 +374,7 @@ async def insert_default(db_session, user):
             "damping_rate_zero_throttle_clutch_disengaged": 0.35,
             "wheels": {
                 "front_left_wheel": {
-                    "position": "0.0,0.0,0.0",
+                    "position": {"x": 0, "y": 0, "z": 0},
                     "tire_friction": "2.0",
                     "damping_rate": "0.25",
                     "max_steer_angle": "70.0",
@@ -381,7 +386,7 @@ async def insert_default(db_session, user):
                     "lat_stiff_value": ""
                 },
                 "front_right_wheel": {
-                    "position": "0.0,0.0,0.0",
+                    "position": {"x": 0, "y": 0, "z": 0},
                     "tire_friction": "2.0",
                     "damping_rate": "0.25",
                     "max_steer_angle": "70.0",
@@ -393,7 +398,7 @@ async def insert_default(db_session, user):
                     "lat_stiff_value": ""
                 },
                 "rear_left_wheel": {
-                    "position": "0.0,0.0,0.0",
+                    "position": {"x": 0, "y": 0, "z": 0},
                     "tire_friction": "2.0",
                     "damping_rate": "0.25",
                     "max_steer_angle": "70.0",
@@ -405,7 +410,7 @@ async def insert_default(db_session, user):
                     "lat_stiff_value": ""
                 },
                 "rear_right_wheel": {
-                    "position": "0.0,0.0,0.0",
+                    "position": {"x": 0, "y": 0, "z": 0},
                     "tire_friction": "2.0",
                     "damping_rate": "0.25",
                     "max_steer_angle": "70.0",
@@ -421,7 +426,7 @@ async def insert_default(db_session, user):
     }
 
     await DynamicsCommandUsercase(db_session=db_session, user=user).create_dynamics(DynamicsCreateDTO(**default_dynamic))
-    dynamic_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(1)
+    dynamic_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(0, 15, "")
     dynamic_dto = dynamic_dto["datas"][0]
 
     from sdgApp.Application.CarFacadeService.AssembleService import AssembleCarService
@@ -481,7 +486,7 @@ async def insert_default(db_session, user):
         "type": "scenest"
     }
     await DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(DynamicSceneCreateDTO(**default_scene_1))
-    default_scene_dto = await DynamicSceneQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1)
+    default_scene_dto = await DynamicSceneQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "")
     default_scene_dto = default_scene_dto["datas"][0]
 
     scene_2 = {
@@ -490,34 +495,46 @@ async def insert_default(db_session, user):
         "scene_script": "// ego car\nego_init_position = (-110,3); //default coordinate frame is ENU\nego_target_position = (170,-60); //default coordinate frame is ENU\nego_init_state = (ego_init_position);\nego_target_state = (ego_target_position);\nego_vehicle = AV(ego_init_state, ego_target_state, vehicle_type);\n\n// npcs\nnpc1=Vehicle(((-3,-45),,-1),,((245.3,-75)));\nnpc2=Vehicle(((-3,-52),,-1),, ((245.3,-60)));\nnpc3=Vehicle(((-85,-40),,-1),, ((234.8,120)));\nnpc4=Vehicle(((-85,-50),,-1),, ((234.8,50)));\nnpc5=Vehicle(((-88.5,-43),,-1),,((234.8,150)));\nnpc6=Vehicle(((-77,30),,-1),,((140,-1)));\nnpc7=Vehicle(((-77,-37),,-1),,((170,-4.5)));\nnpc8=Vehicle(((23,23),,-1),,((170,-4.5)));\nnpc9=Vehicle(((-67,230),,-1),,((170,-4.5)));\nnpc10=Vehicle(((89,77),,-1),,((170,-4.5)));\nnpc11=Vehicle(((-250,199),,-1),,((170,-4.5)));\nnpc12=Vehicle(((-63,0),,-1),,((170,-4.5)));\nnpc13=Vehicle(((-55,0),,-1),,((170,-4.5)));\nnpc14=Vehicle(((-45,1),,-1),,((170,-4.5)));\nnpc15=Vehicle(((-35,3),,-1),,((170,-4.5)));\nnpc16=Vehicle(((-25,3),,-1),,((170,-4.5)));\nnpc17=Vehicle(((-15,3),,-1),,((170,-4.5)));\nnpc18=Vehicle(((-5,3),,-1),,((170,-4.5)));\nnpc19=Vehicle(((5,3),,-1),,((170,-4.5)));\nnpc20=Vehicle(((-77,-45),,-1),,((170,-4.5)));\nnpc21=Vehicle(((-20,-6),,-1),,((170,-4.5)));\nnpc22=Vehicle(((-88,-5),,-1),,((170,-4.5)));\nnpc23=Vehicle(((20,3),,-1),,((170,-4.5)));\nnpc24=Vehicle(((40,3),,-1),,((170,-4.5)));\nnpc25=Vehicle(((65,0),,-1),,((170,-4.5)));\nnpc26=Vehicle(((45,-3),,-1),,((170,-4.5)));\nnpc27=Vehicle(((30,-3),,-1),,((170,-4.5)));\nnpc28=Vehicle(((15,-3),,-1),,((170,-4.5)));\nnpc29=Vehicle(((5,-3),,-1),,((170,-4.5)));\nnpc30=Vehicle(((-5,-3),,-1),,((170,-4.5)));\nnpc31=Vehicle(((-15,-3),,-1),,((170,-4.5)));\nnpc32=Vehicle(((-25,-3),,-1),,((170,-4.5)));\nnpc33=Vehicle(((5,35),,-1),,((170,-4.5)));\nnpc34=Vehicle(((-80,1),,-1),,((170,-4.5)));\nnpc35=Vehicle(((-85,1),,-1),,((170,-4.5)));\nnpc36=Vehicle(((-63,-3),,-1),,((170,-4.5)));\nnpc37=Vehicle(((45,-3),,-1),,((170,-4.5)));\nnpc38=Vehicle(((55,-3),,-1),,((170,-4.5)));\nnpc39=Vehicle(((65,-6),,-1),,((170,-4.5)));\nnpc40=Vehicle(((75,-6),,-1),,((170,-4.5)));\nnpc41=Vehicle(((3,63),,-1),,((170,-4.5)));\nnpc42=Vehicle(((-3,53),,-1),,((170,-4.5)));\nnpc43=Vehicle(((3,43),,-1),,((170,-4.5)));\nnpc44=Vehicle(((6,33),,-1),,((170,-4.5)));\nnpc45=Vehicle(((-3,23),,-1),,((170,-4.5)));\nnpc46=Vehicle(((6,13),,-1),,((170,-4.5)));\nnpc47=Vehicle(((3,3),,-1),,((170,-4.5)));\nnpc48=Vehicle(((3,-5),,-1),,((170,-4.5)));\nnpc49=Vehicle(((6,-15),,-1),,((170,-4.5)));\nnpc50=Vehicle(((3,-25),,-1),,((170,-4.5)));\nnpc51=Vehicle(((-3,63),,-1),,((170,-4.5)));\nnpc52=Vehicle(((-5,53),,-1),,((170,-4.5)));\nnpc53=Vehicle(((-3,43),,-1),,((170,-4.5)));\nnpc54=Vehicle(((-5,33),,-1),,((170,-4.5)));\nnpc55=Vehicle(((-3,23),,-1),,((170,-4.5)));\nnpc56=Vehicle(((-5,13),,-1),,((170,-4.5)));\nnpc57=Vehicle(((5,23),,-1),,((170,-4.5)));\nnpc58=Vehicle(((-3,-6),,-1),,((170,-4.5)));\nnpc59=Vehicle(((-3,-16),,-1),,((170,-4.5)));\nnpc60=Vehicle(((-3,-32),,-1),,((-170,-4.5)));\n\nnpcs = {npc1,npc2,npc3,npc4,npc5,npc6,npc7,npc8,npc9,npc10,npc11,npc12};\n\n// pedestrian\npedestrian_type = (1.65, black);\npedestrian1 = Pedestrian(((-15.9, 110), ,0.5), , ((-56, 123), ,0), pedestrian_type);\npedestrian2 = Pedestrian(((101, 62), ,0.5), , ((120, 144), ,0), pedestrian_type);\npedestrians = {pedestrian1, pedestrian2};\n\n//traffic requirements\nspeed_range = (0,80);\nspeed_limit = SpeedLimit(\"10.-1\", speed_range);\nintersection = Intersection(1, 1, 0, 1);\ntraffic = {intersection, speed_limit};\n\nscenario = CreateScenario{load(map);\n        ego_vehicle;\n        npcs;\n        {};\n        {};\n        env;\n        traffic;\n};",
         "type": "scenest"
     }
-
     scene_3 = {
         "name": "动态场景描述3",
         "desc": "推荐使用地图 Town3",
-        "scene_script": "// ego car\nego_init_position = (-110,3); //default coordinate frame is ENU\nego_target_position = (170,-60); //default coordinate frame is ENU\nego_init_state = (ego_init_position);\nego_target_state = (ego_target_position);\nego_vehicle = AV(ego_init_state, ego_target_state, vehicle_type);\n\n// npcs\nnpc1=Vehicle(((-3,-45),,-1),,((245.3,-75)));\nnpc2=Vehicle(((-3,-52),,-1),, ((245.3,-60)));\nnpc3=Vehicle(((-85,-40),,-1),, ((234.8,120)));\nnpc4=Vehicle(((-85,-50),,-1),, ((234.8,50)));\nnpc5=Vehicle(((-88.5,-43),,-1),,((234.8,150)));\nnpc6=Vehicle(((-77,30),,-1),,((140,-1)));\nnpc7=Vehicle(((-77,-37),,-1),,((170,-4.5)));\nnpc8=Vehicle(((23,23),,-1),,((170,-4.5)));\nnpc9=Vehicle(((-67,230),,-1),,((170,-4.5)));\nnpc10=Vehicle(((89,77),,-1),,((170,-4.5)));\nnpc11=Vehicle(((-250,199),,-1),,((170,-4.5)));\nnpc12=Vehicle(((-63,0),,-1),,((170,-4.5)));\nnpc13=Vehicle(((-55,0),,-1),,((170,-4.5)));\nnpc14=Vehicle(((-45,1),,-1),,((170,-4.5)));\nnpc15=Vehicle(((-35,3),,-1),,((170,-4.5)));\nnpc16=Vehicle(((-25,3),,-1),,((170,-4.5)));\nnpc17=Vehicle(((-15,3),,-1),,((170,-4.5)));\nnpc18=Vehicle(((-5,3),,-1),,((170,-4.5)));\nnpc19=Vehicle(((5,3),,-1),,((170,-4.5)));\nnpc20=Vehicle(((-77,-45),,-1),,((170,-4.5)));\nnpc21=Vehicle(((-20,-6),,-1),,((170,-4.5)));\nnpc22=Vehicle(((-88,-5),,-1),,((170,-4.5)));\nnpc23=Vehicle(((20,3),,-1),,((170,-4.5)));\nnpc24=Vehicle(((40,3),,-1),,((170,-4.5)));\nnpc25=Vehicle(((65,0),,-1),,((170,-4.5)));\nnpc26=Vehicle(((45,-3),,-1),,((170,-4.5)));\nnpc27=Vehicle(((30,-3),,-1),,((170,-4.5)));\nnpc28=Vehicle(((15,-3),,-1),,((170,-4.5)));\nnpc29=Vehicle(((5,-3),,-1),,((170,-4.5)));\nnpc30=Vehicle(((-5,-3),,-1),,((170,-4.5)));\nnpc31=Vehicle(((-15,-3),,-1),,((170,-4.5)));\nnpc32=Vehicle(((-25,-3),,-1),,((170,-4.5)));\nnpc33=Vehicle(((5,35),,-1),,((170,-4.5)));\nnpc34=Vehicle(((-80,1),,-1),,((170,-4.5)));\nnpc35=Vehicle(((-85,1),,-1),,((170,-4.5)));\nnpc36=Vehicle(((-63,-3),,-1),,((170,-4.5)));\nnpc37=Vehicle(((45,-3),,-1),,((170,-4.5)));\nnpc38=Vehicle(((55,-3),,-1),,((170,-4.5)));\nnpc39=Vehicle(((65,-6),,-1),,((170,-4.5)));\nnpc40=Vehicle(((75,-6),,-1),,((170,-4.5)));\nnpc41=Vehicle(((3,63),,-1),,((170,-4.5)));\nnpc42=Vehicle(((-3,53),,-1),,((170,-4.5)));\nnpc43=Vehicle(((3,43),,-1),,((170,-4.5)));\nnpc44=Vehicle(((6,33),,-1),,((170,-4.5)));\nnpc45=Vehicle(((-3,23),,-1),,((170,-4.5)));\nnpc46=Vehicle(((6,13),,-1),,((170,-4.5)));\nnpc47=Vehicle(((3,3),,-1),,((170,-4.5)));\nnpc48=Vehicle(((3,-5),,-1),,((170,-4.5)));\nnpc49=Vehicle(((6,-15),,-1),,((170,-4.5)));\nnpc50=Vehicle(((3,-25),,-1),,((170,-4.5)));\nnpc51=Vehicle(((-3,63),,-1),,((170,-4.5)));\nnpc52=Vehicle(((-5,53),,-1),,((170,-4.5)));\nnpc53=Vehicle(((-3,43),,-1),,((170,-4.5)));\nnpc54=Vehicle(((-5,33),,-1),,((170,-4.5)));\nnpc55=Vehicle(((-3,23),,-1),,((170,-4.5)));\nnpc56=Vehicle(((-5,13),,-1),,((170,-4.5)));\nnpc57=Vehicle(((5,23),,-1),,((170,-4.5)));\nnpc58=Vehicle(((-3,-6),,-1),,((170,-4.5)));\nnpc59=Vehicle(((-3,-16),,-1),,((170,-4.5)));\nnpc60=Vehicle(((-3,-32),,-1),,((-170,-4.5)));\n\nnpcs = {npc1,npc2,npc3,npc4,npc5,npc6,npc7,npc8,npc9,npc10,npc11,npc12};\n\n// pedestrian\npedestrian_type = (1.65, black);\npedestrian1 = Pedestrian(((-15.9, 110), ,0.5), , ((-56, 123), ,0), pedestrian_type);\npedestrian2 = Pedestrian(((101, 62), ,0.5), , ((120, 144), ,0), pedestrian_type);\npedestrians = {pedestrian1, pedestrian2};\n\n//traffic requirements\nspeed_range = (0,80);\nspeed_limit = SpeedLimit(\"10.-1\", speed_range);\nintersection = Intersection(1, 1, 0, 1);\ntraffic = {intersection, speed_limit};\n\nscenario = CreateScenario{load(map);\n        ego_vehicle;\n        npcs;\n        {};\n        {};\n        env;\n        traffic;\n};",
+        "scene_script": "scenario dut.cut_in_and_slow:\n  set_map(\"Town03\")   # specify map to use in this test\n path: Path                      # A path in the map\n path_min_driving_lanes(2)         # Path should have at least two lanes\n\n  ego_vehicle: Model3                # ego car\n  npc: Rubicon               # The other car\n\n  do serial:\n  get_ahead: parallel(duration: 30s):\n  ego_vehicle.drive(path) with:\n  speed(20kph)\n npc.drive(path) with:\n lane(right_of: ego_vehicle, at: start)\n position(15m, behind: ego_vehicle, at: start)\n position(20m, ahead_of: ego_vehicle, at: noend)\n\n change_lane: parallel(duration: 5s):\n ego_vehicle.drive(path)\n npc.drive(path) with:\n lane(same_as: ego_vehicle, at: noend)\n\n slow: parallel(duration: 20s):\n ego_vehicle.drive(path)\n npc.drive(path) with:\n speed(10kph)",
+        "type": "cartel"
+    }
+    scene_4 = {
+        "name": "动态场景描述4",
+        "desc": "推荐使用地图 Town3",
+        "scene_script": "// ego car\nego_init_position = (-35.84, -210.66); //default coordinate frame is ENU\nego_target_position = (-43.49, -209.36); //default coordinate frame is ENU\nego_init_state = (ego_init_position,,1);\nego_target_state = (ego_target_position,,1);\n\nego_vehicle = AV(ego_init_state, ego_target_state, vehicle_type);\n\n// npc car\nnpc1_init_state = ((151.03, -4.47),,5); // start\nnpc1_waypoint = ((3.5, -30));\nnpc1_target_state = ((4.2, -101),,5); 	// target\nnpc1_waypoints = (npc1_waypoint);\nnpc1 = Vehicle(npc1_init_state, Waypoint(npc1_waypoints), npc1_target_state);\n\n// npc car\nnpc2_init_state = ((137, -8.18),,5); 		// start\nnpc2_waypoint = ((83.42, -34.67));\nnpc2_target_state = ((42.88, -139.06),,5); // target\nnpc2_waypoints = (npc2_waypoint);\nnpc2 = Vehicle(npc2_init_state, Waypoint(npc2_waypoints), npc2_target_state);\n\nnpcs = {npc1, npc2};\n\n// pedestrian\npedestrian_type = (1.65, black);\npedestrian1 = Pedestrian(((-15.9, 110), ,0.5), , ((-56, 123), ,0), pedestrian_type);\npedestrian2 = Pedestrian(((101, 62), ,0.5), , ((120, 144), ,0), pedestrian_type);\npedestrians = {pedestrian1, pedestrian2};\n\n// traffic requirements\nspeed_range = (0, 20);\nspeed_limit = SpeedLimit(\"52.-1\", speed_range);\nintersection = Intersection(1, 1, 0, 1);\ntraffic = {intersection, speed_limit};\n\nscenario = CreateScenario{load(map);ego_vehicle;npcs;pedestrians;{};env;traffic;};",
         "type": "scenest"
     }
-
-    scene_4_openscenario = {
-        "name": "动态场景描述4",
+    scene_5 = {
+        "name": "动态场景描述5",
+        "desc": "推荐使用地图 Town3",
+        "scene_script": "// ego car\nego_init_position = (101, 62.48); //default coordinate frame is ENU\nego_target_position = (165, 62.48); //default coordinate frame is ENU\nego_init_state = (ego_init_position);\nego_target_state = (ego_target_position);\n\nego_vehicle = AV(ego_init_state, ego_target_state, vehicle_type);\n\n// npc car\nnpc1_init_state = (\"52.-1\"->0.0, ,0.0); // start\nnpc1_waypoint = ((8,40));\nnpc1_target_state = (\"52.1\"->0.0, ,0.0); // target\nnpc1_waypoints = (npc1_waypoint);\nnpc1 = Vehicle(npc1_init_state, Waypoint(npc1_waypoints), npc1_target_state);\n\n// npc 2: move along given waypoints\nnpc2_init_state = (\"52.-1\"->5.0, ,0.0);		// start\nnpc2_waypoints = ((\"52.-1\"->5.0, ,0.0), (\"52.1\"->2.0, ,1.0));\nnpc2_target_state = (\"52.1\"->2.0, ,0.0); 	// target\nnpc2 = Vehicle(npc2_init_state, Waypoint(npc2_waypoints), npc2_target_state, \nvehicle_type);\n\n// npc 3: static vehicle\nnpc3 = Vehicle((\"75.-1\"->0.0, ,0.0), , (\"494.-1\"->1.0, ,0.0));\n\nnpcs = {npc1, npc2, npc3};\n\n// pedestrian\npedestrian_type = (1.65, black);\npedestrian1 = Pedestrian(((-15.9, 110), ,0.5), , ((-56, 123), ,0), pedestrian_type);\npedestrian2 = Pedestrian(((101, 62), ,0.5), , ((120, 144), ,0), pedestrian_type);\npedestrians = {pedestrian1, pedestrian2};\n\n// traffic requirements\nspeed_range = (0, 20);\nspeed_limit = SpeedLimit(\"52.-1\", speed_range);\nintersection = Intersection(1, 1, 0, 1);\ntraffic = {intersection, speed_limit};\n\nscenario = CreateScenario{load(map);ego_vehicle;npcs;pedestrians;{};env;traffic;};\n\nTrace trace = EXE(scenario);\n\nego_state= trace[1][ego];\nnpc2_perception= trace[1][perception][npc2];\nnpc2_state= trace[1][truth][npc2];\npedestrian_truth = trace[1][perception][pedestrian1];\npedestrian_ground = trace[1][truth][pedestrian1];\n\ndistance = dis(ego_state, npc2_state);\nerror = diff(npc2_perception, npc2_state);\nperception_detection = distance <= 3 & error <= 4;\ntrace |=G perception_detection;\nintersection_assertion=(trace[1][perception][traffic]==trace[1][truth][traffic]\n&trace[1][traffic]==red)->(~norm((100,100))U(trace[1][perception]\n[traffic]==trace[1][truth][traffic]\n&trace[1][traffic]==green));\ntrace |=G intersection_assertion;\nspeed_constraint_assertion=(trace[1][perception][traffic]==trace[1][truth][traffic]\n&trace[1][traffic]==(100,200)&120<trace[1][traffic][0])\n->F[0,2]~120<trace[1][traffic][0];\ntrace |=G speed_constraint_assertion;",
+        "type": "scenest"
+    }
+    scene_6_openscenario = {
+        "name": "动态场景描述6",
         "desc": "推荐使用地图 Town3",
         "scene_script": "<?xml version=\"1.0\"?>\n    <OpenSCENARIO>\n      <FileHeader revMajor=\"1\" revMinor=\"0\" date=\"2019-06-25T00:00:00\" description=\"CARLA:FollowLeadingVehicle\" author=\"\"/>\n      <ParameterDeclarations>\n        <ParameterDeclaration name=\"leadingSpeed\" parameterType=\"double\" value=\"2.0\"/>\n      </ParameterDeclarations>\n      <CatalogLocations>\n      </CatalogLocations>\n      <RoadNetwork>\n        <LogicFile filepath=\"Town03\"/>\n        <SceneGraphFile filepath=\"\"/>\n      </RoadNetwork>\n      <Entities>\n        <ScenarioObject name=\"ego_vehicle\">\n          <Vehicle name=\"vehicle.lincoln.mkz2017\" vehicleCategory=\"car\">\n            <ParameterDeclarations/>\n            <Performance maxSpeed=\"69.444\" maxAcceleration=\"10.0\" maxDeceleration=\"10.0\"/>\n            <BoundingBox>\n              <Center x=\"1.5\" y=\"0.0\" z=\"0.9\"/>\n              <Dimensions width=\"2.1\" length=\"4.5\" height=\"1.8\"/>\n            </BoundingBox>\n            <Axles>\n              <FrontAxle maxSteering=\"0.5\" wheelDiameter=\"0.6\" trackWidth=\"1.8\" positionX=\"3.1\" positionZ=\"0.3\"/>\n              <RearAxle maxSteering=\"0.0\" wheelDiameter=\"0.6\" trackWidth=\"1.8\" positionX=\"0.0\" positionZ=\"0.3\"/>\n            </Axles>\n            <Properties>\n              <Property name=\"type\" value=\"ego_vehicle\"/>\n              <Property name=\"color\" value=\"0,0,255\"/>\n            </Properties>\n          </Vehicle>\n        </ScenarioObject>\n        <ScenarioObject name=\"adversary\">\n          <Vehicle name=\"vehicle.lincoln.mkz2017\" vehicleCategory=\"car\">\n            <ParameterDeclarations/>\n            <Performance maxSpeed=\"69.444\" maxAcceleration=\"10.0\" maxDeceleration=\"10.0\"/>\n            <BoundingBox>\n              <Center x=\"1.5\" y=\"0.0\" z=\"0.9\"/>\n              <Dimensions width=\"2.1\" length=\"4.5\" height=\"1.8\"/>\n            </BoundingBox>\n            <Axles>\n              <FrontAxle maxSteering=\"0.5\" wheelDiameter=\"0.6\" trackWidth=\"1.8\" positionX=\"3.1\" positionZ=\"0.3\"/>\n              <RearAxle maxSteering=\"0.0\" wheelDiameter=\"0.6\" trackWidth=\"1.8\" positionX=\"0.0\" positionZ=\"0.3\"/>\n            </Axles>\n            <Properties>\n              <Property name=\"type\" value=\"simulation\"/>\n              <Property name=\"color\" value=\"255,0,0\"/>\n            </Properties>\n          </Vehicle>\n        </ScenarioObject>\n      </Entities>\n      <Storyboard>\n        <Init>\n          <Actions>\n            <GlobalAction>\n              <EnvironmentAction>\n                <Environment name=\"Environment1\">\n                  <TimeOfDay animation=\"false\" dateTime=\"2019-06-25T12:00:00\"/>\n                  <Weather cloudState=\"free\">\n                    <Sun intensity=\"1.0\" azimuth=\"0.0\" elevation=\"1.31\"/>\n                    <Fog visualRange=\"100000.0\"/>\n                    <Precipitation precipitationType=\"dry\" intensity=\"0.0\"/>\n                  </Weather>\n                  <RoadCondition frictionScaleFactor=\"1.0\"/>\n                </Environment>\n              </EnvironmentAction>\n            </GlobalAction>\n            <Private entityRef=\"ego_vehicle\">\n              <PrivateAction>\n                <TeleportAction>\n                  <Position>\n                    <WorldPosition x=\"30\" y=\"134\" z=\"0\" h=\"0\"/>\n                  </Position>\n                </TeleportAction>\n              </PrivateAction>\n              <PrivateAction>\n                <ControllerAction>\n                    <AssignControllerAction>\n                        <Controller name=\"EgoVehicleAgent\">\n                            <Properties>\n                                <Property name=\"module\" value=\"external_control\" />\n\n                            </Properties>\n                        </Controller>\n                    </AssignControllerAction>\n                    <OverrideControllerValueAction>\n                        <Throttle value=\"0\" active=\"false\" />\n                        <Brake value=\"0\" active=\"false\" />\n                        <Clutch value=\"0\" active=\"false\" />\n                        <ParkingBrake value=\"0\" active=\"false\" />\n                        <SteeringWheel value=\"0\" active=\"false\" />\n                        <Gear number=\"0\" active=\"false\" />\n                    </OverrideControllerValueAction>\n                </ControllerAction>\n            </PrivateAction>\n            </Private>\n            <Private entityRef=\"adversary\">\n              <PrivateAction>\n                <TeleportAction>\n                  <Position>\n                    <WorldPosition x=\"90\" y=\"134\" z=\"0\" h=\"0\"/>\n                  </Position>\n                </TeleportAction>\n              </PrivateAction>\n            </Private>\n          </Actions>\n        </Init>\n        <Story name=\"MyStory\">\n          <Act name=\"Behavior\">\n            <ManeuverGroup maximumExecutionCount=\"1\" name=\"ManeuverSequence\">\n              <Actors selectTriggeringEntities=\"false\">\n                <EntityRef entityRef=\"adversary\"/>\n              </Actors>\n              <Maneuver name=\"FollowLeadingVehicleManeuver\">\n                <Event name=\"LeadingVehicleKeepsVelocity\" priority=\"overwrite\">\n                  <Action name=\"LeadingVehicleKeepsVelocity\">\n                    <PrivateAction>\n                      <LongitudinalAction>\n                        <SpeedAction>\n                          <SpeedActionDynamics dynamicsShape=\"step\" value=\"100\" dynamicsDimension=\"distance\"/>\n                          <SpeedActionTarget>\n                            <AbsoluteTargetSpeed value=\"$leadingSpeed\"/>\n                          </SpeedActionTarget>\n                        </SpeedAction>\n                      </LongitudinalAction>\n                    </PrivateAction>\n                  </Action>\n                  <StartTrigger>\n                    <ConditionGroup>\n                      <Condition name=\"StartCondition\" delay=\"0\" conditionEdge=\"rising\">\n                        <ByEntityCondition>\n                          <TriggeringEntities triggeringEntitiesRule=\"any\">\n                            <EntityRef entityRef=\"ego_vehicle\"/>\n                          </TriggeringEntities>\n                          <EntityCondition>\n                            <RelativeDistanceCondition entityRef=\"adversary\" relativeDistanceType=\"cartesianDistance\" value=\"40.0\" freespace=\"false\" rule=\"lessThan\"/>\n                          </EntityCondition>\n                        </ByEntityCondition>\n                      </Condition>\n                    </ConditionGroup>\n                  </StartTrigger>\n                </Event>\n              </Maneuver>\n            </ManeuverGroup>\n            <StartTrigger>\n              <ConditionGroup>\n                <Condition name=\"OverallStartCondition\" delay=\"0\" conditionEdge=\"rising\">\n                  <ByEntityCondition>\n                    <TriggeringEntities triggeringEntitiesRule=\"any\">\n                      <EntityRef entityRef=\"ego_vehicle\"/>\n                    </TriggeringEntities>\n                    <EntityCondition>\n                      <TraveledDistanceCondition value=\"1.0\"/>\n                    </EntityCondition>\n                  </ByEntityCondition>\n                </Condition>\n                <Condition name=\"StartTime\" delay=\"0\" conditionEdge=\"rising\">\n                  <ByValueCondition>\n                    <SimulationTimeCondition value=\"0\" rule=\"equalTo\"/>\n                  </ByValueCondition>\n                </Condition>\n              </ConditionGroup>\n            </StartTrigger>\n            <StopTrigger>\n              <ConditionGroup>\n                <Condition name=\"EndCondition\" delay=\"0\" conditionEdge=\"rising\">\n                  <ByEntityCondition>\n                    <TriggeringEntities triggeringEntitiesRule=\"any\">\n                      <EntityRef entityRef=\"ego_vehicle\"/>\n                    </TriggeringEntities>\n                    <EntityCondition>\n                      <TraveledDistanceCondition value=\"100.0\"/>\n                    </EntityCondition>\n                  </ByEntityCondition>\n                </Condition>\n              </ConditionGroup>\n            </StopTrigger>\n          </Act>\n        </Story>\n        <StopTrigger>\n          <ConditionGroup>\n            <Condition name=\"criteria_RunningStopTest\" delay=\"0\" conditionEdge=\"rising\">\n              <ByValueCondition>\n                <ParameterCondition parameterRef=\"\" value=\"\" rule=\"lessThan\"/>\n              </ByValueCondition>\n            </Condition>\n            <Condition name=\"criteria_RunningRedLightTest\" delay=\"0\" conditionEdge=\"rising\">\n              <ByValueCondition>\n                <ParameterCondition parameterRef=\"\" value=\"\" rule=\"lessThan\"/>\n              </ByValueCondition>\n            </Condition>\n            <Condition name=\"criteria_WrongLaneTest\" delay=\"0\" conditionEdge=\"rising\">\n              <ByValueCondition>\n                <ParameterCondition parameterRef=\"\" value=\"\" rule=\"lessThan\"/>\n              </ByValueCondition>\n            </Condition>\n            <Condition name=\"criteria_OnSidewalkTest\" delay=\"0\" conditionEdge=\"rising\">\n              <ByValueCondition>\n                <ParameterCondition parameterRef=\"\" value=\"\" rule=\"lessThan\"/>\n              </ByValueCondition>\n            </Condition>\n            <Condition name=\"criteria_KeepLaneTest\" delay=\"0\" conditionEdge=\"rising\">\n              <ByValueCondition>\n                <ParameterCondition parameterRef=\"\" value=\"\" rule=\"lessThan\"/>\n              </ByValueCondition>\n            </Condition>\n            <Condition name=\"criteria_CollisionTest\" delay=\"0\" conditionEdge=\"rising\">\n              <ByValueCondition>\n                <ParameterCondition parameterRef=\"\" value=\"\" rule=\"lessThan\"/>\n              </ByValueCondition>\n            </Condition>\n            <Condition name=\"criteria_DrivenDistanceTest\" delay=\"0\" conditionEdge=\"rising\">\n              <ByValueCondition>\n                <ParameterCondition parameterRef=\"distance_success\" value=\"100\" rule=\"lessThan\"/>\n              </ByValueCondition>\n            </Condition>\n          </ConditionGroup>\n        </StopTrigger>\n      </Storyboard>\n    </OpenSCENARIO>",
         "type": "openScenario"
     }
 
-    for scene in [scene_2, scene_3, scene_4_openscenario]:
+    for scene in [scene_2, scene_3, scene_4, scene_5, scene_6_openscenario]:
         await DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(
             DynamicSceneCreateDTO(**scene))
 
     from sdgApp.Application.ScenariosFacadeService.AssembleService import AssembleScenarioService
     from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
     from sdgApp.Application.scenarios.usercase import ScenarioQueryUsercase
+    envs = await EnvQueryUsercase(db_session=db_session, user=user).find_all_envs(1, 15, "")
+    env_id = envs["datas"][0].id
 
     assemble_scenario = {"name": "基础场景",
                          "desc": "初始化场景，所有配置均使用简单配置，用于用户初次试用产品试用。",
                          "map_name": "Town03",
                          "dynamic_scene_id": default_scene_dto.id,
-                         "env_id": "MidRainSunset",
+                         "env_id": env_id,
                          "tags": []}
     await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
     default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "", "")

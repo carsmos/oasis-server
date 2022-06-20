@@ -1,5 +1,5 @@
 
-
+from sdgApp.Application.log.usercase import except_logger
 class ResourceQueryUsercase(object):
     def __init__(self, db_session, user):
         self.db_session = db_session
@@ -9,7 +9,7 @@ class ResourceQueryUsercase(object):
         self.dynamic_scenes = self.db_session['dynamic_scenes']
         self.environments = self.db_session['environments']
         self.sensors = self.db_session['sensors']
-
+    @except_logger("item_dic failed .....................")
     async def item_dic(self):
         try:
             response_item_dic = {}

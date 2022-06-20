@@ -14,7 +14,9 @@ class TaskEntity(object):
                  replay_url=None,
                  original_id=None,
                  cam_url=None,
-                 last_modified=None):
+                 last_modified=None,
+                 start_time=None,
+                 end_time=None):
         self.id = id
         self.name = name
         self.desc = desc
@@ -30,5 +32,7 @@ class TaskEntity(object):
         self.retry_id = original_id
         self.last_modified = last_modified
         self.index = index
+        self.start_time = start_time
+        self.end_time = end_time
 
 
