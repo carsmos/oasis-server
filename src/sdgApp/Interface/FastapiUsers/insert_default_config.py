@@ -328,10 +328,10 @@ async def insert_default(db_session, user):
     for default_sensor in other_default_sensors:
         await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**default_sensor))
 
-    dvs_cam = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, 15, {})
-    dvs_cam = dvs_cam['datas'][9]
-    rgb_cam = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, 15, {})
-    rgb_cam = rgb_cam['datas'][11]
+    sensor_dic = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, 15, {})
+    sensor_list = sensor_dic['datas']
+    rgb_cam = [sensor for sensor in sensor_list if "RGB" in sensor.name][0]
+    dvs_cam = [sensor for sensor in sensor_list if "DVS" in sensor.name][0]
 
     from sdgApp.Application.dynamics.usercase import DynamicsCommandUsercase, DynamicsQueryUsercase
     from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO
