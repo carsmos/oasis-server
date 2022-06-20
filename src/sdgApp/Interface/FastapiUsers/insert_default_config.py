@@ -328,6 +328,11 @@ async def insert_default(db_session, user):
     for default_sensor in other_default_sensors:
         await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**default_sensor))
 
+    sensor_dic = await SensorQueryUsercase(db_session=db_session, user=user).list_sensor(1, 15, {})
+    sensor_list = sensor_dic['datas']
+    rgb_cam = [sensor for sensor in sensor_list if "RGB" in sensor.name][0]
+    dvs_cam = [sensor for sensor in sensor_list if "DVS" in sensor.name][0]
+
     from sdgApp.Application.dynamics.usercase import DynamicsCommandUsercase, DynamicsQueryUsercase
     from sdgApp.Application.dynamics.CommandDTOs import DynamicsCreateDTO
 
@@ -445,7 +450,9 @@ async def insert_default(db_session, user):
         "dynamics_id": dynamic_dto.id,
         "sensors": [
                 {"id": lidar_dto.id, "position": {"x": "0.0", "y": "0.0", "z": "2.4"}},
-                {"id": depth_dto.id, "position": {"x": "2.0", "y": "0.0", "z": "2.0"}}
+                {"id": depth_dto.id, "position": {"x": "2.0", "y": "0.0", "z": "2.0"}},
+                {"id": rgb_cam.id, "position": {"x": "1.0", "y": "0.0", "z": "3.0"}},
+                {"id": dvs_cam.id, "position": {"x": "3.0", "y": "0.0", "z": "4.0"}}
                 ]}
     await AssembleCarService(AssembleCreateDTO(**assemble_car_dict), db_session=db_session, user=user)
     default_car_dto = await CarQueryUsercase(db_session=db_session, user=user).list_car(1, 15, None)
