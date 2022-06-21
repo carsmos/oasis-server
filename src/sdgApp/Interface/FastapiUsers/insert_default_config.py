@@ -534,14 +534,12 @@ async def insert_default(db_session, user):
     from sdgApp.Application.ScenariosFacadeService.AssembleService import AssembleScenarioService
     from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
     from sdgApp.Application.scenarios.usercase import ScenarioQueryUsercase
-    envs = await EnvQueryUsercase(db_session=db_session, user=user).find_all_envs(1, 15, "")
-    env_id = envs["datas"][0].id
 
     assemble_scenario = {"name": "基础场景",
                          "desc": "初始化场景，所有配置均使用简单配置，用于用户初次试用产品试用。",
                          "map_name": "Town03",
                          "dynamic_scene_id": default_scene_dto.id,
-                         "env_id": env_id,
+                         "env_id": "ClearNoon",
                          "tags": []}
     await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
     default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "", "")
