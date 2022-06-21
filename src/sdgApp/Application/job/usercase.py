@@ -139,8 +139,9 @@ class JobCommandUsercase(object):
             if result_dict:
                 self.queue = JobQueueImpl(queue_sess)
                 self.queue.publish(result_dict)
-                self.update_task_status(result_dict, filter, "inqueue", 'start')
-                self.update_job_status_inqueue(filter)
+                self.update_status(result_dict, filter, "inqueue")
+                # self.update_task_status(result_dict, filter, "inqueue", 'start')
+                # self.update_job_status_inqueue(filter)
                 loggerd.info("JobCommandUsercase run_job run jobid=%s" ,job_id )
         except:
             raise
