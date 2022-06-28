@@ -22,17 +22,11 @@ async def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateD
         scenario_create_model = ScenarioCreateDTO(name=scenario_create_model.name,
                                                   desc=scenario_create_model.desc,
                                                   tags=scenario_create_model.tags,
-                                                  scenario_param=scenario_param,
-                                                  evaluation_standard=scenario_create_model.evaluation_standard,
-                                                  traffic_flow=scenario_create_model.traffic_flow
-                                                  )
+                                                  scenario_param=scenario_param)
         return await ScenarioCommandUsercase(db, user).create_scenario(scenario_create_model)
     else:
         scenario_update_model = ScenarioUpdateDTO(name=scenario_create_model.name,
                                                   desc=scenario_create_model.desc,
                                                   tags=scenario_create_model.tags,
-                                                  scenario_param=scenario_param,
-                                                  evaluation_standard=scenario_create_model.evaluation_standard,
-                                                  traffic_flow=scenario_create_model.traffic_flow
-                                                  )
+                                                  scenario_param=scenario_param)
         return await ScenarioCommandUsercase(db, user).update_scenario(scenario_create_model.id, scenario_update_model)
