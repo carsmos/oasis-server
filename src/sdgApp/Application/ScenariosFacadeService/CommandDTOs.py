@@ -1,5 +1,44 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field
+
+
+class EvaluationStandard(BaseModel):
+    id: Optional[str]
+    scenario_id: Optional[str]
+    max_velocity_test: int
+    tick_max_velocity_test: int
+    max_average_velocity_test: int
+    tick_max_average_velocity_test: int
+    min_average_velocity_test: int
+    tick_min_average_velocity_test: int
+    max_longitudinal_accel_test: int
+    tick_max_longitudinal_accel_test: int
+    max_lateral_accel_test: int
+    tick_max_lateral_accel_test: int
+    collision_test: int
+    agent_block_test: int
+    keep_lane_test: int
+    off_road_test: int
+    on_sidewalk_test: int
+    wrong_lane_test: int
+    running_red_light_test: int
+    running_stop_test: int
+
+
+class TrafficFlow(BaseModel):
+    id: Optional[str]
+    scenario_id: Optional[str]
+    name: str
+    type: int
+    area: int
+    radius: int
+    vehicle_type: int
+    vehicle_create_frequency: int
+    vehicle_num: int
+    max_speed_range: int
+    min_speed_range: int
+    max_politeness: int
+    mix_politeness: int
 
 
 class AssemberScenarioCreateDTO(BaseModel):
@@ -10,7 +49,5 @@ class AssemberScenarioCreateDTO(BaseModel):
     dynamic_scene_id: str = Field(..., example="e4aKGHrRpM2tBVyVppdYSq")
     weather_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq or CloudyNoon")
     tags: Optional[list] = Field([], example=['tag1', 'tag2'])
-
-
-
-
+    evaluation_standard: EvaluationStandard
+    traffic_flow: List[TrafficFlow]
