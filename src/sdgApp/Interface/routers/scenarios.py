@@ -10,7 +10,7 @@ from sdgApp.Interface.FastapiUsers.users_model import UserDB
 from sdgApp.Interface.FastapiUsers.manager import current_active_user
 from typing import List
 
-from sdgApp.Domain.environments.envs_exceptions import EnvNotFoundError
+from sdgApp.Domain.weather.weathers_exceptions import WeatherNotFoundError
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes_exceptions import DynamicScenesNotFoundError
 from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
@@ -29,7 +29,7 @@ async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
         return await AssembleScenarioService(scenario_create_model, db, user)
     except DynamicScenesNotFoundError as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
-    except EnvNotFoundError as e:
+    except WeatherNotFoundError as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except:
         raise
