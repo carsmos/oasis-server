@@ -1,7 +1,6 @@
-
 import shortuuid
 
-from sdgApp.Application.environments.usercase import EnvQueryUsercase
+from sdgApp.Application.weather.usercase import WeatherQueryUsercase
 from sdgApp.Application.log.usercase import except_logger
 
 
@@ -314,16 +313,16 @@ async def insert_default(db_session, user):
     depth_dto = depth_dto["datas"][1]
 
     other_default_sensors = [rss,
-                           radar,
-                           ray_semantic,
-                           imu,
-                           gnss,
-                           obstacle_detector,
-                           lane_detector,
-                           collision_detector,
-                           dvs_cam,
-                           sematic_cam,
-                           rgb_cam]
+                             radar,
+                             ray_semantic,
+                             imu,
+                             gnss,
+                             obstacle_detector,
+                             lane_detector,
+                             collision_detector,
+                             dvs_cam,
+                             sematic_cam,
+                             rgb_cam]
 
     for default_sensor in other_default_sensors:
         await SensorCommandUsercase(db_session=db_session, user=user).create_sensor(SensorCreateDTO(**default_sensor))
@@ -430,7 +429,8 @@ async def insert_default(db_session, user):
         }
     }
 
-    await DynamicsCommandUsercase(db_session=db_session, user=user).create_dynamics(DynamicsCreateDTO(**default_dynamic))
+    await DynamicsCommandUsercase(db_session=db_session, user=user).create_dynamics(
+        DynamicsCreateDTO(**default_dynamic))
     dynamic_dto = await DynamicsQueryUsercase(db_session=db_session, user=user).list_dynamics(0, 15, "")
     dynamic_dto = dynamic_dto["datas"][0]
 
@@ -439,49 +439,189 @@ async def insert_default(db_session, user):
     from sdgApp.Application.car.usercase import CarQueryUsercase
 
     assemble_car_dict = {
-      "name": "基础车辆",
-      "desc": "初始化预设车辆，所有配置使用简单匹配置，用于用户初次使用系统试用。",
-      "param": {
-        "type": "vehicle.tesla.model3",
-        "light_state": "LowBeam",
-        "vehicle_color": "242, 234, 78",
-        "controller": "autoware"
-         },
+        "name": "基础车辆",
+        "desc": "初始化预设车辆，所有配置使用简单匹配置，用于用户初次使用系统试用。",
+        "param": {
+            "type": "vehicle.tesla.model3",
+            "light_state": "LowBeam",
+            "vehicle_color": "242, 234, 78",
+            "controller": "autoware"
+        },
         "dynamics_id": dynamic_dto.id,
         "sensors": [
-                {"id": lidar_dto.id, "position": {"x": "0.0", "y": "0.0", "z": "2.4"}},
-                {"id": depth_dto.id, "position": {"x": "2.0", "y": "0.0", "z": "2.0"}},
-                {"id": rgb_cam.id, "position": {"x": "1.0", "y": "0.0", "z": "3.0"}},
-                {"id": dvs_cam.id, "position": {"x": "3.0", "y": "0.0", "z": "4.0"}}
-                ]}
+            {"id": lidar_dto.id, "position": {"x": "0.0", "y": "0.0", "z": "2.4"}},
+            {"id": depth_dto.id, "position": {"x": "2.0", "y": "0.0", "z": "2.0"}},
+            {"id": rgb_cam.id, "position": {"x": "1.0", "y": "0.0", "z": "3.0"}},
+            {"id": dvs_cam.id, "position": {"x": "3.0", "y": "0.0", "z": "4.0"}}
+        ]}
     await AssembleCarService(AssembleCreateDTO(**assemble_car_dict), db_session=db_session, user=user)
     default_car_dto = await CarQueryUsercase(db_session=db_session, user=user).list_car(1, 15, None)
     default_car_dto = default_car_dto["datas"][0]
 
+    from sdgApp.Application.weather.usercase import WeatherCommandUsercase
+    from sdgApp.Application.weather.CommandDTOs import WeatherCreateDTO
 
-    from sdgApp.Application.environments.usercase import EnvCommandUsercase
-    from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO
-
-    default_env = {
-        "name": "基础场景天气",
+    default_weather_1 = {
+        "name": "Clear",
         "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
-        "weather_param": {
-            "cloudiness": "10.0",
+        "param": {
+            "cloudiness": "15.0",
             "precipitation": "0.0",
             "precipitation_deposits": "0.0",
-            "wind_intensity": "10.0",
-            "sun_azimuth_angle": "160.0",
-            "sun_altitude_angle": "20.0",
-            "fog_density": "10.0",
-            "fog_distance": "75.0",
+            "wind_intensity": "0.35",
+            "fog_density": "0.0",
+            "fog_distance": "0.0",
             "wetness": "0.0",
-            "fog_falloff": "1.0",
-            "scattering_intensity": "0.0",
-            "mie_scattering_scale": "0.0",
-            "rayleigh_scattering_scale": "0.0"
+            "fog_falloff": "0.0",
         }
     }
-    await EnvCommandUsercase(db_session=db_session, user=user).create_env(EnvCreateDTO(**default_env))
+
+    default_weather_2 = {
+        "name": "Cloudy",
+        "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "cloudiness": "80.0",
+            "precipitation": "0.0",
+            "precipitation_deposits": "0.0",
+            "wind_intensity": "0.35",
+            "fog_density": "0.0",
+            "fog_distance": "0.0",
+            "wetness": "0.0",
+            "fog_falloff": "0.0",
+        }
+    }
+
+    default_weather_3 = {
+        "name": "HardRain",
+        "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "cloudiness": "90.0",
+            "precipitation": "60.0",
+            "precipitation_deposits": "100.0",
+            "wind_intensity": "1.0",
+            "fog_density": "0.0",
+            "fog_distance": "0.0",
+            "wetness": "0.0",
+            "fog_falloff": "0.0",
+        }
+    }
+
+    default_weather_4 = {
+        "name": "MidRain",
+        "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "cloudiness": "80.0",
+            "precipitation": "30.0",
+            "precipitation_deposits": "50.0",
+            "wind_intensity": "0.4",
+            "fog_density": "0.0",
+            "fog_distance": "0.0",
+            "wetness": "0.0",
+            "fog_falloff": "0.0",
+        }
+    }
+
+    default_weather_5 = {
+        "name": "SoftRain",
+        "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "cloudiness": "70.0",
+            "precipitation": "15.0",
+            "precipitation_deposits": "50.0",
+            "wind_intensity": "0.35",
+            "fog_density": "0.0",
+            "fog_distance": "0.0",
+            "wetness": "0.0",
+            "fog_falloff": "0.0",
+        }
+    }
+
+    default_weather_6 = {
+        "name": "WetCloudy",
+        "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "cloudiness": "80.0",
+            "precipitation": "0.0",
+            "precipitation_deposits": "50.0",
+            "wind_intensity": "0.35",
+            "fog_density": "0.0",
+            "fog_distance": "0.0",
+            "wetness": "0.0",
+            "fog_falloff": "0.0",
+        }
+    }
+
+    default_weather_7 = {
+        "name": "Wet",
+        "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "cloudiness": "20.0",
+            "precipitation": "0.0",
+            "precipitation_deposits": "50.0",
+            "wind_intensity": "0.35",
+            "fog_density": "0.0",
+            "fog_distance": "0.0",
+            "wetness": "0.0",
+            "fog_falloff": "0.0",
+        }
+    }
+    for weather in [default_weather_1, default_weather_2, default_weather_3, default_weather_4, default_weather_5,
+                    default_weather_6, default_weather_7]:
+        await WeatherCommandUsercase(db_session=db_session, user=user).create_weather(WeatherCreateDTO(**weather))
+
+    from sdgApp.Application.light.usercase import LightCommandUsercase
+    from sdgApp.Application.light.CommandDTOs import LightCreateDTO
+
+    default_light_1 = {
+        "name": "清晨",
+        "desc": "初始化光照模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "sun_altitude_angle": 45.0,
+            "sun_azimuth_angle": 90.0,
+        }
+    }
+    default_light_2 = {
+        "name": "上午",
+        "desc": "初始化光照模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "sun_altitude_angle": 75.0,
+            "sun_azimuth_angle": 135.0,
+        }
+    }
+    default_light_3 = {
+        "name": "正午",
+        "desc": "初始化光照模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "sun_altitude_angle": 90.0,
+            "sun_azimuth_angle": 180.0,
+        }
+    }
+    default_light_4 = {
+        "name": "午后",
+        "desc": "初始化光照模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "sun_altitude_angle": 45.0,
+            "sun_azimuth_angle": 225.0,
+        }
+    }
+    default_light_5 = {
+        "name": "黄昏",
+        "desc": "初始化光照模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "sun_altitude_angle": 15.0,
+            "sun_azimuth_angle": 270.0,
+        }
+    }
+    default_light_6 = {
+        "name": "午夜",
+        "desc": "初始化光照模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
+        "param": {
+            "sun_altitude_angle": -90.0,
+            "sun_azimuth_angle": 360.0,
+        }
+    }
+    for light in [default_light_1, default_light_2, default_light_3, default_light_4, default_light_5, default_light_6]:
+        await LightCommandUsercase(db_session=db_session, user=user).create_light(LightCreateDTO(**light))
 
     from sdgApp.Application.dynamic_scenes.usercase import DynamicSceneCommandUsercase, DynamicSceneQueryUsercase
     from sdgApp.Application.dynamic_scenes.CommandDTOs import DynamicSceneCreateDTO
@@ -492,7 +632,9 @@ async def insert_default(db_session, user):
         "scene_script": "// ego car\nego_init_position = (30,134); //default coordinate frame is ENU\nego_target_position = (140,134); //default coordinate frame is ENU\nego_init_state = (ego_init_position);\nego_target_state = (ego_target_position);\nego_vehicle = AV(ego_init_state, ego_target_state, vehicle_type);\n\n//npc1\nnpc_init_state = ((55,134),,2.7); // start\nnpc_target_state = ((120,134),,0.0); // target\nnpc1= Vehicle(npc_init_state,, npc_target_state);\n\nnpcs = {npc1};\n\n// pedestrian\npedestrian_type = (1.65, black);\npedestrian1 = Pedestrian(((-15.9, 110), ,0.5), , ((-56, 123), ,0), pedestrian_type);\npedestrian2 = Pedestrian(((101, 62), ,0.5), , ((120, 144), ,0), pedestrian_type);\npedestrians={pedestrian1, pedestrian2};\n\n\n//traffic requirements\nspeed_range = (0,20);\nspeed_limit = SpeedLimit(\"52.-1\", speed_range);\nintersection = Intersection(1, 1, 0, 1);\ntraffic = {intersection,speed_limit};\n\nscenario = CreateScenario{load(map);\n\t\t\t        ego_vehicle;\n\t\t\t        npcs;\n\t\t\t        {};\n\t\t\t        {};\n\t\t\t        env;\n\t\t\t        traffic;\n};",
         "type": "scenest"
     }
-    await DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(DynamicSceneCreateDTO(**default_scene_1))
+
+    await DynamicSceneCommandUsercase(db_session=db_session, user=user).create_scenario(
+        DynamicSceneCreateDTO(**default_scene_1))
     default_scene_dto = await DynamicSceneQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "")
     default_scene_dto = default_scene_dto["datas"][0]
 
@@ -539,10 +681,11 @@ async def insert_default(db_session, user):
                          "desc": "初始化场景，所有配置均使用简单配置，用于用户初次试用产品试用。",
                          "map_name": "Town03",
                          "dynamic_scene_id": default_scene_dto.id,
-                         "env_id": "ClearNoon",
+                         "weather_id": "ClearNoon",
                          "tags": []}
     await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
-    default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "", "")
+    default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "",
+                                                                                                            "")
     default_scenario_dto = default_scenario_dto["datas"][0]
 
     from sdgApp.Application.job.CommandDTOs import JobCreateDTO
@@ -558,4 +701,3 @@ async def insert_default(db_session, user):
                         "desc": "初始化预设作业，包含一个简单场景和一个车辆，用于用户初次试用体验。",
                         "task_list": [default_task_dict]}
     await JobCommandUsercase(db_session=db_session, user=user).create_job(JobCreateDTO(**default_job_dict))
-

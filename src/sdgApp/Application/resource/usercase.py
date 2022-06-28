@@ -7,7 +7,7 @@ class ResourceQueryUsercase(object):
 
         self.dynamics = self.db_session['dynamics']
         self.dynamic_scenes = self.db_session['dynamic_scenes']
-        self.environments = self.db_session['environments']
+        self.weather = self.db_session['weather']
         self.sensors = self.db_session['sensors']
     @except_logger("item_dic failed .....................")
     async def item_dic(self):
@@ -16,12 +16,12 @@ class ResourceQueryUsercase(object):
             filter = {"usr_id": self.user.id}
             dynamics_num = await self.dynamics.count_documents(filter)
             dynamic_scenes_num = await self.dynamic_scenes.count_documents(filter)
-            environments_num = await self.environments.count_documents(filter)
+            weather_num = await self.weather.count_documents(filter)
             sensors_num = await self.sensors.count_documents(filter)
 
             response_item_dic["dynamic"] = dynamics_num
             response_item_dic["dynamic_scenes"] = dynamic_scenes_num
-            response_item_dic["environments"] = environments_num
+            response_item_dic["weather"] = weather_num
             response_item_dic["sensors"] = sensors_num
 
             return response_item_dic

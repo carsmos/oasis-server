@@ -1,19 +1,19 @@
 from abc import ABC, abstractmethod
-from sdgApp.Domain.environments.envs import EnvsAggregate
+from sdgApp.Domain.light.lights import LightAggregate
 
 
-class EnvsRepo(ABC):
+class LightRepo(ABC):
 
     @abstractmethod
-    def create_env(self, env: EnvsAggregate):
+    def create_light(self, light: LightAggregate):
         raise NotImplementedError
 
     @abstractmethod
-    def update_env(self, env_id: str, env: EnvsAggregate):
+    def update_light(self, light_id: str, light: LightAggregate):
         raise NotImplementedError
 
     @abstractmethod
-    def delete_env(self, id: str):
+    def delete_light(self, id: str):
         raise NotImplementedError
 
     @abstractmethod

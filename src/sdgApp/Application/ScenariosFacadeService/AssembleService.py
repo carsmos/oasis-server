@@ -1,5 +1,5 @@
 from sdgApp.Application.dynamic_scenes.usercase import DynamicSceneQueryUsercase
-from sdgApp.Application.environments.usercase import EnvQueryUsercase
+from sdgApp.Application.weather.usercase import WeatherQueryUsercase
 from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase
 from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
@@ -11,22 +11,28 @@ async def AssembleScenarioService(scenario_create_model: AssemberScenarioCreateD
     environments = ["ClearNoon", "CloudyNoon", "WetNoon", "WetCloudyNoon", "SoftRainNoon",
                     "MidRainyNoon", "HardRainNoon", "ClearSunset", "CloudySunset", "WetSunset",
                     "WetCloudySunset", "SoftRainSunset", "MidRainSunset", "HardRainSunset"]
-    if scenario_create_model.env_id in environments:
-        environment = {"weather_param": scenario_create_model.env_id}
+    if scenario_create_model.weather_id in environments:
+        environment = {"param": scenario_create_model.weather_id}
     else:
-        environment = await EnvQueryUsercase(
-            db_session=db, user=user).find_specified_env(scenario_create_model.env_id)
+        environment = await WeatherQueryUsercase(
+            db_session=db, user=user).find_specified_weather(scenario_create_model.weather_id)
     scenario_param = {"map_name": scenario_create_model.map_name, "dynamic_scene": dynamic_scene,
-                      "environment": environment}
+                      "weather": environment}
     if not scenario_create_model.id:
         scenario_create_model = ScenarioCreateDTO(name=scenario_create_model.name,
                                                   desc=scenario_create_model.desc,
                                                   tags=scenario_create_model.tags,
-                                                  scenario_param=scenario_param)
+                                                  scenario_param=scenario_param,
+                                                  evaluation_standard=scenario_create_model.evaluation_standard,
+                                                  traffic_flow=scenario_create_model.traffic_flow
+                                                  )
         return await ScenarioCommandUsercase(db, user).create_scenario(scenario_create_model)
     else:
         scenario_update_model = ScenarioUpdateDTO(name=scenario_create_model.name,
                                                   desc=scenario_create_model.desc,
                                                   tags=scenario_create_model.tags,
-                                                  scenario_param=scenario_param)
+                                                  scenario_param=scenario_param,
+                                                  evaluation_standard=scenario_create_model.evaluation_standard,
+                                                  traffic_flow=scenario_create_model.traffic_flow
+                                                  )
         return await ScenarioCommandUsercase(db, user).update_scenario(scenario_create_model.id, scenario_update_model)

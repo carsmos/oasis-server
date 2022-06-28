@@ -1,1 +1,1 @@
-__all__ = ["car", "sensor", "dynamics", "environments", "dynamic_scene", "scenarios", "job", "log", "resource", "bags"]
+__all__ = ["car", "sensor", "dynamics", "weather", "light", "dynamic_scene", "scenarios", "job", "log", "resource", "bags"]
