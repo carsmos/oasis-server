@@ -1,15 +1,15 @@
 from pydantic import BaseModel
 from pydantic.typing import List
-from sdgApp.Application.environments.CommandDTOs import EnvCreateDTO
+from sdgApp.Application.light.CommandDTOs import LightCreateDTO
 
 
-class EnvReadDTO(EnvCreateDTO):
+class LightReadDTO(LightCreateDTO):
     id: str
     create_time: str
     last_modified: str
 
 
-class EnvsResponse(BaseModel):
+class LightResponse(BaseModel):
     total_num: int
     total_page_num: int
-    datas: List[EnvReadDTO]
+    datas: List[LightReadDTO]

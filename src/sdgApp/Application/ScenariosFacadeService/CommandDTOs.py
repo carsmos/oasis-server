@@ -47,7 +47,7 @@ class AssemberScenarioCreateDTO(BaseModel):
     desc: Optional[str] = Field(None, example="This is a demo scenario")
     map_name: str = Field(..., example="Town01")
     dynamic_scene_id: str = Field(..., example="e4aKGHrRpM2tBVyVppdYSq")
-    env_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq or CloudyNoon")
+    weather_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq or CloudyNoon")
     tags: Optional[list] = Field([], example=['tag1', 'tag2'])
     evaluation_standard: EvaluationStandard
     traffic_flow: list[TrafficFlow]
