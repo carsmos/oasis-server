@@ -2,8 +2,8 @@ from datetime import datetime
 
 import shortuuid
 
-from Application.ScenariosFacadeService.CommandDTOs import TrafficFlow
-from Domain.scenarios.traffic_flow_repo import TrafficFlowRepo
+from sdgApp.Application.ScenariosFacadeService.CommandDTOs import TrafficFlow
+from sdgApp.Domain.scenarios.traffic_flow_repo import TrafficFlowRepo
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import TrafficFlowDO
 
 

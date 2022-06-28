@@ -4,8 +4,8 @@ from datetime import datetime
 
 import shortuuid
 
-from Infrastructure.MongoDB.scenario.evaluation_standard_repoImpl import EvaluationStandardImpl
-from Infrastructure.MongoDB.scenario.traffic_flow_repoImpl import TrafficFLowImpl
+from sdgApp.Infrastructure.MongoDB.scenario.evaluation_standard_repoImpl import EvaluationStandardImpl
+from sdgApp.Infrastructure.MongoDB.scenario.traffic_flow_repoImpl import TrafficFLowImpl
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate

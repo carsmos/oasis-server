@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from pydantic.typing import Any
 
-from Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard, TrafficFlow
+from sdgApp.Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard, TrafficFlow
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 
 

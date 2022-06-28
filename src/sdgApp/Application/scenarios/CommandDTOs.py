@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 
-from Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard, TrafficFlow
+from sdgApp.Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard, TrafficFlow
 
 
 class ScenarioCreateDTO(BaseModel):

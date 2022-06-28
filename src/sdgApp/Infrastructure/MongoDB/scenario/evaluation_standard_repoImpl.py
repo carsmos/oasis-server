@@ -2,8 +2,8 @@ from datetime import datetime
 
 import shortuuid
 
-from Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard
-from Domain.scenarios.evaluation_standard_repo import EvaluationStandardRepo
+from sdgApp.Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard
+from sdgApp.Domain.scenarios.evaluation_standard_repo import EvaluationStandardRepo
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import EvaluationStandardDO
 
 

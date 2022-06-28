@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard
+from sdgApp.Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 
 
