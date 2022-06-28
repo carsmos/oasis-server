@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field
 
 
@@ -50,4 +50,4 @@ class AssemberScenarioCreateDTO(BaseModel):
     env_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq or CloudyNoon")
     tags: Optional[list] = Field([], example=['tag1', 'tag2'])
     evaluation_standard: EvaluationStandard
-    traffic_flow: list[TrafficFlow]
+    traffic_flow: List[TrafficFlow]
