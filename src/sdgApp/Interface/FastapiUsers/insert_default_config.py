@@ -682,6 +682,8 @@ async def insert_default(db_session, user):
                          "map_name": "Town03",
                          "dynamic_scene_id": default_scene_dto.id,
                          "weather_id": "ClearNoon",
+                         "types": "file",
+                         "parent_id": "root",
                          "tags": []}
     await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
     default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "",

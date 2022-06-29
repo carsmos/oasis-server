@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 from pydantic import BaseModel, Field
 
 
@@ -7,7 +7,8 @@ class ScenarioCreateDTO(BaseModel):
     desc: Optional[str] = Field(None, example="This is a demo scenario")
     scenario_param: Optional[dict]
     tags: Optional[list] = Field([], example=['tag1', 'tag2'])
-
+    types: str = Field(..., example="file")
+    parent_id: Any = Field(..., example="root")
 
 class ScenarioUpdateDTO(ScenarioCreateDTO):
     pass

@@ -34,6 +34,8 @@ class ScenarioCommandUsercase(object):
                                           name=scenario_create_model.name,
                                           desc=scenario_create_model.desc,
                                           tags=scenario_create_model.tags,
+                                          types=scenario_create_model.types,
+                                          parent_id=scenario_create_model.parent_id,
                                           scenario_param=scenario_create_model.scenario_param
                                           )
             scenario = await self.repo.create_scenario(scenario)
@@ -56,6 +58,8 @@ class ScenarioCommandUsercase(object):
             scenario_retrieved.desc = scenario_update_model.desc
             scenario_retrieved.tags = scenario_update_model.tags
             scenario_retrieved.scenario_param = scenario_update_model.scenario_param
+            scenario_retrieved.types = scenario_update_model.types
+            scenario_retrieved.parent_id = scenario_update_model.parent_id
             scenario = await self.repo.update_scenario(scenario_id, scenario_retrieved)
             return ScenariosReadDTO(**scenario)
         except:

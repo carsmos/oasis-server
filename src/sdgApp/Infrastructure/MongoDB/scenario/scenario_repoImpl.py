@@ -28,7 +28,9 @@ class ScenarioRepoImpl(ScenariosRepo):
                                  usr_id=self.user.id,
                                  scenario_param=scenario.scenario_param,
                                  create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                                 last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                 last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                 types=scenario.types,
+                                 parent_id=scenario.parent_id
                                  )
         scenario = await self.scenarios_collection.insert_one(scenario_DO.dict())
         if scenario:
@@ -47,7 +49,9 @@ class ScenarioRepoImpl(ScenariosRepo):
                                  scenario_param=update_scenario.scenario_param,
                                  usr_id=None,
                                  create_time=None,
-                                 last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                 last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                 types=update_scenario.types,
+                                 parent_id=update_scenario.parent_id
                                  )
         filter = {'id': scenario_id}
         filter.update({"usr_id": self.user.id})

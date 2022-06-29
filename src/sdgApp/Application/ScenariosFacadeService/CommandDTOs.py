@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Any
 from pydantic import BaseModel, Field
 
 
@@ -46,5 +46,7 @@ class AssemberScenarioCreateDTO(BaseModel):
     weather_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq")
     light_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq")
     tags: Optional[list] = Field([], example=['tag1', 'tag2'])
+    types: str = Field(..., example="file")
+    parent_id: Any = Field(..., example="root")
     evaluation_standard: EvaluationStandard
     traffic_flow: List[TrafficFlow]

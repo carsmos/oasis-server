@@ -15,6 +15,8 @@ class ScenarioDO(BaseModel):
     tags: Any
     create_time: str = None
     last_modified: str
+    types: str
+    parent_id: Any
 
     def to_entity(self) -> ScenariosAggregate:
         return ScenariosAggregate(
@@ -22,6 +24,8 @@ class ScenarioDO(BaseModel):
             name=self.name,
             desc=self.desc,
             tags=self.tags,
+            types= self.types,
+            parent_id= self.parent_id,
             scenario_param=self.scenario_param
         )
 
