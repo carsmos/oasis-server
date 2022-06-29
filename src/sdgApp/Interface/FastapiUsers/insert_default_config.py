@@ -465,14 +465,14 @@ async def insert_default(db_session, user):
         "name": "Clear",
         "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "cloudiness": "15.0",
-            "precipitation": "0.0",
-            "precipitation_deposits": "0.0",
-            "wind_intensity": "0.35",
-            "fog_density": "0.0",
-            "fog_distance": "0.0",
-            "wetness": "0.0",
-            "fog_falloff": "0.0",
+            "cloudiness": 15.0,
+            "precipitation": 0.0,
+            "precipitation_deposits": 0.0,
+            "wind_intensity": 0.35,
+            "fog_density": 0.0,
+            "fog_distance": 0.0,
+            "wetness": 0.0,
+            "fog_falloff": 0.0,
         }
     }
 
@@ -480,14 +480,14 @@ async def insert_default(db_session, user):
         "name": "Cloudy",
         "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "cloudiness": "80.0",
-            "precipitation": "0.0",
-            "precipitation_deposits": "0.0",
-            "wind_intensity": "0.35",
-            "fog_density": "0.0",
-            "fog_distance": "0.0",
-            "wetness": "0.0",
-            "fog_falloff": "0.0",
+            "cloudiness": 80.0,
+            "precipitation": 0.0,
+            "precipitation_deposits": 0.0,
+            "wind_intensity": 0.35,
+            "fog_density": 0.0,
+            "fog_distance": 0.0,
+            "wetness": 0.0,
+            "fog_falloff": 0.0,
         }
     }
 
@@ -495,14 +495,14 @@ async def insert_default(db_session, user):
         "name": "HardRain",
         "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "cloudiness": "90.0",
-            "precipitation": "60.0",
-            "precipitation_deposits": "100.0",
-            "wind_intensity": "1.0",
-            "fog_density": "0.0",
-            "fog_distance": "0.0",
-            "wetness": "0.0",
-            "fog_falloff": "0.0",
+            "cloudiness": 90.0,
+            "precipitation": 60.0,
+            "precipitation_deposits": 100.0,
+            "wind_intensity": 1.0,
+            "fog_density": 0.0,
+            "fog_distance": 0.0,
+            "wetness": 0.0,
+            "fog_falloff": 0.0,
         }
     }
 
@@ -510,14 +510,14 @@ async def insert_default(db_session, user):
         "name": "MidRain",
         "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "cloudiness": "80.0",
-            "precipitation": "30.0",
-            "precipitation_deposits": "50.0",
-            "wind_intensity": "0.4",
-            "fog_density": "0.0",
-            "fog_distance": "0.0",
-            "wetness": "0.0",
-            "fog_falloff": "0.0",
+            "cloudiness": 80.0,
+            "precipitation": 30.0,
+            "precipitation_deposits": 50.0,
+            "wind_intensity": 0.4,
+            "fog_density": 0.0,
+            "fog_distance": 0.0,
+            "wetness": 0.0,
+            "fog_falloff": 0.0,
         }
     }
 
@@ -525,14 +525,14 @@ async def insert_default(db_session, user):
         "name": "SoftRain",
         "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "cloudiness": "70.0",
-            "precipitation": "15.0",
-            "precipitation_deposits": "50.0",
-            "wind_intensity": "0.35",
-            "fog_density": "0.0",
-            "fog_distance": "0.0",
-            "wetness": "0.0",
-            "fog_falloff": "0.0",
+            "cloudiness": 70.0,
+            "precipitation": 15.0,
+            "precipitation_deposits": 50.0,
+            "wind_intensity": 0.35,
+            "fog_density": 0.0,
+            "fog_distance": 0.0,
+            "wetness": 0.0,
+            "fog_falloff": 0.0,
         }
     }
 
@@ -540,14 +540,14 @@ async def insert_default(db_session, user):
         "name": "WetCloudy",
         "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "cloudiness": "80.0",
-            "precipitation": "0.0",
-            "precipitation_deposits": "50.0",
-            "wind_intensity": "0.35",
-            "fog_density": "0.0",
-            "fog_distance": "0.0",
-            "wetness": "0.0",
-            "fog_falloff": "0.0",
+            "cloudiness": 80.0,
+            "precipitation": 0.0,
+            "precipitation_deposits": 50.0,
+            "wind_intensity": 0.35,
+            "fog_density": 0.0,
+            "fog_distance": 0.0,
+            "wetness": 0.0,
+            "fog_falloff": 0.0,
         }
     }
 
@@ -555,14 +555,14 @@ async def insert_default(db_session, user):
         "name": "Wet",
         "desc": "初始化场景天气模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "cloudiness": "20.0",
-            "precipitation": "0.0",
-            "precipitation_deposits": "50.0",
-            "wind_intensity": "0.35",
-            "fog_density": "0.0",
-            "fog_distance": "0.0",
-            "wetness": "0.0",
-            "fog_falloff": "0.0",
+            "cloudiness": 20.0,
+            "precipitation": 0.0,
+            "precipitation_deposits": 50.0,
+            "wind_intensity": 0.35,
+            "fog_density": 0.0,
+            "fog_distance": 0.0,
+            "wetness": 0.0,
+            "fog_falloff": 0.0,
         }
     }
     for weather in [default_weather_1, default_weather_2, default_weather_3, default_weather_4, default_weather_5,

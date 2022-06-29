@@ -22,6 +22,7 @@ class LightRepoImpl(LightRepo):
                        last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                        )
         await self.light_collection.insert_one(light_DO.dict())
+        return light.id
 
     async def delete_light(self, light_id: str):
         filter = {'id': light_id}

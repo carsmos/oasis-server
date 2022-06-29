@@ -21,7 +21,8 @@ router = APIRouter()
 async def create_light(light_create_model: LightCreateDTO, db=Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        await LightCommandUsercase(db_session=db, user=user).create_light(light_create_model)
+        light_id = await LightCommandUsercase(db_session=db, user=user).create_light(light_create_model)
+        return await find_specified_light(light_id, db, user)
     except:
         raise
 
@@ -48,6 +49,7 @@ async def update_light(light_id: str, light_update_model: LightUpdateDTO, db=Dep
                          user: UserDB = Depends(current_active_user)):
     try:
         await LightCommandUsercase(db_session=db, user=user).update_light(light_id, light_update_model)
+        return await find_specified_light(light_id, db, user)
     except:
         raise
 

@@ -12,27 +12,28 @@ class WeatherRepoImpl(WeatherRepo):
         self.user = user
         self.weather_collection = self.db_session['weather']
 
-    async def create_weather(self, env: WeatherAggregate):
-        weather_DO = weatherDO(id=env.id,
-                       name=env.name,
-                       desc=env.desc,
-                       param=env.param,
+    async def create_weather(self, weather: WeatherAggregate):
+        weather_DO = weatherDO(id=weather.id,
+                       name=weather.name,
+                       desc=weather.desc,
+                       param=weather.param,
                        usr_id=self.user.id,
                        create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                        last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                        )
         await self.weather_collection.insert_one(weather_DO.dict())
+        return weather.id
 
     async def delete_weather(self, weather_id: str):
         filter = {'id': weather_id}
         filter.update({"usr_id": self.user.id})
         await self.weather_collection.delete_one(filter)
 
-    async def update_weather(self, weather_id: str, env: WeatherAggregate):
-        update_weather_DO = weatherDO(id=env.id,
-                              name=env.name,
-                              desc=env.desc,
-                              param=env.param,
+    async def update_weather(self, weather_id: str, weather: WeatherAggregate):
+        update_weather_DO = weatherDO(id=weather.id,
+                              name=weather.name,
+                              desc=weather.desc,
+                              param=weather.param,
                               usr_id=None,
                               create_time=None,
                               last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -56,7 +57,7 @@ class WeatherRepoImpl(WeatherRepo):
         results_dict = self.weather_collection.find(filter, {'_id': 0})
         if results_dict:
             async for one_result in results_dict:
-                one_env = weatherDO(**one_result).to_entity()
-                weather_list.append(one_env)
+                one_weather = weatherDO(**one_result).to_entity()
+                weather_list.append(one_weather)
             return weather_list
 
