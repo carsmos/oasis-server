@@ -1,13 +1,17 @@
 import copy
 import math
+import os
 from datetime import datetime
 
 import shortuuid
 
 from sdgApp.Infrastructure.MongoDB.scenario.evaluation_standard_repoImpl import EvaluationStandardImpl
+from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import TrafficFLowBlueprintDO
 from sdgApp.Infrastructure.MongoDB.scenario.traffic_flow_repoImpl import TrafficFLowImpl
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
+from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO, TrafficFLowBlueprintDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
+from sdgApp.Application.scenarios.utils import scenarios_to_tree, file_child_ids_in_scenarios
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
@@ -136,5 +140,104 @@ class ScenarioQueryUsercase(object):
                     response_dto_lst.append(ScenariosReadDTO(**doc))
                 response_dic["datas"] = response_dto_lst
                 return response_dic
+        except:
+            raise
+
+    @except_logger("Scenario find_scenarios_by_tags failed .....................")
+    async def find_traffic_flow_blueprint(self, keyword):
+        try:
+            filter = {"actor": {"$regex": keyword}}
+            # init low_blueprint_collection
+            total_num = await self.traffic_flow_blueprint_collection.count_documents({})
+            if total_num == 0:
+                init_list = []
+                finename = os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + "/blueprint.init")
+                for line in open(finename):
+                    items = line.replace('\n', '').split(":")
+                    traffic_flow = TrafficFLowBlueprintDO(id=shortuuid.uuid(),
+                                                          actor=items[0],
+                                                          actor_class=items[1],
+                                                          create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                                          last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                                          )
+                    init_list.append(traffic_flow.dict())
+                await self.traffic_flow_blueprint_collection.insert_many(init_list)
+
+            results_dict = self.traffic_flow_blueprint_collection.find(filter)
+            response_dto_lst = []
+            if results_dict:
+                async for one_result in results_dict:
+                    one_traffic_flow = TrafficFLowBlueprintDO(**one_result).to_entity()
+                    response_dto_lst.append(one_traffic_flow.dict())
+                return response_dto_lst
+        except:
+            raise
+########################################### scenario-group part ##########################################
+
+class ScenarioGroupCommandUsercase(object):
+
+    def __init__(self, db_session, user, repo=ScenarioRepoImpl):
+        self.repo = repo
+        self.repo = self.repo(db_session, user)
+
+    async def add_scenario_group_dir(self, parent_id, name):
+        pass
+
+    async def rename_scenario_group_dir(self, scenario_id, new_name):
+        pass
+
+    async def delete_scenario_group_dir(self, scenario_id):
+        pass
+
+    async def add_scenario_group_dir_tags(self, scenario_id, tags):
+        pass
+
+    async def delete_scenario_group_select(self, select_ids):
+        pass
+
+    async def move_scenario_group_select(self, select_ids, target_id):
+        pass
+
+
+class ScenarioGroupQueryUsercase(object):
+    def __init__(self, db_session, user):
+        self.db_session = db_session
+        self.scenarios_collection = self.db_session['scenarios']
+        self.user = user
+
+    async def get_scenario_group_tree(self):
+        try:
+            filter = {"usr_id": self.user.id}
+            scenarios = self.scenarios_collection.find(filter)
+            trees = scenarios_to_tree("root", "root", scenarios, 0)
+            if trees:
+                return trees
+            else:
+                return {}
+        except:
+            raise
+
+    async def show_scenario_group(self, parent_id):
+        try:
+            filter = {"usr_id": self.user.id, "parent_id": parent_id}
+            scenarios = self.scenarios_collection.find(filter).sort([('types', -1)])
+            if scenarios:
+                return scenarios
+            else:
+                return {}
+        except:
+            raise
+
+    async def search_scenario_group(self, parent_id, content):
+        try:
+            filter = {"usr_id": self.user.id}
+            scenarios = self.scenarios_collection.find(filter)
+            file_child_ids = file_child_ids_in_scenarios(parent_id, scenarios)
+            filter.update({"id":{"$in":file_child_ids}})
+            scenarios_search = self.scenarios_collection.find(filter)
+            if scenarios_search:
+                return scenarios_search
+            else:
+                return {}
         except:
             raise
