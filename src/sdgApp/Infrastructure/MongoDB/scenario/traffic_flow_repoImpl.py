@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 import shortuuid
 
@@ -43,7 +44,7 @@ class TrafficFLowImpl(TrafficFlowRepo):
         if traffic_flow:
             return traffic_flow_DO.dict()
 
-    async def create_traffic_flow_list(self, scenario_id: str, traffic_flow_list: list[TrafficFlow]):
+    async def create_traffic_flow_list(self, scenario_id: str, traffic_flow_list: List[TrafficFlow]):
         traffic_flow_DO_list = []
         for traffic_flow in traffic_flow_list:
             traffic_flow_DO = TrafficFlowDO(id=traffic_flow.id if traffic_flow.id else shortuuid.uuid(),
@@ -99,7 +100,7 @@ class TrafficFLowImpl(TrafficFlowRepo):
             '$set': traffic_flow_DO.dict(exclude={'id', 'scenario_id', 'create_time'})})
         return traffic_flow_DO.dict()
 
-    async def update_traffic_flow_list(self, scenario_id: str, traffic_flow_list: list[TrafficFlow]):
+    async def update_traffic_flow_list(self, scenario_id: str, traffic_flow_list: List[TrafficFlow]):
         await self.delete_traffic_flow_by_scenario_id(scenario_id)
         return await self.create_traffic_flow_list(scenario_id, traffic_flow_list)
 
