@@ -23,7 +23,7 @@ class WeatherCommandUsercase(object):
                                 name=weather_create_model.name,
                                 desc=weather_create_model.desc,
                                 param=weather_create_model.param)
-            await self.repo.create_weather(weather)
+            return await self.repo.create_weather(weather)
         except:
             raise
 

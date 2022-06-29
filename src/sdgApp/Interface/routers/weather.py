@@ -21,7 +21,8 @@ router = APIRouter()
 async def creat_weather(weather_create_model: WeatherCreateDTO, db=Depends(get_db),
                         user: UserDB = Depends(current_active_user)):
     try:
-        await WeatherCommandUsercase(db_session=db, user=user).create_weather(weather_create_model)
+        weather_id = await WeatherCommandUsercase(db_session=db, user=user).create_weather(weather_create_model)
+        return await find_specified_weather(weather_id, db, user)
     except:
         raise
 
@@ -48,6 +49,7 @@ async def update_weather(weather_id: str, env_update_model: WeatherUpdateDTO, db
                          user: UserDB = Depends(current_active_user)):
     try:
         await WeatherCommandUsercase(db_session=db, user=user).update_weather(weather_id, env_update_model)
+        return await find_specified_weather(weather_id, db, user)
     except:
         raise
 

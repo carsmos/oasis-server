@@ -37,12 +37,7 @@ class ScenarioCommandUsercase(object):
                                           scenario_param=scenario_create_model.scenario_param
                                           )
             scenario = await self.repo.create_scenario(scenario)
-            evaluation_standard = await self.evaluation_repo.create_evaluation_standard(uuid, scenario_create_model.evaluation_standard)
-            traffic_flow = await self.traffic_repo.create_traffic_flow_list(uuid, scenario_create_model.traffic_flow)
-            if scenario:
-                scenario.setdefault("traffic_flow", traffic_flow)
-                scenario.setdefault("evaluation_standard", evaluation_standard)
-                return ScenariosReadDTO(**scenario)
+            return ScenariosReadDTO(**scenario)
         except:
             raise
 
@@ -50,8 +45,6 @@ class ScenarioCommandUsercase(object):
     async def delete_scenario(self, scenario_id: str):
         try:
             await self.repo.delete_scenario_by_id(scenario_id)
-            await self.traffic_repo.delete_traffic_flow_by_scenario_id(scenario_id)
-            await self.evaluation_repo.delete_evaluation_standard_by_scenario_id(scenario_id)
         except:
             raise
 
@@ -64,13 +57,7 @@ class ScenarioCommandUsercase(object):
             scenario_retrieved.tags = scenario_update_model.tags
             scenario_retrieved.scenario_param = scenario_update_model.scenario_param
             scenario = await self.repo.update_scenario(scenario_id, scenario_retrieved)
-            traffic_flow = await self.traffic_repo.update_traffic_flow_list(scenario_id, scenario_update_model.traffic_flow)
-            evaluation_standard = await self.evaluation_repo.update_evaluation_standard(scenario_update_model.evaluation_standard)
-            if scenario:
-                scenario.update({"create_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
-                scenario.setdefault("traffic_flow", traffic_flow)
-                scenario.setdefault("evaluation_standard", evaluation_standard)
-                return ScenariosReadDTO(**scenario)
+            return ScenariosReadDTO(**scenario)
         except:
             raise
 
@@ -81,8 +68,6 @@ class ScenarioQueryUsercase(object):
         self.db_session = db_session
         self.scenarios_collection = self.db_session['scenarios']
         self.traffic_flow_blueprint_collection = self.db_session['traffic_flow_blueprint']
-        self.traffic_repo = TrafficFLowImpl(db_session, user)
-        self.evaluation_repo = EvaluationStandardImpl(db_session, user)
         self.user = user
 
     @except_logger("Scenario find_specified_scenario failed .....................")
@@ -91,12 +76,8 @@ class ScenarioQueryUsercase(object):
             filter = {"id": scenario_id}
             filter.update({"usr_id": self.user.id})
             result_dict = await self.scenarios_collection.find_one(filter)
-            traffic_flow = await self.traffic_repo.list(scenario_id)
-            evaluation_standard = await self.evaluation_repo.get(scenario_id)
             if result_dict is None:
                 raise ScenarioNotFoundError
-            result_dict.setdefault("traffic_flow", traffic_flow)
-            result_dict.setdefault("evaluation_standard", evaluation_standard)
             return ScenariosReadDTO(**result_dict)
         except:
             raise

@@ -3,8 +3,6 @@ from pydantic import BaseModel, Field
 
 
 class EvaluationStandard(BaseModel):
-    id: Optional[str]
-    scenario_id: Optional[str]
     max_velocity_test: int
     tick_max_velocity_test: int
     max_average_velocity_test: int
@@ -26,8 +24,6 @@ class EvaluationStandard(BaseModel):
 
 
 class TrafficFlow(BaseModel):
-    id: Optional[str]
-    scenario_id: Optional[str]
     name: str
     type: int
     area: int
@@ -47,7 +43,8 @@ class AssemberScenarioCreateDTO(BaseModel):
     desc: Optional[str] = Field(None, example="This is a demo scenario")
     map_name: str = Field(..., example="Town01")
     dynamic_scene_id: str = Field(..., example="e4aKGHrRpM2tBVyVppdYSq")
-    weather_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq or CloudyNoon")
+    weather_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq")
+    light_id: str = Field(None, example="e4aKGHrRpM2tBVyVppdYSq")
     tags: Optional[list] = Field([], example=['tag1', 'tag2'])
     evaluation_standard: EvaluationStandard
     traffic_flow: List[TrafficFlow]

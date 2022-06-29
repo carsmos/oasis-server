@@ -23,7 +23,7 @@ class LightCommandUsercase(object):
                                 name=light_create_model.name,
                                 desc=light_create_model.desc,
                                 param=light_create_model.param)
-            await self.repo.create_light(light)
+            return await self.repo.create_light(light)
         except:
             raise
 
