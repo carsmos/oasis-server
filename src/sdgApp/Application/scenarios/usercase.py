@@ -67,6 +67,7 @@ class ScenarioQueryUsercase(object):
     def __init__(self, db_session, user):
         self.db_session = db_session
         self.scenarios_collection = self.db_session['scenarios']
+        self.traffic_flow_blueprint_collection = self.db_session['traffic_flow_blueprint']
         self.user = user
 
     @except_logger("Scenario find_specified_scenario failed .....................")
