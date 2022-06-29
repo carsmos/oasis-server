@@ -11,6 +11,7 @@ from sdgApp.Interface.FastapiUsers.manager import current_active_user
 from typing import List
 
 from sdgApp.Domain.weather.weathers_exceptions import WeatherNotFoundError
+from sdgApp.Domain.light.lights_exceptions import LightNotFoundError
 from sdgApp.Domain.dynamic_scenes.dynamic_scenes_exceptions import DynamicScenesNotFoundError
 from sdgApp.Application.log.usercase import except_logger
 router = APIRouter()
@@ -27,9 +28,7 @@ async def create_scenario(scenario_create_model: AssemberScenarioCreateDTO,
                           db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         return await AssembleScenarioService(scenario_create_model, db, user)
-    except DynamicScenesNotFoundError as e:
-        return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
-    except WeatherNotFoundError as e:
+    except (LightNotFoundError, WeatherNotFoundError, DynamicScenesNotFoundError) as e:
         return JSONResponse(status_code=200, content={"status": "fail", "detail": e.message})
     except:
         raise
