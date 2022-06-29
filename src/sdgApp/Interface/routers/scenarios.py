@@ -1,5 +1,5 @@
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO, ScenariosResponse
-from sdgApp.Application.scenarios.CommandDTOs import ScenarioUpdateDTO
+from sdgApp.Application.scenarios.CommandDTOs import ScenarioUpdateDTO, TrafficFLowBlueprintDTO
 from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase, ScenarioQueryUsercase
 from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
 from sdgApp.Application.ScenariosFacadeService.AssembleService import AssembleScenarioService
@@ -102,3 +102,19 @@ async def find_scenarios_by_tags(tags: str, skip: int = 1,  db=Depends(get_db), 
         return await ScenarioQueryUsercase(db_session=db, user=user).find_scenarios_by_tags(tags, skip)
     except:
         raise
+
+
+@router.get(
+    "/traffic_flow_blueprint",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TrafficFLowBlueprintDTO],
+    tags=["Scenarios"]
+)
+@except_logger("find_traffic_flow_blueprint failed .....................")
+async def find_specified_scenario(keyword: str, db=Depends(get_db),
+                                  user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioQueryUsercase(db_session=db, user=user).find_traffic_flow_blueprint(keyword)
+    except:
+        raise
+

@@ -17,3 +17,7 @@ class ScenarioUpdateDTO(ScenarioCreateDTO):
     pass
 
 
+class TrafficFLowBlueprintDTO(BaseModel):
+    id: str
+    actor: str
+    actor_class: str

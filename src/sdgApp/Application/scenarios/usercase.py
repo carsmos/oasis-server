@@ -1,13 +1,15 @@
 import copy
 import math
+import os
 from datetime import datetime
 
 import shortuuid
 
 from sdgApp.Infrastructure.MongoDB.scenario.evaluation_standard_repoImpl import EvaluationStandardImpl
+from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import TrafficFLowBlueprintDO
 from sdgApp.Infrastructure.MongoDB.scenario.traffic_flow_repoImpl import TrafficFLowImpl
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
-from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
+from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO, TrafficFLowBlueprintDTO
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
@@ -76,6 +78,7 @@ class ScenarioQueryUsercase(object):
     def __init__(self, db_session, user):
         self.db_session = db_session
         self.scenarios_collection = self.db_session['scenarios']
+        self.traffic_flow_blueprint_collection = self.db_session['traffic_flow_blueprint']
         self.traffic_repo = TrafficFLowImpl(db_session, user)
         self.evaluation_repo = EvaluationStandardImpl(db_session, user)
         self.user = user
@@ -155,5 +158,35 @@ class ScenarioQueryUsercase(object):
                     response_dto_lst.append(ScenariosReadDTO(**doc))
                 response_dic["datas"] = response_dto_lst
                 return response_dic
+        except:
+            raise
+
+    @except_logger("Scenario find_scenarios_by_tags failed .....................")
+    async def find_traffic_flow_blueprint(self, keyword):
+        try:
+            filter = {"actor": {"$regex": keyword}}
+            # init low_blueprint_collection
+            total_num = await self.traffic_flow_blueprint_collection.count_documents({})
+            if total_num == 0:
+                init_list = []
+                finename = os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + "/blueprint.init")
+                for line in open(finename):
+                    items = line.replace('\n', '').split(":")
+                    traffic_flow = TrafficFLowBlueprintDO(id=shortuuid.uuid(),
+                                                          actor=items[0],
+                                                          actor_class=items[1],
+                                                          create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                                          last_modified=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                                          )
+                    init_list.append(traffic_flow.dict())
+                await self.traffic_flow_blueprint_collection.insert_many(init_list)
+
+            results_dict = self.traffic_flow_blueprint_collection.find(filter)
+            response_dto_lst = []
+            if results_dict:
+                async for one_result in results_dict:
+                    one_traffic_flow = TrafficFLowBlueprintDO(**one_result).to_entity()
+                    response_dto_lst.append(one_traffic_flow.dict())
+                return response_dto_lst
         except:
             raise

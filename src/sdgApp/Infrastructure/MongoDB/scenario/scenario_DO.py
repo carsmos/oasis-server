@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from pydantic.typing import Any
 
 from sdgApp.Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard, TrafficFlow
+from sdgApp.Application.scenarios.CommandDTOs import TrafficFLowBlueprintDTO
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 
 
@@ -108,3 +109,17 @@ class TrafficFlowDO(BaseModel):
             mix_politeness=self.mix_politeness
         )
 
+
+class TrafficFLowBlueprintDO(BaseModel):
+    id: str
+    actor: str
+    actor_class: str
+    create_time: str = None
+    last_modified: str = None
+
+    def to_entity(self) -> TrafficFLowBlueprintDTO:
+        return TrafficFLowBlueprintDTO(
+            id=self.id,
+            actor=self.actor,
+            actor_class=self.actor_class
+        )
