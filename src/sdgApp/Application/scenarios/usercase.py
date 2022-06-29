@@ -8,6 +8,7 @@ from sdgApp.Infrastructure.MongoDB.scenario.evaluation_standard_repoImpl import 
 from sdgApp.Infrastructure.MongoDB.scenario.traffic_flow_repoImpl import TrafficFLowImpl
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
+from sdgApp.Application.scenarios.utils import scenarios_to_tree, file_child_ids_in_scenarios
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
@@ -155,5 +156,76 @@ class ScenarioQueryUsercase(object):
                     response_dto_lst.append(ScenariosReadDTO(**doc))
                 response_dic["datas"] = response_dto_lst
                 return response_dic
+        except:
+            raise
+
+
+########################################### scenario-group part ##########################################
+
+class ScenarioGroupCommandUsercase(object):
+
+    def __init__(self, db_session, user, repo=ScenarioRepoImpl):
+        self.repo = repo
+        self.repo = self.repo(db_session, user)
+
+    async def add_scenario_group_dir(self, parent_id, name):
+        pass
+
+    async def rename_scenario_group_dir(self, scenario_id, new_name):
+        pass
+
+    async def delete_scenario_group_dir(self, scenario_id):
+        pass
+
+    async def add_scenario_group_dir_tags(self, scenario_id, tags):
+        pass
+
+    async def delete_scenario_group_select(self, select_ids):
+        pass
+
+    async def move_scenario_group_select(self, select_ids, target_id):
+        pass
+
+
+class ScenarioGroupQueryUsercase(object):
+    def __init__(self, db_session, user):
+        self.db_session = db_session
+        self.scenarios_collection = self.db_session['scenarios']
+        self.user = user
+
+    async def get_scenario_group_tree(self):
+        try:
+            filter = {"usr_id": self.user.id}
+            scenarios = self.scenarios_collection.find(filter)
+            trees = scenarios_to_tree("root", "root", scenarios, 0)
+            if trees:
+                return trees
+            else:
+                return {}
+        except:
+            raise
+
+    async def show_scenario_group(self, parent_id):
+        try:
+            filter = {"usr_id": self.user.id, "parent_id": parent_id}
+            scenarios = self.scenarios_collection.find(filter).sort([('types', -1)])
+            if scenarios:
+                return scenarios
+            else:
+                return {}
+        except:
+            raise
+
+    async def search_scenario_group(self, parent_id, content):
+        try:
+            filter = {"usr_id": self.user.id}
+            scenarios = self.scenarios_collection.find(filter)
+            file_child_ids = file_child_ids_in_scenarios(parent_id, scenarios)
+            filter.update({"id":{"$in":file_child_ids}})
+            scenarios_search = self.scenarios_collection.find(filter)
+            if scenarios_search:
+                return scenarios_search
+            else:
+                return {}
         except:
             raise

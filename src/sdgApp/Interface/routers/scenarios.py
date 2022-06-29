@@ -1,6 +1,7 @@
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO, ScenariosResponse
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioUpdateDTO
-from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase, ScenarioQueryUsercase
+from sdgApp.Application.scenarios.usercase import ScenarioCommandUsercase, ScenarioQueryUsercase, \
+    ScenarioGroupCommandUsercase, ScenarioGroupQueryUsercase
 from sdgApp.Application.ScenariosFacadeService.CommandDTOs import AssemberScenarioCreateDTO
 from sdgApp.Application.ScenariosFacadeService.AssembleService import AssembleScenarioService
 from sdgApp.Infrastructure.MongoDB.session_maker import get_db
@@ -100,5 +101,122 @@ async def find_specified_scenario(scenario_id: str, db=Depends(get_db),
 async def find_scenarios_by_tags(tags: str, skip: int = 1,  db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
         return await ScenarioQueryUsercase(db_session=db, user=user).find_scenarios_by_tags(tags, skip)
+    except:
+        raise
+
+########################################### scenario-group part ##########################################
+
+### query part
+# 返回当前user下全部场景树，生成左侧文件夹树，返回name， total， level
+@router.get(
+    "/scenario-group-tree",
+    status_code=status.HTTP_200_OK,
+    tags=["Scenarios"]
+)
+async def get_scenario_group_tree(db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupQueryUsercase(db_session=db, user=user).get_scenario_group_tree()
+    except:
+        raise
+
+# 根据文件夹parent_id返回场景信息，包括场景数量total，场景标签，第一级子场景名称，运行地图，标签，最后编辑时间, 按照先文件夹后文件顺序
+@router.get(
+    "/scenario-group-show",
+    status_code=status.HTTP_200_OK,
+    tags=["Scenarios"]
+)
+async def show_scenario_group(parent_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupQueryUsercase(db_session=db, user=user).show_scenario_group(parent_id)
+    except:
+        raise
+
+# 在parent_id场景库下按照关键字搜索，
+@router.get(
+    "/scenario-group-search",
+    status_code=status.HTTP_200_OK,
+    tags=["Scenarios"]
+)
+async def search_scenario_group(parent_id: str, content: str, db=Depends(get_db),
+                                user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupQueryUsercase(db_session=db, user=user).search_scenario_group(parent_id, content)
+    except:
+        raise
+
+### command part
+
+# 场景库新建文件夹，完成后前端场景树局部更新
+@router.post(
+    "/scenario-group/dir-add",
+    status_code=status.HTTP_201_CREATED,
+    tags=["Scenarios"]
+)
+async def add_scenario_group_dir(parent_id: str, name: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).add_scenario_group_dir(parent_id, name)
+    except:
+        raise
+
+# 场景库重命名文件夹， 完成后前端场景树局部更新
+@router.put(
+    "/scenario-group/dir-rename",
+    status_code=status.HTTP_201_CREATED,
+    tags=["Scenarios"]
+)
+async def rename_scenario_group_dir(this_id: str, new_name: str, db=Depends(get_db),
+                                    user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).rename_scenario_group_dir(this_id, new_name)
+    except:
+        raise
+
+# 场景库删除文件夹，递归删除文件夹下的全部场景，完成后前端场景树全部更新返回
+@router.delete(
+    "/scenario-group/dir-delete",
+    status_code=status.HTTP_200_OK,
+    tags=["Scenarios"]
+)
+async def delete_scenario_group_dir(scenario_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).delete_scenario_group_dir(scenario_id)
+    except:
+        raise
+
+# 场景库文件夹tags添加，成功后前端直接加入
+@router.delete(
+    "/scenario-group/dir-tags-add",
+    status_code=status.HTTP_200_OK,
+    tags=["Scenarios"]
+)
+async def add_scenario_group_dir_tags(scenario_id: str, tags:str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).add_scenario_group_dir_tags(scenario_id, tags)
+    except:
+        raise
+
+# 场景库删除选中文件和文件夹， 文件夹需要递归删除，完成后前端场景树全部更新返回，同时返回右侧场景
+@router.delete(
+    "/scenario-group/select-delete",
+    status_code=status.HTTP_200_OK,
+    tags=["Scenarios"]
+)
+async def delete_scenario_group_select(select_ids: str, db=Depends(get_db),
+                                       user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).delete_scenario_group_select(select_ids)
+    except:
+        raise
+
+# 场景库移动选中文件和文件夹，完成后前端场景树全部更新返回，同时返回右侧场景
+@router.post(
+    "/scenario-group/select-move",
+    status_code=status.HTTP_200_OK,
+    tags=["Scenarios"]
+)
+async def move_scenario_group_select(select_ids: str, target_id: str, db=Depends(get_db),
+                                       user: UserDB = Depends(current_active_user)):
+    try:
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).move_scenario_group_select(select_ids, target_id)
     except:
         raise
