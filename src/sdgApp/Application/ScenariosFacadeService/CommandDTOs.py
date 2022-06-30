@@ -4,32 +4,35 @@ from pydantic import BaseModel, Field
 
 class EvaluationStandard(BaseModel):
     max_velocity_test: int = 80
-    tick_max_velocity_test: int = 0
+    tick_max_velocity_test: bool = True
     max_average_velocity_test: int = 50
-    tick_max_average_velocity_test: int = 0
+    tick_max_average_velocity_test: bool = True
     min_average_velocity_test: int = 30
-    tick_min_average_velocity_test: int = 0
+    tick_min_average_velocity_test: bool = True
     max_longitudinal_accel_test: int = 5
-    tick_max_longitudinal_accel_test: int = 0
+    tick_max_longitudinal_accel_test: bool = True
     max_lateral_accel_test: int = 5
-    tick_max_lateral_accel_test: int = 0
-    collision_test: int = 0
-    agent_block_test: int = 0
-    keep_lane_test: int = 0
-    off_road_test: int = 0
-    on_sidewalk_test: int = 0
-    wrong_lane_test: int = 0
-    running_red_light_test: int = 0
-    running_stop_test: int = 0
+    tick_max_lateral_accel_test: bool = True
+    collision_test: bool = True
+    agent_block_test: bool = True
+    keep_lane_test: bool = True
+    off_road_test: bool = True
+    on_sidewalk_test: bool = True
+    wrong_lane_test: bool = True
+    running_red_light_test: bool = True
+    running_stop_test: bool = True
 
 
 class TrafficFlow(BaseModel):
     name: str = 'traffic_flow'
-    type: int = 1
-    area: int = 10
+    # 0：车辆，1：行人
+    type: int = 0
+    # 0：主车周围，1：全范围
+    area: int = 1
     radius: int = 0
-    vehicle_type: int = 1
-    vehicle_create_frequency: int = 200
+    vehicle_type: Optional[List[str]] = None
+    # 0: 每分钟，1：每百米
+    vehicle_create_frequency: int = 0
     vehicle_num: int = 10
     max_speed_range: int = 0
     min_speed_range: int = 200

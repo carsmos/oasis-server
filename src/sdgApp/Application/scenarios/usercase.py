@@ -1,21 +1,17 @@
-import copy
 import math
 import os
 from datetime import datetime
 
 import shortuuid
 
-from sdgApp.Infrastructure.MongoDB.scenario.evaluation_standard_repoImpl import EvaluationStandardImpl
-from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import TrafficFLowBlueprintDO
-from sdgApp.Infrastructure.MongoDB.scenario.traffic_flow_repoImpl import TrafficFLowImpl
-from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
-from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO, TrafficFLowBlueprintDTO
+from sdgApp.Application.log.usercase import except_logger
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
+from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.utils import scenarios_to_tree, file_child_ids_in_scenarios
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
+from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import TrafficFLowBlueprintDO
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_repoImpl import ScenarioRepoImpl
-from sdgApp.Application.log.usercase import except_logger
 
 
 class ScenarioCommandUsercase(object):
@@ -23,8 +19,6 @@ class ScenarioCommandUsercase(object):
     def __init__(self, db_session, user, repo=ScenarioRepoImpl):
         self.repo = repo
         self.repo = self.repo(db_session, user)
-        self.traffic_repo = TrafficFLowImpl(db_session, user)
-        self.evaluation_repo = EvaluationStandardImpl(db_session, user)
 
     @except_logger("Scenario create_scenario failed .....................")
     async def create_scenario(self, scenario_create_model: ScenarioCreateDTO):

@@ -7,7 +7,7 @@ from pydantic.typing import List
 
 class ScenariosReadDTO(ScenarioCreateDTO):
    id: str
-   create_time: datetime
+   create_time: Union[None, datetime]
    last_modified: Union[None, datetime]
    types: str
    parent_id: Any
