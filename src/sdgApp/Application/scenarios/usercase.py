@@ -5,9 +5,15 @@ from datetime import datetime
 import shortuuid
 
 from sdgApp.Application.log.usercase import except_logger
+from sdgApp.Infrastructure.MongoDB.scenario.evaluation_standard_repoImpl import EvaluationStandardImpl
+from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import TrafficFLowBlueprintDO
+from sdgApp.Infrastructure.MongoDB.scenario.traffic_flow_repoImpl import TrafficFLowImpl
+from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO, ScenarioGroupReadDTO
+from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO, TrafficFLowBlueprintDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.utils import scenarios_to_tree, file_child_ids_in_scenarios
+from sdgApp.Application.scenarios.utils import scenarios_to_tree, file_child_ids_in_scenarios, delete_scenario_group
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
 from sdgApp.Infrastructure.MongoDB.scenario.scenario_DO import TrafficFLowBlueprintDO
@@ -178,26 +184,91 @@ class ScenarioQueryUsercase(object):
 class ScenarioGroupCommandUsercase(object):
 
     def __init__(self, db_session, user, repo=ScenarioRepoImpl):
+        self.db = db_session
+        self.user = user
         self.repo = repo
         self.repo = self.repo(db_session, user)
+        self.scenarios_collection = db_session['scenarios']
 
-    async def add_scenario_group_dir(self, parent_id, name):
-        pass
+    async def add_scenario_group_dir(self, parent_id, name, current_id):
+        try:
+            uuid = shortuuid.uuid()
+            scenario = ScenariosAggregate(uuid,
+                                          name=name,
+                                          desc="",
+                                          tags=[],
+                                          types="dir",
+                                          parent_id=parent_id,
+                                          scenario_param={}
+                                          )
+            await self.repo.create_scenario(scenario)
+            return await ScenarioGroupQueryUsercase(db_session=self.db, user=self.user).show_scenario_group(current_id)
+        except:
+            raise
 
     async def rename_scenario_group_dir(self, scenario_id, new_name):
-        pass
-
-    async def delete_scenario_group_dir(self, scenario_id):
-        pass
+        try:
+            filter = {'id': scenario_id}
+            filter.update({"usr_id": self.user.id})
+            await self.scenarios_collection.update_one(filter, {'$set': {"name": new_name,
+                                                "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}})
+            return {"new_name": new_name}
+        except:
+            raise
 
     async def add_scenario_group_dir_tags(self, scenario_id, tags):
-        pass
+        try:
+            filter = {'id': scenario_id}
+            filter.update({"usr_id": self.user.id})
+            tags = tags.split('+')
+            scenario_retrieved = await self.repo.get(scenario_id)
+            scenario_tags = scenario_retrieved.tags
+            scenario_tags.extend(tags)
+            scenario_tags = list(set(scenario_tags))
+            await self.scenarios_collection.update_one(filter, {'$set': {"tags": scenario_tags,
+                                                "last_modified": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}})
+            scenario = await self.scenarios_collection.find_one(filter)
+            return ScenariosReadDTO(**scenario)
+        except:
+            raise
 
-    async def delete_scenario_group_select(self, select_ids):
-        pass
+    async def delete_scenario_group_dir(self, scenario_id, current_id):
+        try:
+            filter = {"usr_id": self.user.id}
+            total_num = await self.scenarios_collection.count_documents(filter)
+            scenarios = await self.scenarios_collection.find(filter).to_list(length=total_num)
+            await delete_scenario_group(scenario_id, scenarios, self.repo)
+            trees = await ScenarioGroupQueryUsercase(db_session=self.db, user=self.user).get_scenario_group_tree()
+            shows = await ScenarioGroupQueryUsercase(db_session=self.db, user=self.user).show_scenario_group(current_id)
+            return {"trees": trees, "shows": shows}
+        except:
+            raise
 
-    async def move_scenario_group_select(self, select_ids, target_id):
-        pass
+    async def delete_scenario_group_select(self, select_ids, current_id):
+        try:
+            filter = {"usr_id": self.user.id}
+            total_num = await self.scenarios_collection.count_documents(filter)
+            scenarios = await self.scenarios_collection.find(filter).to_list(length=total_num)
+            select_ids = select_ids.split("+")
+            for select_id in select_ids:
+                await delete_scenario_group(select_id, scenarios, self.repo)
+            trees = await ScenarioGroupQueryUsercase(db_session=self.db, user=self.user).get_scenario_group_tree()
+            shows = await ScenarioGroupQueryUsercase(db_session=self.db, user=self.user).show_scenario_group(current_id)
+            return {"trees": trees, "shows": shows}
+        except:
+            raise
+
+    async def move_scenario_group_select(self, select_ids, target_id, current_id):
+        try:
+            select_ids = select_ids.split("+")
+            for select_id in select_ids:
+                filter = {'id': select_id, "usr_id": self.user.id}
+                await self.scenarios_collection.update_one(filter, {'$set': {"parent_id": target_id}})
+            trees = await ScenarioGroupQueryUsercase(db_session=self.db, user=self.user).get_scenario_group_tree()
+            shows = await ScenarioGroupQueryUsercase(db_session=self.db, user=self.user).show_scenario_group(current_id)
+            return {"trees": trees, "shows": shows}
+        except:
+            raise
 
 
 class ScenarioGroupQueryUsercase(object):
@@ -209,8 +280,9 @@ class ScenarioGroupQueryUsercase(object):
     async def get_scenario_group_tree(self):
         try:
             filter = {"usr_id": self.user.id}
-            scenarios = self.scenarios_collection.find(filter)
-            trees = scenarios_to_tree("root", "root", scenarios, 0)
+            total_num = await self.scenarios_collection.count_documents(filter)
+            scenarios = await self.scenarios_collection.find(filter).to_list(length=total_num)
+            trees = scenarios_to_tree("root", "root", "dir", [], scenarios, 0)
             if trees:
                 return trees
             else:
@@ -221,23 +293,36 @@ class ScenarioGroupQueryUsercase(object):
     async def show_scenario_group(self, parent_id):
         try:
             filter = {"usr_id": self.user.id, "parent_id": parent_id}
-            scenarios = self.scenarios_collection.find(filter).sort([('types', -1)])
+            total_num = await self.scenarios_collection.count_documents(filter)
+            scenarios = await self.scenarios_collection.find(filter).sort([('types', -1)]).to_list(length=total_num)
             if scenarios:
-                return scenarios
+                response_scenarios = []
+                for scenario in scenarios:
+                    response_scenarios.append(ScenarioGroupReadDTO(**scenario))
+                return response_scenarios
             else:
-                return {}
+                return []
         except:
             raise
 
     async def search_scenario_group(self, parent_id, content):
         try:
             filter = {"usr_id": self.user.id}
-            scenarios = self.scenarios_collection.find(filter)
+            total_num = await self.scenarios_collection.count_documents(filter)
+            scenarios = await self.scenarios_collection.find(filter).to_list(length=total_num)
             file_child_ids = file_child_ids_in_scenarios(parent_id, scenarios)
-            filter.update({"id":{"$in":file_child_ids}})
-            scenarios_search = self.scenarios_collection.find(filter)
-            if scenarios_search:
-                return scenarios_search
+            filter.update({"id": {"$in": file_child_ids}})
+            if content:
+                filter.update({"$or": [{"name": {"$regex": content, "$options": "$i"}},
+                                       {"desc": {"$regex": content, "$options": "$i"}},
+                                       {"tags": {"$regex": content, "$options": "$i"}}]
+                               })
+            scenarios_searchs = await self.scenarios_collection.find(filter).to_list(length=100)
+            if scenarios_searchs:
+                scenarios_response = []
+                for scenarios_search in scenarios_searchs:
+                    scenarios_response.append(ScenarioGroupReadDTO(**scenarios_search))
+                return scenarios_response
             else:
                 return {}
         except:

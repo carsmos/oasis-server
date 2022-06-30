@@ -168,9 +168,10 @@ async def search_scenario_group(parent_id: str, content: str, db=Depends(get_db)
     status_code=status.HTTP_201_CREATED,
     tags=["Scenarios"]
 )
-async def add_scenario_group_dir(parent_id: str, name: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def add_scenario_group_dir(parent_id: str, name: str, current_id: str,
+                                 db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return await ScenarioGroupCommandUsercase(db_session=db, user=user).add_scenario_group_dir(parent_id, name)
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).add_scenario_group_dir(parent_id, name, current_id)
     except:
         raise
 
@@ -193,14 +194,14 @@ async def rename_scenario_group_dir(this_id: str, new_name: str, db=Depends(get_
     status_code=status.HTTP_200_OK,
     tags=["Scenarios"]
 )
-async def delete_scenario_group_dir(scenario_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
+async def delete_scenario_group_dir(scenario_id: str, current_id: str, db=Depends(get_db), user: UserDB = Depends(current_active_user)):
     try:
-        return await ScenarioGroupCommandUsercase(db_session=db, user=user).delete_scenario_group_dir(scenario_id)
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).delete_scenario_group_dir(scenario_id, current_id)
     except:
         raise
 
 # 场景库文件夹tags添加，成功后前端直接加入
-@router.delete(
+@router.post(
     "/scenario-group/dir-tags-add",
     status_code=status.HTTP_200_OK,
     tags=["Scenarios"]
@@ -217,10 +218,10 @@ async def add_scenario_group_dir_tags(scenario_id: str, tags:str, db=Depends(get
     status_code=status.HTTP_200_OK,
     tags=["Scenarios"]
 )
-async def delete_scenario_group_select(select_ids: str, db=Depends(get_db),
+async def delete_scenario_group_select(select_ids: str, current_id: str, db=Depends(get_db),
                                        user: UserDB = Depends(current_active_user)):
     try:
-        return await ScenarioGroupCommandUsercase(db_session=db, user=user).delete_scenario_group_select(select_ids)
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).delete_scenario_group_select(select_ids, current_id)
     except:
         raise
 
@@ -230,9 +231,9 @@ async def delete_scenario_group_select(select_ids: str, db=Depends(get_db),
     status_code=status.HTTP_200_OK,
     tags=["Scenarios"]
 )
-async def move_scenario_group_select(select_ids: str, target_id: str, db=Depends(get_db),
+async def move_scenario_group_select(select_ids: str, target_id: str, current_id: str, db=Depends(get_db),
                                        user: UserDB = Depends(current_active_user)):
     try:
-        return await ScenarioGroupCommandUsercase(db_session=db, user=user).move_scenario_group_select(select_ids, target_id)
+        return await ScenarioGroupCommandUsercase(db_session=db, user=user).move_scenario_group_select(select_ids, target_id, current_id)
     except:
         raise
