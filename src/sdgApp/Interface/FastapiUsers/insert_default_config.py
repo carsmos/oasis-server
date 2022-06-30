@@ -459,7 +459,7 @@ async def insert_default(db_session, user):
     default_car_dto = await CarQueryUsercase(db_session=db_session, user=user).list_car(1, 15, None)
     default_car_dto = default_car_dto["datas"][0]
 
-    from sdgApp.Application.weather.usercase import WeatherCommandUsercase
+    from sdgApp.Application.weather.usercase import WeatherCommandUsercase, WeatherQueryUsercase
     from sdgApp.Application.weather.CommandDTOs import WeatherCreateDTO
 
     default_weather_1 = {
@@ -569,15 +569,17 @@ async def insert_default(db_session, user):
     for weather in [default_weather_1, default_weather_2, default_weather_3, default_weather_4, default_weather_5,
                     default_weather_6, default_weather_7]:
         await WeatherCommandUsercase(db_session=db_session, user=user).create_weather(WeatherCreateDTO(**weather))
+    default_weather_dto = await WeatherQueryUsercase(db_session=db_session, user=user).find_all_weather(0, 15, "")
+    default_weather_dto = default_weather_dto["datas"][0]
 
-    from sdgApp.Application.light.usercase import LightCommandUsercase
+    from sdgApp.Application.light.usercase import LightCommandUsercase, LightQueryUsercase
     from sdgApp.Application.light.CommandDTOs import LightCreateDTO
 
     default_light_1 = {
         "name": "清晨",
         "desc": "初始化光照模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "sun_altitude_angle": 45.0,
+            "sun_altitude_angle": 20.0,
             "sun_azimuth_angle": 90.0,
         }
     }
@@ -601,7 +603,7 @@ async def insert_default(db_session, user):
         "name": "午后",
         "desc": "初始化光照模型，所有参数均使用默认配置，可用于用户初次使用系统体验使用。\n",
         "param": {
-            "sun_altitude_angle": 45.0,
+            "sun_altitude_angle": 25.0,
             "sun_azimuth_angle": 225.0,
         }
     }
@@ -623,6 +625,8 @@ async def insert_default(db_session, user):
     }
     for light in [default_light_1, default_light_2, default_light_3, default_light_4, default_light_5, default_light_6]:
         await LightCommandUsercase(db_session=db_session, user=user).create_light(LightCreateDTO(**light))
+    default_light_dto = await LightQueryUsercase(db_session=db_session, user=user).find_all_light(0, 15, "")
+    default_light_dto = default_light_dto["datas"][0]
 
     from sdgApp.Application.dynamic_scenes.usercase import DynamicSceneCommandUsercase, DynamicSceneQueryUsercase
     from sdgApp.Application.dynamic_scenes.CommandDTOs import DynamicSceneCreateDTO
@@ -682,7 +686,8 @@ async def insert_default(db_session, user):
                          "desc": "初始化场景，所有配置均使用简单配置，用于用户初次试用产品试用。",
                          "map_name": "Town03",
                          "dynamic_scene_id": default_scene_dto.id,
-                         "weather_id": "ClearNoon",
+                         "weather_id": default_weather_dto.id,
+                         "light_id": default_light_dto.id,
                          "types": "file",
                          "parent_id": "root",
                          "tags": [],
