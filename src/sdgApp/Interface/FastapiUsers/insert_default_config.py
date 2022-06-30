@@ -1,5 +1,6 @@
 import shortuuid
 
+from sdgApp.Application.ScenariosFacadeService.CommandDTOs import EvaluationStandard, TrafficFlow
 from sdgApp.Application.weather.usercase import WeatherQueryUsercase
 from sdgApp.Application.log.usercase import except_logger
 
@@ -684,7 +685,10 @@ async def insert_default(db_session, user):
                          "weather_id": "ClearNoon",
                          "types": "file",
                          "parent_id": "root",
-                         "tags": []}
+                         "tags": [],
+                         "evaluation_standard": EvaluationStandard(),
+                         "traffic_flow": [TrafficFlow()]
+                         }
     await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
     default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "",
                                                                                                             "")
