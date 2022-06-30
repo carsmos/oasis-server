@@ -23,10 +23,11 @@ class ScenarioDO(BaseModel):
             name=self.name,
             desc=self.desc,
             tags=self.tags,
-            types= self.types,
-            parent_id= self.parent_id,
+            types=self.types,
+            parent_id=self.parent_id,
             scenario_param=self.scenario_param
         )
+
 
 class TrafficFLowBlueprintDO(BaseModel):
     id: str

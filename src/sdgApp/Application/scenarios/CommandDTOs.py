@@ -18,3 +18,4 @@ class TrafficFLowBlueprintDTO(BaseModel):
     id: str
     actor: str
     actor_class: str
+    check: bool = True
