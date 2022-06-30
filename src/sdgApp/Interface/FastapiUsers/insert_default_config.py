@@ -692,7 +692,7 @@ async def insert_default(db_session, user):
                          "parent_id": "root",
                          "tags": [],
                          "evaluation_standard": EvaluationStandard(),
-                         "traffic_flow": [TrafficFlow()]
+                         "traffic_flow": None
                          }
     await AssembleScenarioService(AssemberScenarioCreateDTO(**assemble_scenario), db_session, user)
     default_scenario_dto = await ScenarioQueryUsercase(db_session=db_session, user=user).find_all_scenarios(1, 15, "",

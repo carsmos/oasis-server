@@ -5,8 +5,8 @@ from pydantic import BaseModel, Field
 class EvaluationStandard(BaseModel):
     max_velocity_test: int = 80
     tick_max_velocity_test: bool = True
-    max_average_velocity_test: int = 50
-    tick_max_average_velocity_test: bool = True
+    # max_average_velocity_test: int = 50
+    # tick_max_average_velocity_test: bool = True
     min_average_velocity_test: int = 30
     tick_min_average_velocity_test: bool = True
     max_longitudinal_accel_test: int = 5
@@ -52,4 +52,4 @@ class AssemberScenarioCreateDTO(BaseModel):
     types: str = Field(..., example="file")
     parent_id: Any = Field(..., example="root")
     evaluation_standard: EvaluationStandard
-    traffic_flow: List[TrafficFlow]
+    traffic_flow: Optional[List[TrafficFlow]]
