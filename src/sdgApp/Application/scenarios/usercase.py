@@ -145,7 +145,9 @@ class ScenarioQueryUsercase(object):
     @except_logger("Scenario find_scenarios_by_tags failed .....................")
     async def find_traffic_flow_blueprint(self, keyword):
         try:
-            filter = {"actor": {"$regex": keyword}}
+            filter = {}
+            if keyword:
+                filter = {"actor": {"$regex": keyword}}
             # init low_blueprint_collection
             total_num = await self.traffic_flow_blueprint_collection.count_documents({})
             if total_num == 0:

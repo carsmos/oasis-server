@@ -113,7 +113,7 @@ async def find_scenarios_by_tags(tags: str, skip: int = 1,  db=Depends(get_db), 
     tags=["Scenarios"]
 )
 @except_logger("find_traffic_flow_blueprint failed .....................")
-async def find_specified_scenario(keyword: str, db=Depends(get_db),
+async def find_specified_scenario(keyword: str = None, db=Depends(get_db),
                                   user: UserDB = Depends(current_active_user)):
     try:
         return await ScenarioQueryUsercase(db_session=db, user=user).find_traffic_flow_blueprint(keyword)
