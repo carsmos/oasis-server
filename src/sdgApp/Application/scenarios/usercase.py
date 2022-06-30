@@ -7,7 +7,6 @@ import shortuuid
 from sdgApp.Application.log.usercase import except_logger
 from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO, ScenarioGroupReadDTO
 from sdgApp.Application.scenarios.CommandDTOs import ScenarioCreateDTO, ScenarioUpdateDTO
-from sdgApp.Application.scenarios.RespondsDTOs import ScenariosReadDTO
 from sdgApp.Application.scenarios.utils import scenarios_to_tree, file_child_ids_in_scenarios
 from sdgApp.Domain.scenarios.scenarios import ScenariosAggregate
 from sdgApp.Domain.scenarios.scenarios_exceptions import ScenarioNotFoundError
