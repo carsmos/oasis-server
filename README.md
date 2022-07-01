@@ -1,9 +1,8 @@
-# SDG-Server
+# Oasis-Server
 
-
+APIs for Oasis platform. 
 
 ## Getting Started from Source
-
 
 
 #### Prerequisites
@@ -33,82 +32,42 @@
 
 #### How to run
 
-1. Installation
+##### Installation
 
    ```bash
    # download repo
-   git clone https://codeup.aliyun.com/5f3f374f6207a1a8b17f933f/sdg-server.git
+   git clone https://github.com/oasis-platform/oasis-server.git
    
    # go to the folder where the pyproject.toml is
-   poetry install 
+   poetry install
+
    ```
 
-2. Configuration
+##### Configuration
 
+before this step please make sure mongodb and redis server is installed. below is an example for [src/conf.ini](./src/conf.ini). you should update it to yours.
    ```python
    # src/conf.ini
    
    [DB_MONGO]
-   MONGO_CONNECTION_STRING = 
-   MONGO_DB_NAME = 
+   MONGO_CONNECTION_STRING =  "mongodb://admin:123456@localhost:27017/admin?compressors=disabled&gssapiServiceName=mongodb"
+   MONGO_DB_NAME = oasis
    
    [DB_REDIS]
-   REDIS_HOST = 
-   REDIS_PORT = 
-   REDIS_DB = 
-   REDIS_PASSWORD = 
-   USER_ID = 
+   REDIS_HOST = localhost
+   REDIS_PORT = 6379
+   REDIS_DB = 0
+   REDIS_PASSWORD = 123456
+   USER_ID = oasis
    ```
 
-3. Run
+##### Run
 
    ```bash
    cd ./src
    poetry run python main.py
    ```
 
-open browser with OpenAPI link [127.0.0.1:8000/docs]()
+open browser with OpenAPI link [127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
-you can use this interactive doc to execute the provided request api with examples
-
-
-
-## Docker
-
-1.拉取镜像
-
-```bash
-docker pull registry.cn-beijing.aliyuncs.com/selfdriveguard/sdg-server:0.3.2
-```
-
-此镜像的制作是基于根目录下的dockerfile
-
-2.编辑docker-compose.yml
-
-```yaml
-services: 
-    app:
-        image:
-        ports:
-            - "8000:8000"
-        environment: 
-            REDIS_HOST: ""
-            REDIS_PORT: ""
-            REDIS_DB: ""
-            REDIS_PASSWORD: ""
-            MONGO_CONNECTION_STRING: ""
-            MONGO_DB_NAME: ""
-```
-
-3. Run
-
-```bash
-docker-compose -f docker-compose.yml -p sdg-replay up -d
-```
-
-4. Stop
-
-```bash
-docker-compose -p sdg-replay down
-```
-
+you can use this interactive doc to execute the provided request api with examples.
