@@ -1,6 +1,6 @@
 # Oasis-Server
 
-APIs for Oasis platform. 
+Oasis-Server provides the web service for the Oasis simulation platform. It supports Oasis-Web frontend for UI and dispatches simulation tasks to Oasis-Engine. 
 
 ## Getting Started from Source
 
