@@ -1,18 +1,31 @@
 [tool.poetry]
-name = "sdg2app"
+name = "refact-server"
 version = "0.1.0"
 description = ""
-authors = ["Cheng Fang"]
+authors = ["wenquan <wenquan@dingtalk.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
 fastapi = "^0.70.1"
 uvicorn = {extras = ["standard"], version = "^0.17.6"}
-fastapi-users-db-mongodb = "^1.0.0"
-shortuuid = "^1.0.8"
-walrus = "^0.9.0"
-tenacity = "^8.0.1"
-gunicorn = "^20.1.0"
+tortoise-orm = {extras = ["aiomysql"], version = "^0.19.2"}
+loguru = "^0.6.0"
+aerich = "^0.6.3"
+passlib = "^1.7.4"
+pyjwt = "^2.4.0"
+python-multipart = "^0.0.5"
+simplejson = "^3.17.6"
+requests = "^2.28.1"
+python-jose = "^3.3.0"
+jose = "^1.0.0"
+transaction = "^3.0.1"
+oss2 = "2.0.5"
+shortuuid = "^1.0.9"
+redis = "^4.3.4"
+aioredis = "^2.0.1"
+xmlschema = "^2.1.1"
+casbin = "^1.17.5"
+casbin-tortoise-adapter = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 
@@ -24,3 +37,8 @@ build-backend = "poetry.core.masonry.api"
 name = "aliyun"
 url = "https://mirrors.aliyun.com/pypi/simple"
 default = true
+
+[tool.aerich]
+tortoise_orm = "core.settings.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."

@@ -1,0 +1,912 @@
+<?xml version="1.0"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="0" revMinor="9" date="2020-02-17" description="VehicleCatalog" author="Anja Sheppard"/>
+  <Catalog name="VehicleCatalog">
+    <Vehicle name="vehicle.tesla.model3" vehicleCategory="car">
+      <Performance maxSpeed="69.444" maxAcceleration="8.17" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.4" y="0.0" z="0.75"/>
+        <Dimensions width="2.2" length="4.8" height="1.5"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.2" wheelDiameter="0.74" trackWidth="2.2" positionX="2.8" positionZ="0.37"/>
+        <RearAxle maxSteering="0.0" wheelDiameter="0. 74" trackWidth="2.2" positionX="0.0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.audi.etron" vehicleCategory="car">
+      <Performance maxSpeed="51.9" maxAcceleration="4.08" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.45" y="0" z="0.8"/>
+        <Dimensions width="2.0" length="4.8" height="1.6"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.0" positionX="2.9" positionZ="0.37"/>
+        <RearAxle maxSteering="0.0" wheelDiameter="0.74" trackWidth="2.0" positionX="0.0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.audi.tt" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.25" y="0" z="0.7"/>
+        <Dimensions width="2.0" length="4.2" height="1.4"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="2.0" positionX="2.5" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="2.0" positionX="0.0" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.tesla.cybertruck" vehicleCategory="car">
+      <Performance maxSpeed="49" maxAcceleration="3.9" maxDeceleration="6.5"/>
+      <BoundingBox>
+        <Center x="2.0" y="0" z="1.05"/>
+        <Dimensions width="2.4" length="6.28" height="2.1"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="1.07" trackWidth="2.4" positionX="4" positionZ="0.535"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="1.07" trackWidth="2.4" positionX="0.0" positionZ="0.535"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.dodge.charger_police" vehicleCategory="car">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.lincoln.mkz_2017" vehicleCategory="car">
+      <Performance maxSpeed="60" maxAcceleration="5.1" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.4" y="0" z="0.75"/>
+        <Dimensions width="2.1" length="4.9" height="1.5"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.7" trackWidth="2.1" positionX="2.8" positionZ="0.35"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.7" trackWidth="2.1" positionX="0.0" positionZ="0.35"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.lincoln.mkz_2020" vehicleCategory="car">
+      <Performance maxSpeed="60" maxAcceleration="5.1" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.4" y="0" z="0.75"/>
+        <Dimensions width="1.8" length="4.9" height="1.5"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.7" trackWidth="1.8" positionX="2.8" positionZ="0.35"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.7" trackWidth="1.8" positionX="0.0" positionZ="0.35"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.ford.ambulance" vehicleCategory="van">
+      <Performance maxSpeed="49" maxAcceleration="3.9" maxDeceleration="6.5"/>
+      <BoundingBox>
+        <Center x="2.0" y="0" z="1.05"/>
+        <Dimensions width="2.4" length="6.28" height="2.1"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="1.07" trackWidth="2.4" positionX="4" positionZ="0.535"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="1.07" trackWidth="2.4" positionX="0.0" positionZ="0.535"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.carlamotors.firetruck" vehicleCategory="truck">
+      <Performance maxSpeed="49" maxAcceleration="3.9" maxDeceleration="6.5"/>
+      <BoundingBox>
+        <Center x="2.0" y="0" z="1.05"/>
+        <Dimensions width="2.4" length="6.28" height="2.1"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="1.07" trackWidth="2.4" positionX="4" positionZ="0.535"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="1.07" trackWidth="2.4" positionX="0.0" positionZ="0.535"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.toyota.prius" vehicleCategory="car">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.chevrolet.impala" vehicleCategory="car">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.volkswagen.t2_2021" vehicleCategory="van">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.volkswagen.t2" vehicleCategory="van">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.mercedes.coupe_2020" vehicleCategory="car">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.ford.crown" vehicleCategory="car">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.dodge.charger_police_2020" vehicleCategory="car">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.jeep.wrangler_rubicon" vehicleCategory="car">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.harley-davidson.low_rider" vehicleCategory="motorbike">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.kawasaki.ninja" vehicleCategory="motorbike">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.vespa.zx125" vehicleCategory="motorbike">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.yamaha.yzf" vehicleCategory="motorbike">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.mercedes.sprinter" vehicleCategory="van">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.bh.crossbike" vehicleCategory="bicycle">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.diamondback.century" vehicleCategory="bicycle">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.gazelle.omafiets" vehicleCategory="bicycle">
+      <Performance maxSpeed="63" maxAcceleration="4.7" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.5" y="0" z="0.78"/>
+        <Dimensions width="2.04" length="4.98" height="1.56"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="3.0" positionZ="0.37"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.74" trackWidth="2.04" positionX="0" positionZ="0.37"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.audi.a2" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.9" y="0" z="0.75"/>
+        <Dimensions width="1.8" length="3.8" height="1.5"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.8" positionX="1.9" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.8" positionX="0.0" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.bmw.grandtourer" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.9" y="0" z="0.8"/>
+        <Dimensions width="1.8" length="4.6" height="1.6"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.8" positionX="2.3" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.8" positionX="0.0" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.carlamotors.carlacola" vehicleCategory="truck">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.925" y="0" z="1"/>
+        <Dimensions width="1.85" length="9" height="2"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.8" trackWidth="1.85" positionX="4.5" positionZ="0.4"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.8" trackWidth="1.85" positionX="4.5" positionZ="0.4"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.dodge.charger_2020" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1" y="0" z="0.75"/>
+        <Dimensions width="2" length="5" height="1.5"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="2" positionX="2.5" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="2" positionX="2.5" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.seat.leon" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.9" y="0" z="1.3"/>
+        <Dimensions width="1.8" length="4.4" height="2.6"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.8" positionX="2.2" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.8" positionX="2.2" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.mini.cooper_s" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.85" y="0" z="0.7"/>
+        <Dimensions width="1.7" length="3.8" height="1.4"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.7" positionX="1.9" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.7" positionX="1.9" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.mini.cooper_s_2021" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.85" y="0" z="0.7"/>
+        <Dimensions width="1.7" length="3.8" height="1.4"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.7" positionX="1.9" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.7" positionX="1.9" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.ford.mustang" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.95" y="0" z="0.7"/>
+        <Dimensions width="1.9" length="4.8" height="1.4"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.9" positionX="2.4" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.9" positionX="2.4" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.nissan.micra" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.85" y="0" z="0.7"/>
+        <Dimensions width="1.7" length="4.0" height="1.4"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.7" positionX="2.0" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.7" positionX="2.0" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.nissan.patrol" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.0" y="0" z="1.0"/>
+        <Dimensions width="2.0" length="5.2" height="2.0"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="2.0" positionX="2.6" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="2.0" positionX="2.6" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.nissan.patrol_2021" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="1.0" y="0" z="1.0"/>
+        <Dimensions width="2.0" length="5.2" height="2.0"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="2.0" positionX="2.6" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="2.0" positionX="2.6" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.citroen.c3" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.85" y="0" z="0.75"/>
+        <Dimensions width="1.7" length="3.85" height="1.5"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.7" positionX="1.925" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.7" positionX="1.925" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.mercedes.coupe" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.95" y="0" z="0.7"/>
+        <Dimensions width="1.9" length="5.0" height="1.4"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.9" positionX="2.5" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.9" positionX="2.5" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Vehicle name="vehicle.micro.microlino" vehicleCategory="car">
+      <Performance maxSpeed="54" maxAcceleration="5.2" maxDeceleration="8"/>
+      <BoundingBox>
+        <Center x="0.75" y="0" z="0.75"/>
+        <Dimensions width="1.5" length="2.5" height="1.5"/>
+      </BoundingBox>
+      <Axles>
+        <FrontAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.5" positionX="1.25" positionZ="0.34"/>
+        <RearAxle maxSteering="1.22" wheelDiameter="0.68" trackWidth="1.5" positionX="1.25" positionZ="0.34"/>
+      </Axles>
+      <Properties/>
+    </Vehicle>
+
+    <Pedestrian name="walker.pedestrian.0001" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0002" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0003" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0004" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0005" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0006" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0007" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0008" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0009" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.1" z="0.65"/>
+        <Dimensions width="0.4" length="0.2" height="1.3"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0010" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.1" z="0.65"/>
+        <Dimensions width="0.4" length="0.2" height="1.3"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0011" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.1" z="0.65"/>
+        <Dimensions width="0.4" length="0.2" height="1.3"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0012" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.1" z="0.65"/>
+        <Dimensions width="0.4" length="0.2" height="1.3"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0013" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.1" z="0.65"/>
+        <Dimensions width="0.4" length="0.2" height="1.3"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0014" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.1" z="0.65"/>
+        <Dimensions width="0.4" length="0.2" height="1.3"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0015" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0016" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0017" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0018" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0019" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0019" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0020" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0021" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0022" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0023" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0024" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0025" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0026" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0027" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0028" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0029" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0030" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0031" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0032" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.275" y="0.125" z="0.85"/>
+        <Dimensions width="0.55" length="0.25" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0033" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0034" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0035" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0036" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0037" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0038" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0039" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.125" y="0.275" z="0.85"/>
+        <Dimensions width="0.25" length="0.55" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0040" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.125" y="0.275" z="0.85"/>
+        <Dimensions width="0.25" length="0.55" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0041" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.125" y="0.275" z="0.85"/>
+        <Dimensions width="0.25" length="0.55" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0042" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0043" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0044" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0045" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0046" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0047" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0048" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.2" y="0.35" z="0.85"/>
+        <Dimensions width="0.4" length="0.7" height="1.7"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+
+    <Pedestrian name="walker.pedestrian.0049" pedestrianCategory="pedestrian">
+      <BoundingBox>
+        <Center x="0.1" y="0.2" z="0.65"/>
+        <Dimensions width="0.2" length="0.4" height="1.3"/>
+      </BoundingBox>
+      <Properties/>
+    </Pedestrian>
+  </Catalog>
+</OpenSCENARIO>
